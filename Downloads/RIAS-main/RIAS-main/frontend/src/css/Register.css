@@ -1,0 +1,92 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .card-container {
+    display: flex;
+    width: 800px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background-color: #fff;
+    overflow: hidden;
+  }
+  
+  .role-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    border-right: 1px solid #ddd;
+    width: 50%;
+  }
+  
+  .role-button {
+    width: 200px;
+    height: 200px;
+    margin: 15px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  
+  .selected-role-button {
+    border-color: #000;
+  }
+  
+  .register-card {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+  }
+  
+  .logo {
+    width: 150px;
+    margin-bottom: 30px;
+  }
+  
+  .title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .label {
+    display: block;
+    text-align: left;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .input {
+    width: 90%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+  }
+  
+  .button, .login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  .login-button {
+    background-color: #00bfff;
+  }
+  

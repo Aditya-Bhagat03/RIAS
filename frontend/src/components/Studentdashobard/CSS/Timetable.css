@@ -2,9 +2,9 @@
 :root {
   --bg-sidebar: #010f17;
   --light-green: #252323;
-  --bg-color: #f4f4f4;
+  --bg-color: #010000;
   --light-grey: #37887d;
-  --text-color: #FFF;
+  --text-color: #32c956;
 }
 
 /* Container for the timetable */
@@ -29,7 +29,7 @@
   margin-bottom: 200px;
   font-size: 24px;
   font-weight: bold;
-  color: #FFF;
+  color: #100909;
 }
 
 /* Styling for the table */

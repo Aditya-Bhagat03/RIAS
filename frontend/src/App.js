@@ -14,7 +14,7 @@ import Timetable from "./components/Studentdashobard/Timetable"; // Updated impo
 import DashboardLayout from "./components/Studentdashobard/DashboardLayout"; // Updated import path
 import DashboardLayoutf from "./components/FacultyDashboard/DashboardLayout"; // Updated import path
 import StudentProfile from "./components/Studentdashobard/StudentProfile"; // Updated import path
-import Users from "./components/FacultyDashboard/User"; // Updated import path
+import Users from "./components/FacultyDashboard/user"; // Updated import path
 import Survey from "./components/FacultyDashboard/FacultySurvey";
 import Surveyf from "./components/FacultyDashboard/SurveyForm";
 import Facultyimetable from "./components/FacultyDashboard/StudentTable";

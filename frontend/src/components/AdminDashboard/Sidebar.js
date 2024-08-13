@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // Import Link from react-router-dom
-import MenuIcon from "../assets/menu.svg";
-import DashboardIcon from "../assets/grid.svg";
-import TimetablesIcon from "../assets/tt.svg";
-import FeedbackIcon from "../assets/feedback.svg";
-import ReportsIcon from "../assets/report.svg";
-import SurveysIcon from "../assets/survey.svg";
-import AntiRaggingIcon from "../assets/ragging.svg";
-import RewardsIcon from "../assets/reward.svg";
-import SettingsIcon from "../assets/settings.svg";
-import LogoutIcon from "../assets/log-out.svg";
-import "../css/Sidebar.css";
+import MenuIcon from "../../assets/menu.svg";
+import DashboardIcon from "../../assets/grid.svg";
+import TimetablesIcon from "../../assets/tt.svg";
+import FeedbackIcon from "../../assets/feedback.svg";
+import ReportsIcon from "../../assets/report.svg";
+import SurveysIcon from "../../assets/survey.svg";
+import AntiRaggingIcon from "../../assets/ragging.svg";
+import RewardsIcon from "../../assets/reward.svg";
+import SettingsIcon from "../../assets/settings.svg";
+import LogoutIcon from "../../assets/log-out.svg";
+import "./css/Sidebar.css";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +43,7 @@ const Sidebar = () => {
             <Link to="/student-dashboard">
               <img className="icon" src={DashboardIcon} alt="dashboard" />
               <span className={`${isOpen ? "" : "hideElement"}`}>
-                Dashboard
+                Daaa
               </span>
             </Link>
           </li>

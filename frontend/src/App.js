@@ -24,7 +24,8 @@ import "./App.css"; // Ensure your CSS file is included
 import FacultyAddSchedule from "./components/FacultyDashboard/FacultyAddSchedule";
 import FacultyPooostTimetable from "./components/FacultyDashboard/FacultyPostTimetable";
 import FacultyFeedback from "./components/FacultyDashboard/FacultyFeedback";
-import Antiragging from './components/Studentdashobard/Antiragging'
+import Antiragging from "./components/Studentdashobard/Antiragging";
+import Adashboard from "./components/AdminDashboard/dashboard";
 
 const AuthRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -78,7 +79,9 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminDashboard>
-                  <AdminDashboard />
+                  <Routes>
+                    <Route path="" element={<Adashboard />} />
+                  </Routes>
                 </AdminDashboard>
               </ProtectedRoute>
             }

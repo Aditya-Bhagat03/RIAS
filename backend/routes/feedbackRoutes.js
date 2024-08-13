@@ -46,6 +46,15 @@ router.get('/feedbacks/sections', feedbackController.getSectionsFromFeedbacks);
 
 // Route to get subject names from feedbacks
 router.get('/feedbacks/subject-names', feedbackController.getSubjectNamesFromFeedbacks);
+// Route to get filtered feedback based on selected options
+router.get('/feedbacks/filtered', feedbackController.getFilteredFeedback);
+
+
+// Route to delete feedback
+router.delete('/feedbacks/:feedbackId', feedbackController.deleteFeedback);
+
+  
+
 
 
 

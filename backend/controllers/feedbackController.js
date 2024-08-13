@@ -207,3 +207,50 @@ exports.getSubjectNamesFromFeedbacks = async (req, res) => {
     res.status(500).json({ message: "Error fetching subject names from feedbacks", error });
   }
 };
+exports.getFilteredFeedback = async (req, res) => {
+  try {
+    const { semester, branch, section, subjectName, courseName, facultyName } = req.query;
+
+    // Construct filter object
+    const filter = {};
+    if (semester) filter.semester = semester;
+    if (branch) filter.branch = branch;
+    if (section) filter.section = section;
+    if (subjectName) filter.subjectName = subjectName;
+    if (courseName) filter.courseName = courseName;
+    if (facultyName) filter.facultyName = facultyName;
+
+    // Fetch filtered feedback with studentId populated with username
+    const feedbacks = await Feedback.find(filter)
+      .populate({
+        path: "studentId",
+        select: "username" // Only select the username field
+      })
+      .exec();
+
+    if (feedbacks.length > 0) {
+      res.json(feedbacks);
+    } else {
+      res.status(404).json({ message: "No feedback found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching filtered feedback", error });
+  }
+};
+
+
+exports.deleteFeedback = async (req, res) => {
+  try {
+    const { feedbackId } = req.params;
+
+    const result = await Feedback.findByIdAndDelete(feedbackId);
+
+    if (result) {
+      res.json({ message: "Feedback deleted successfully." });
+    } else {
+      res.status(404).json({ message: "Feedback not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting feedback", error });
+  }
+};

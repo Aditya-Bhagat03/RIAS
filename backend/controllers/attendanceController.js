@@ -1,5 +1,5 @@
 // controllers/attendanceController.js
-const Attendance = require('../models/Attendance'); // Ensure this path is correct
+const Attendance = require("../models/Attendance"); // Ensure this path is correct
 
 // Mark attendance
 exports.markAttendance = async (req, res) => {
@@ -25,9 +25,13 @@ exports.getAttendanceByClassId = async (req, res) => {
 // Update attendance
 exports.updateAttendance = async (req, res) => {
   try {
-    const attendance = await Attendance.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const attendance = await Attendance.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     if (!attendance) {
-      return res.status(404).json({ error: 'Attendance not found' });
+      return res.status(404).json({ error: "Attendance not found" });
     }
     res.json(attendance);
   } catch (err) {
@@ -40,9 +44,9 @@ exports.deleteAttendance = async (req, res) => {
   try {
     const attendance = await Attendance.findByIdAndDelete(req.params.id);
     if (!attendance) {
-      return res.status(404).json({ error: 'Attendance not found' });
+      return res.status(404).json({ error: "Attendance not found" });
     }
-    res.json({ message: 'Attendance deleted successfully' });
+    res.json({ message: "Attendance deleted successfully" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

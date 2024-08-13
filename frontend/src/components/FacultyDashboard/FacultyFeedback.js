@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./css/FacultyFeedback.css";
+import styles from "./css/FacultyFeedback.module.css";
 
 const FacultyFeedback = () => {
   const [semesters, setSemesters] = useState([]);
@@ -17,6 +17,7 @@ const FacultyFeedback = () => {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedFaculty, setSelectedFaculty] = useState('');
 
+  const [feedbacks, setFeedbacks] = useState([]);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // 'success' or 'error'
 
@@ -48,18 +49,55 @@ const FacultyFeedback = () => {
     fetchOptions();
   }, []);
 
+  const fetchFeedbacks = async () => {
+    try {
+      const params = {
+        semester: selectedSemester,
+        branch: selectedBranch,
+        section: selectedSection,
+        subjectName: selectedSubject,
+        courseName: selectedCourse,
+        facultyName: selectedFaculty,
+      };
+
+      const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/filtered", { params });
+      setFeedbacks(response.data);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+      setMessage("Failed to load feedbacks.");
+      setMessageType("error");
+    }
+  };
+
+  const handleFilterApply = () => {
+    fetchFeedbacks();
+  };
+
+  const handleDeleteFeedback = async (feedbackId) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/feedback/feedbacks/${feedbackId}`);
+      setFeedbacks(feedbacks.filter(feedback => feedback.id !== feedbackId));
+      setMessage("Feedback deleted successfully.");
+      setMessageType("success");
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
+      setMessage("Failed to delete feedback.");
+      setMessageType("error");
+    }
+  };
+
   return (
-    <div className="feedback-container">
-      <div className="feedback-card faculty-feedback">
+    <div style={{ marginTop: '70px', marginLeft: '70px'  }} className={styles.container}>
+      <div className={styles.feedbackCard}>
         <h2>Faculty Feedback</h2>
-        <p>Here you can review feedback provided by faculty about the students and overall classroom performance.</p>
+        <p>Here you can review feedback provided by student.</p>
         {message && (
-          <div className={`message ${messageType}`}>
+          <div className={`${styles.message} ${styles[messageType]}`}>
             {message}
           </div>
         )}
-        <div className="dropdown-container">
-          <div className="dropdown-item">
+        <div className={styles.dropdownContainer}>
+          <div className={styles.dropdownItem}>
             <label htmlFor="semester">Semester:</label>
             <select
               id="semester"
@@ -74,7 +112,7 @@ const FacultyFeedback = () => {
               ))}
             </select>
           </div>
-          <div className="dropdown-item">
+          <div className={styles.dropdownItem}>
             <label htmlFor="branch">Branch:</label>
             <select
               id="branch"
@@ -89,7 +127,7 @@ const FacultyFeedback = () => {
               ))}
             </select>
           </div>
-          <div className="dropdown-item">
+          <div className={styles.dropdownItem}>
             <label htmlFor="section">Section:</label>
             <select
               id="section"
@@ -104,7 +142,7 @@ const FacultyFeedback = () => {
               ))}
             </select>
           </div>
-          <div className="dropdown-item">
+          <div className={styles.dropdownItem}>
             <label htmlFor="subject">Subject:</label>
             <select
               id="subject"
@@ -119,7 +157,7 @@ const FacultyFeedback = () => {
               ))}
             </select>
           </div>
-          <div className="dropdown-item">
+          <div className={styles.dropdownItem}>
             <label htmlFor="course">Course:</label>
             <select
               id="course"
@@ -134,7 +172,7 @@ const FacultyFeedback = () => {
               ))}
             </select>
           </div>
-          <div className="dropdown-item">
+          <div className={styles.dropdownItem}>
             <label htmlFor="faculty">Faculty:</label>
             <select
               id="faculty"
@@ -150,6 +188,44 @@ const FacultyFeedback = () => {
             </select>
           </div>
         </div>
+        <button onClick={handleFilterApply} className={styles.filterButton}>Apply Filters</button>
+        {feedbacks.length > 0 && (
+          <table className={styles.feedbackTable}>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Faculty Name</th>
+                <th>Course Name</th>
+                <th>Branch</th>
+                <th>Section</th>
+                <th>Semester</th>
+                <th>Subject Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {feedbacks.map((feedback) => (
+                <tr key={feedback.id}>
+                  <td>{feedback.studentId?.username || 'N/A'}</td>
+                  <td>{feedback.facultyName || 'N/A'}</td>
+                  <td>{feedback.courseName || 'N/A'}</td>
+                  <td>{feedback.branch || 'N/A'}</td>
+                  <td>{feedback.section || 'N/A'}</td>
+                  <td>{feedback.semester || 'N/A'}</td>
+                  <td>{feedback.subjectName || 'N/A'}</td>
+                  <td>
+                    <button 
+                      className={styles.deleteButton}
+                      onClick={() => handleDeleteFeedback(feedback.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

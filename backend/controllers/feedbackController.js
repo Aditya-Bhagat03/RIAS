@@ -239,10 +239,12 @@ exports.getFilteredFeedback = async (req, res) => {
 };
 
 
+// Function to delete feedback
 exports.deleteFeedback = async (req, res) => {
   try {
     const { feedbackId } = req.params;
 
+    // Find and delete feedback by ID
     const result = await Feedback.findByIdAndDelete(feedbackId);
 
     if (result) {
@@ -254,3 +256,4 @@ exports.deleteFeedback = async (req, res) => {
     res.status(500).json({ message: "Error deleting feedback", error });
   }
 };
+

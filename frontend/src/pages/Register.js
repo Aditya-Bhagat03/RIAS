@@ -96,6 +96,11 @@ const Register = () => {
 
                 <label htmlFor="role" className="label">Role</label>
                 <input type="text" name="role" value={role} readOnly className="input" />
+
+            <div className='regbutton'>
+              
+              <button type="submit" className="button">Register</button>
+              </div>
                 
               </form>
               
@@ -103,7 +108,7 @@ const Register = () => {
             
             <div className='regbutton'>
               
-            <button type="submit" className="button">Register</button>
+            
             <button type="button" onClick={() => navigate('/login')} className="login-button">Login</button>
             </div>
           </div>

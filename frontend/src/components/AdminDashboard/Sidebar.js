@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Import Link from react-router-dom
+import { useNavigate, Link } from "react-router-dom";
 import MenuIcon from "../../assets/menu.svg";
 import DashboardIcon from "../../assets/grid.svg";
 import TimetablesIcon from "../../assets/tt.svg";
+import TeachersIcon from "../../assets/teachers.svg";
 import FeedbackIcon from "../../assets/feedback.svg";
 import ReportsIcon from "../../assets/report.svg";
 import SurveysIcon from "../../assets/survey.svg";
@@ -22,6 +23,10 @@ const Sidebar = () => {
     navigate("/login");
   };
 
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <nav
       className={`sidebar ${isOpen ? "open" : "closed"}`}
@@ -33,7 +38,7 @@ const Sidebar = () => {
           className={`menu-toggle ${isOpen ? "rotate" : ""}`}
           src={MenuIcon}
           alt="menu"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleSidebar}
         />
         <h1 className={`sidebar-title ${isOpen ? "" : "hideElement"}`}>RIAS</h1>
       </header>
@@ -42,24 +47,23 @@ const Sidebar = () => {
           <li className="dashboard-link">
             <Link to="/student-dashboard">
               <img className="icon" src={DashboardIcon} alt="dashboard" />
-              <span className={`${isOpen ? "" : "hideElement"}`}>
-                Daaa
-              </span>
+              <span className={`${isOpen ? "" : "hideElement"}`}>Dashboard</span>
+            </Link>
+          </li>
+          <li className="teachers-link">
+            <Link to="/student-dashboard/teachers">
+              <img className="icon" src={TeachersIcon} alt="teachers" />
+              <span className={`${isOpen ? "" : "hideElement"}`}>Teachers</span>
             </Link>
           </li>
           <li className="timetables-link">
             <Link to="/student-dashboard/timetable">
-              {" "}
-              {/* Updated path */}
               <img className="icon" src={TimetablesIcon} alt="timetables" />
-              <span className={`${isOpen ? "" : "hideElement"}`}>
-                Timetables
-              </span>
+              <span className={`${isOpen ? "" : "hideElement"}`}>Timetables</span>
             </Link>
           </li>
-
           <li className="feedback-link">
-            <Link to="/student-dashboard/Feedback">
+            <Link to="/student-dashboard/feedback">
               <img className="icon" src={FeedbackIcon} alt="feedback" />
               <span className={`${isOpen ? "" : "hideElement"}`}>Feedback</span>
             </Link>
@@ -71,17 +75,15 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="surveys-link">
-            <Link to="/student-dashboard/Surveystu">
+            <Link to="/student-dashboard/surveys">
               <img className="icon" src={SurveysIcon} alt="surveys" />
               <span className={`${isOpen ? "" : "hideElement"}`}>Surveys</span>
             </Link>
           </li>
           <li className="anti-ragging-link">
-            <Link to="/student-dashboard/Antiragging">
+            <Link to="/student-dashboard/anti-ragging">
               <img className="icon" src={AntiRaggingIcon} alt="anti-ragging" />
-              <span className={`${isOpen ? "" : "hideElement"}`}>
-                Anti-Ragging
-              </span>
+              <span className={`${isOpen ? "" : "hideElement"}`}>Anti-Ragging</span>
             </Link>
           </li>
           <li className="rewards-link">

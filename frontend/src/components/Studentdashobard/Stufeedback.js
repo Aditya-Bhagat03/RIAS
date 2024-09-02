@@ -39,6 +39,9 @@ const FeedbackForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+
   // Fetch profile data
   const fetchProfileData = async () => {
     try {
@@ -131,14 +134,21 @@ const FeedbackForm = () => {
     }));
   };
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setShowConfirmPopup(true);
+  };
+
+  const confirmSubmit = async () => {
+    setShowConfirmPopup(false);
+    setPendingSubmit(true);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found");
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
 
-      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const studentId = decodedToken.id;
 
       // Function to generate feedback entries
@@ -167,21 +177,21 @@ const FeedbackForm = () => {
       const theoryFeedbackEntries = generateFeedbackEntries(
         filteredTheoryTimetable,
         theoryQuestions,
-        "theory"
+        'theory'
       );
 
       const practicalFeedbackEntries = generateFeedbackEntries(
         filteredPracticalTimetable,
         practicalQuestions,
-        "practical"
+        'practical'
       );
 
       // Submit both feedbacks in parallel
-      await Promise.all([
-        fetch("http://localhost:4000/api/feedback/theory/submit", {
-          method: "POST",
+      const [theoryResponse, practicalResponse] = await Promise.all([
+        fetch('http://localhost:4000/api/feedback/theory/submit', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -189,10 +199,10 @@ const FeedbackForm = () => {
             feedbackEntries: theoryFeedbackEntries,
           }),
         }),
-        fetch("http://localhost:4000/api/feedback/practical/submit", {
-          method: "POST",
+        fetch('http://localhost:4000/api/feedback/practical/submit', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -202,15 +212,31 @@ const FeedbackForm = () => {
         }),
       ]);
 
-      setSuccess("Theory and Practical feedback submitted successfully!");
-      setError("");
+      // Check if any response indicates an error
+      if (!theoryResponse.ok) {
+        const theoryError = await theoryResponse.json();
+        throw new Error(theoryError.message || 'Failed to submit theory feedback');
+      }
+      if (!practicalResponse.ok) {
+        const practicalError = await practicalResponse.json();
+        throw new Error(practicalError.message || 'Failed to submit practical feedback');
+      }
+
+      setSuccess('Theory and Practical feedback submitted successfully!');
+      setError('');
     } catch (err) {
-      console.error("Error:", err);
-      setError("Error submitting feedback. Please try again.");
-      setSuccess("");
+      console.error('Error:', err);
+      setError(err.message || 'Error submitting feedback. Please try again.');
+      setSuccess('');
+    } finally {
+      setPendingSubmit(false);
     }
   };
 
+  const cancelSubmit = () => {
+    setShowConfirmPopup(false);
+  };
+  
   const styles = {
     th: { padding: "10px", border: "1px solid #ddd" },
     td: { padding: "10px", border: "1px solid #ddd" },
@@ -495,15 +521,39 @@ const FeedbackForm = () => {
             </form>
           </>
         )}
-        <form onSubmit={handleSubmit}>
-          <button type="submit" className="student-dashboard-submit-button">
-            Submit Feedback
-          </button>
-          {error && <p className="student-dashboard-error-message">{error}</p>}
-          {success && (
-            <p className="student-dashboard-success-message">{success}</p>
-          )}
-        </form>
+       <div>
+      <form onSubmit={handleSubmit}>
+        <button type="submit" className="student-dashboard-submit-button">
+          Submit Feedback
+        </button>
+      </form>
+
+      {showConfirmPopup && (
+        <>
+          <div className="student-dashboard-backdrop"></div>
+          <div className="student-dashboard-popup student-dashboard-confirm-popup">
+            <p>Are you sure you want to submit the feedback?</p>
+            <button onClick={confirmSubmit} disabled={pendingSubmit}>
+              {pendingSubmit ? 'Submitting...' : 'Confirm'}
+            </button>
+            <button onClick={cancelSubmit} disabled={pendingSubmit}>
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
+
+      {error && (
+        <div className="student-dashboard-popup student-dashboard-error-popup">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="student-dashboard-popup student-dashboard-success-popup">
+          {success}
+        </div>
+      )}
+    </div>
       </div>
     </div>
   );

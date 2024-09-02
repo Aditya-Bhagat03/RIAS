@@ -151,3 +151,53 @@ header .sidebar-title {
   background: transparent;
   z-index: 0; /* Ensure it's behind the sidebar */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Bottom Content */
+.bottom-content {
+  display: flex;
+  align-items: left;
+  text-align: left;
+  justify-content: space-between;
+  background-color: var(--light-green);
+  position: absolute;
+  gap: 9px;
+  padding: 8px 14px;
+  width: 100%;
+  height: 60px;
+  bottom: 0;
+  border-radius: 0 0 10px 0;
+}
+
+.bottom-content .developed-by {
+  font-size: 13px;
+  color: #ffffff;
+  margin-left: 14px;
+  text-align: left;
+  align-items: left;
+}
+
+.bottom-content .logout {
+  cursor: pointer;
+  margin-right: -14px;
+}

@@ -1,0 +1,5 @@
+_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
+66d471fcb9ef36138892a9aa,aditya.bhagat.cse@ghrce.net,aditya.bhagat.cse@ghrce.net,12,124,7,CSE,A,2,214,$2a$10$XtcAy1KXpiVUunFK5pBFGe9WsZbQNMvWAZy6wtIxgNnCmeUYtgEcC,faculty,Summer,TRUE,0
+66d47244b9ef36138892a9ae,adityabhagat525@gmail.com,adityabhagat525@gmail.com,24,3245,7,CSE,A,2,24,$2a$10$yZWvkT3BoxjdvbdEQAs9L.N41tL6Lb5Xio00UvGD50etm5aOTY8F2,admin,Summer,TRUE,0
+66d47295b9ef36138892a9bf,s1adityabhagat525@gmail.com,s1adityabhagat525@gmail.com,12345,132445,7,CSE,A,2,24,$2a$10$vEJTXmfD0daSWIzueu0.Uu52AWDWivcm9FIgrMXoRU/7XqCZrs0pK,student,Summer,TRUE,0
+,s11adityabhagat525@gmail.com,s11adityabhagat525@gmail.com,12345,132445,7,CSE,A,2,24,cse,student,Summer,TRUE,0

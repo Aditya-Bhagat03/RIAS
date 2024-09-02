@@ -14,6 +14,7 @@ const StudentProfile = () => {
     branch: "",
     section: "",
     rollNumber: "",
+    batch: "",
   });
   const [error, setError] = useState(null);
 
@@ -48,6 +49,7 @@ const StudentProfile = () => {
           branch: data.branch || "",
           section: data.section || "",
           rollNumber: data.rollNumber || "",
+          batch: data.batch || "",
         });
       } else if (response.status === 404) {
         setError("Profile not found.");
@@ -118,6 +120,7 @@ const StudentProfile = () => {
       branch: profileData?.branch || "",
       section: profileData?.section || "",
       rollNumber: profileData?.rollNumber || "",
+      batch: profileData?.batch || "",
     });
   };
 
@@ -270,6 +273,21 @@ const StudentProfile = () => {
               />
             ) : (
               <span>{profileData ? profileData.rollNumber : "Loading..."}</span>
+            )}
+          </div>
+
+          
+          <div className="profile-detail">
+            <strong>Batch:</strong>
+            {isEditing ? (
+              <input
+                type="text"
+                name="batchr"
+                value={formData.batch}
+                onChange={handleChange}
+              />
+            ) : (
+              <span>{profileData ? profileData.batch : "Loading..."}</span>
             )}
           </div>
         </div>

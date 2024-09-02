@@ -125,7 +125,6 @@ const FeedbackStats = () => {
   };
 
   const formattedAnalysisData = convertAnalysisData(analysisData);
-
   return (
     <div style={{ marginTop: '70px', marginLeft: '70px' }} className={styles.container}>
       <div className={`${styles.feedbackCard} ${styles.scrollableContainer}`} ref={componentRef}>
@@ -167,46 +166,50 @@ const FeedbackStats = () => {
         </button>
         {feedbacks.length > 0 ? (
           <div>
-            {feedbacks.map((feedback, feedbackIndex) => (
-              <div key={feedbackIndex}>
-                <table className={styles.feedbackTable}>
-                  <thead>
-                    <tr>
-                      <th>Faculty Name</th>
-                      <th>Type</th>
-                      <th>Subject</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{feedback.facultyName}</td>
-                      <td>{feedback.type}</td>
-                      <td>{feedback.subjectName}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className={styles.feedbackTableWrapper}>
+            {feedbacks
+              .filter((feedback, index, self) => 
+                index === self.findIndex(f => f.facultyName === feedback.facultyName)
+              )
+              .map((feedback, feedbackIndex) => (
+                <div key={feedbackIndex}>
                   <table className={styles.feedbackTable}>
                     <thead>
                       <tr>
-                        <th>Question</th>
-                        <th>Average Score</th>
+                        <th>Faculty Name</th>
+                        <th>Type</th>
+                        <th>Subject</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(formattedAnalysisData.questionAverages).map(([question, avg], index) => (
-                        question.startsWith(feedbackIndex.toString()) && (
-                          <tr key={index}>
-                            <td>{question}</td>
-                            <td>{avg}</td>
-                          </tr>
-                        )
-                      ))}
+                      <tr>
+                        <td>{feedback.facultyName}</td>
+                        <td>{feedback.type}</td>
+                        <td>{feedback.subjectName}</td>
+                      </tr>
                     </tbody>
                   </table>
+                  <div className={styles.feedbackTableWrapper}>
+                    <table className={styles.feedbackTable}>
+                      <thead>
+                        <tr>
+                          <th>Question</th>
+                          <th>Average Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(formattedAnalysisData.questionAverages).map(([question, avg], index) => (
+                          question.startsWith(feedbackIndex.toString()) && (
+                            <tr key={index}>
+                              <td>{question}</td>
+                              <td>{avg}</td>
+                            </tr>
+                          )
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
             <div className={styles.pdfPrintButtons}>
               <PDFDownloadLink
                 document={<FeedbackPDF feedbacks={feedbacks} analysisData={formattedAnalysisData} />}
@@ -230,6 +233,7 @@ const FeedbackStats = () => {
       </div>
     </div>
   );
+  
 };
 
 export default FeedbackStats;

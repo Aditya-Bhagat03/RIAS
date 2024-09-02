@@ -2,18 +2,19 @@ const Feedback = require("../models/Feedback");
 const Timetable = require("../models/Timetable");
 const User = require("../models/User");
 
+// Submit theory feedback
 exports.submitTheoryFeedback = async (req, res) => {
   try {
-    const { studentId, feedbackEntries, academicYear, session, department, year, semester, section, batch } = req.body;
+    const { studentId, feedbackEntries } = req.body;
 
     if (!feedbackEntries || !Array.isArray(feedbackEntries)) {
       return res.status(400).json({ message: "Invalid feedback data" });
     }
 
+    // Check if the student has already submitted feedback
     const existingFeedback = await Feedback.findOne({
       studentId: studentId,
       type: 'theory',
-      academicYear, session, department, year, semester, section, batch
     });
 
     if (existingFeedback) {
@@ -21,27 +22,37 @@ exports.submitTheoryFeedback = async (req, res) => {
       return res.status(400).json({ message: "Feedback cannot be submitted twice." });
     }
 
+    // Save all theory feedback entries
     await Feedback.insertMany(
       feedbackEntries.map((entry) => ({
         studentId,
-        type: 'theory',
-        academicYear,
-        session,
-        department,
-        year,
-        semester,
-        section,
-        batch,
-        ...entry
+        type: 'theory', // Set the type field
+        ...entry,
       }))
     );
 
-    res.status(201).json({ message: "Theory feedback submitted successfully!" });
+    res
+      .status(201)
+      .json({ message: "Theory feedback submitted successfully!" });
   } catch (error) {
     console.error("Error submitting theory feedback:", error);
-    res.status(500).json({ message: "Error submitting theory feedback", error });
+    res
+      .status(500)
+      .json({ message: "Error submitting theory feedback", error });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Similar changes for submitPracticalFeedbac
 exports.submitPracticalFeedback = async (req, res) => {
@@ -90,6 +101,26 @@ exports.submitPracticalFeedback = async (req, res) => {
     res.status(500).json({ message: "Error submitting practical feedback", error });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -194,8 +225,6 @@ exports.getBranchesFromFeedbacks = async (req, res) => {
       .json({ message: "Error fetching branches from feedbacks", error });
   }
 };
-
-
 
 
 

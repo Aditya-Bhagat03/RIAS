@@ -28,10 +28,10 @@ const UpperNavbar = ({ isClosed }) => {
 
 
       <a href="/faculty-dashboard/faculty-csv" className="profile-link">
-          <img src={Csv} alt="Profile" className="nav-icon" />
+          <img src={Csv} alt="Profile" className="nav-icon" style={{ width: "50px", height: "50px" }}/>
         </a>
         <a href="/faculty-dashboard/F-profile" className="profile-link">
-          <img src={ProfileIcon} alt="Profile" className="nav-icon" />
+          <img src={ProfileIcon} alt="Profile" className="nav-icon" style={{ width: "30px", height: "50px" }} />
         </a>
 
         <img
@@ -39,6 +39,7 @@ const UpperNavbar = ({ isClosed }) => {
           alt="Logout"
           className="nav-icon"
           onClick={handleLogout}
+          style={{ width: "30px", height: "50px" }}
         />
       </div>
     </nav>

@@ -69,10 +69,13 @@ const Sidebar = () => {
         </ul>
       </div>
       <div className="bottom-content">
+        <div className={`developed-by ${isOpen ? "" : "hideElement"}`}>
+          Developed by CSE Department
+        </div>
         <img
           className="logout"
           src={LogoutIcon}
-          alt="Logout"
+          alt="logout"
           onClick={handleLogout}
         />
       </div>

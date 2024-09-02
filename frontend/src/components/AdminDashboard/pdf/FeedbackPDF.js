@@ -95,48 +95,53 @@ const styles = StyleSheet.create({
   },
 });
 
-const FeedbackPDF = ({ feedbacks, analysisData }) => (
-  <Document>
-    {feedbacks.map((feedback, feedbackIndex) => (
-      <Page size="A4" style={styles.page} key={feedbackIndex}>
-        <View style={styles.section}>
-          <Text style={styles.header}>Faculty Feedback Report</Text>
-          <View style={styles.infoTable}>
-            <View style={styles.infoRow}>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Faculty Name</Text>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Type</Text>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Subject</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoCell}>{feedback.facultyName}</Text>
-              <Text style={styles.infoCell}>{feedback.type}</Text>
-              <Text style={styles.infoCell}>{feedback.subjectName}</Text>
+const FeedbackPDF = ({ feedbacks, analysisData }) => {
+  console.log('Feedbacks in PDF:', feedbacks);
+  console.log('Analysis Data in PDF:', analysisData);
+
+  return (
+    <Document>
+      {feedbacks.map((feedback, feedbackIndex) => (
+        <Page size="A4" style={styles.page} key={feedbackIndex}>
+          <View style={styles.section}>
+            <Text style={styles.header}>Faculty Feedback Report</Text>
+            <View style={styles.infoTable}>
+              <View style={styles.infoRow}>
+                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Faculty Name</Text>
+                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Type</Text>
+                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Subject</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoCell}>{feedback.facultyName}</Text>
+                <Text style={styles.infoCell}>{feedback.type}</Text>
+                <Text style={styles.infoCell}>{feedback.subjectName}</Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.section}>
-          <View style={styles.feedbackTable}>
-            <View style={styles.feedbackHeader}>
-              <Text style={[styles.feedbackCell, { fontWeight: 'bold', textAlign: 'left' }]}>Question</Text>
-              <Text style={[styles.feedbackCell, { fontWeight: 'bold' }]}>Average Score</Text>
+          <View style={styles.section}>
+            <View style={styles.feedbackTable}>
+              <View style={styles.feedbackHeader}>
+                <Text style={[styles.feedbackCell, { fontWeight: 'bold', textAlign: 'left' }]}>Question</Text>
+                <Text style={[styles.feedbackCell, { fontWeight: 'bold' }]}>Average Score</Text>
+              </View>
+              {Object.entries(analysisData.questionAverages).map(([question, avg], index) => (
+                question.startsWith(`${feedbackIndex}_`) && (
+                  <View style={styles.feedbackRow} key={index}>
+                    <Text style={styles.feedbackCell}>{question.split('_').slice(1).join('_')}</Text>
+                    <Text style={styles.feedbackCell}>
+                      {avg !== undefined && avg !== null && !isNaN(avg)
+                        ? parseFloat(avg).toFixed(2)
+                        : 'N/A'}
+                    </Text>
+                  </View>
+                )
+              ))}
             </View>
-            {Object.entries(analysisData.questionAverages).map(([question, avg], index) => (
-              question.startsWith(`${feedbackIndex}_`) && (
-                <View style={styles.feedbackRow} key={index}>
-                  <Text style={styles.feedbackCell}>{question.split('_').slice(1).join('_')}</Text>
-                  <Text style={styles.feedbackCell}>
-                    {avg === undefined || avg === null || isNaN(avg)
-                      ? 'N/A'
-                      : parseFloat(avg).toFixed(2)}
-                  </Text>
-                </View>
-              )
-            ))}
           </View>
-        </View>
-      </Page>
-    ))}
-  </Document>
-);
+        </Page>
+      ))}
+    </Document>
+  );
+};
 
 export default FeedbackPDF;

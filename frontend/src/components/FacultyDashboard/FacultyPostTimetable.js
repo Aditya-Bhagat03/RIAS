@@ -21,19 +21,19 @@ const FacultyPostTimetable = () => {
   const [messageType, setMessageType] = useState("");
   const [facultyNames, setFacultyNames] = useState([]);
   const [subjectNames, setSubjectNames] = useState([]);
-  const [courseCodes, setCourseCodes] = useState([]); // Add state for course codes
+  const [courseCodes, setCourseCodes] = useState([]);
   const [filteredFacultyNames, setFilteredFacultyNames] = useState([]);
   const [filteredSubjectNames, setFilteredSubjectNames] = useState([]);
-  const [facultySuggestions, setFacultySuggestions] = useState([]); // State for faculty name autocomplete suggestions
-  const [subjectSuggestions, setSubjectSuggestions] = useState([]); // State for subject name autocomplete suggestions
-  const [courseCodeSuggestions, setCourseCodeSuggestions] = useState([]); // State for course code autocomplete suggestions
-  const [showFacultySuggestions, setShowFacultySuggestions] = useState(false); // State to control the visibility of faculty suggestions
-  const [showSubjectSuggestions, setShowSubjectSuggestions] = useState(false); // State to control the visibility of subject suggestions
-  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] = useState(false); // State to control the visibility of course code suggestions
+  const [facultySuggestions, setFacultySuggestions] = useState([]);
+  const [subjectSuggestions, setSubjectSuggestions] = useState([]);
+  const [courseCodeSuggestions, setCourseCodeSuggestions] = useState([]);
+  const [showFacultySuggestions, setShowFacultySuggestions] = useState(false);
+  const [showSubjectSuggestions, setShowSubjectSuggestions] = useState(false);
+  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] = useState(false);
   const [academicYears, setAcademicYears] = useState([]);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState(""); // State for academic year
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState("");
   const [session, setSession] = useState([]);
-  const [SelectedSession, setSectedSession] = useState(""); // State for session
+  const [selectedSession, setSelectedSession] = useState("");
 
   // State for the timetables
   const [timetables, setTimetables] = useState([]);
@@ -148,8 +148,6 @@ const FacultyPostTimetable = () => {
           axios.get("http://localhost:4000/api/users/session"),
           axios.get("http://localhost:4000/api/users/subject-names"),
           axios.get("http://localhost:4000/api/users/course-code"),
-          
-          
         ]);
 
         setSemesters(semestersRes.data);
@@ -158,8 +156,8 @@ const FacultyPostTimetable = () => {
         setFacultyNames(facultynameRes.data);
         setSubjectNames(subjectName.data);
         setCourseCodes(coursecode.data);
-        setAcademicYears(academicYearsRes.data); // Set academic years from API response
-        setSession(sessionRes.data); // Set academic years from API response
+        setAcademicYears(academicYearsRes.data);
+        setSession(sessionRes.data);
       } catch (error) {
         console.error("Error fetching options:", error);
         setMessage("Failed to load options.");
@@ -169,6 +167,7 @@ const FacultyPostTimetable = () => {
 
     fetchOptions();
   }, []);
+
   useEffect(() => {
     setFilteredFacultyNames(
       facultyNames.filter((name) =>
@@ -185,7 +184,7 @@ const FacultyPostTimetable = () => {
           "http://localhost:4000/api/timetables"
         );
         setTimetables(response.data);
-        setFilteredTimetables(response.data); // Initially display all timetables
+        setFilteredTimetables(response.data);
       } catch (error) {
         console.error("Error fetching timetables:", error);
         setError("Failed to load timetables.");
@@ -197,9 +196,8 @@ const FacultyPostTimetable = () => {
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  // Filter timetables based on selected criteria
   useEffect(() => {
     const filtered = timetables.filter((timetable) => {
       return (
@@ -231,8 +229,8 @@ const FacultyPostTimetable = () => {
         time,
         room,
         batch,
-        academicYear: selectedAcademicYear, // Include
-        session: SelectedSession, // Include
+        academicYear: selectedAcademicYear,
+        session: selectedSession,
         createdBy: localStorage.getItem("userId"),
       };
 
@@ -258,7 +256,7 @@ const FacultyPostTimetable = () => {
       setRoom("");
       setBatch("");
       setSelectedAcademicYear("");
-      setSectedSession("");
+      setSelectedSession("");
     } catch (error) {
       console.error("Error posting timetable:", error);
 
@@ -283,7 +281,7 @@ const FacultyPostTimetable = () => {
               onChange={(e) => setSelectedAcademicYear(e.target.value)}
               required
             >
-              <option value="">Select Academic</option>
+              <option value="">Select Academic Year</option>
               {academicYears.map((year) => (
                 <option key={year} value={year}>
                   {year}
@@ -294,8 +292,8 @@ const FacultyPostTimetable = () => {
           <div className="form-item row1">
             <label>Session:</label>
             <select
-              value={SelectedSession}
-              onChange={(e) => setSectedSession(e.target.value)}
+              value={selectedSession}
+              onChange={(e) => setSelectedSession(e.target.value)}
               required
             >
               <option value="">Select Session</option>
@@ -358,7 +356,7 @@ const FacultyPostTimetable = () => {
             <label>Batch:</label>
             <select value={batch} onChange={(e) => setBatch(e.target.value)}>
               <option value="" disabled>
-                Select type
+                Select Batch
               </option>
               <option value="Not Required">Not Required</option>
               <option value="1">1</option>
@@ -384,50 +382,50 @@ const FacultyPostTimetable = () => {
           </div>
 
           <div className="form-item row2">
-        <label>Subject Name:</label>
-        <input
-          type="text"
-          value={subjectName}
-          onChange={handleSubjectNameChange}
-          required
-        />
-        {showSubjectSuggestions && (
-          <ul className="autocomplete-dropdown">
-            {subjectSuggestions.length ? (
-              subjectSuggestions.map((name, index) => (
-                <li key={index} onClick={() => handleSubjectSuggestionClick(name)}>
-                  {name}
-                </li>
-              ))
-            ) : (
-              <li>No suggestions</li>
+            <label>Subject Name:</label>
+            <input
+              type="text"
+              value={subjectName}
+              onChange={handleSubjectNameChange}
+              required
+            />
+            {showSubjectSuggestions && (
+              <ul className="autocomplete-dropdown">
+                {subjectSuggestions.length ? (
+                  subjectSuggestions.map((name, index) => (
+                    <li key={index} onClick={() => handleSubjectSuggestionClick(name)}>
+                      {name}
+                    </li>
+                  ))
+                ) : (
+                  <li>No suggestions</li>
+                )}
+              </ul>
             )}
-          </ul>
-        )}
-      </div>
+          </div>
 
-      <div className="form-item row2">
-        <label>Course Code:</label>
-        <input
-          type="text"
-          value={courseCode}
-          onChange={handleCourseCodeChange}
-          required
-        />
-        {showCourseCodeSuggestions && (
-          <ul className="autocomplete-dropdown">
-            {courseCodeSuggestions.length ? (
-              courseCodeSuggestions.map((code, index) => (
-                <li key={index} onClick={() => handleCourseCodeSuggestionClick(code)}>
-                  {code}
-                </li>
-              ))
-            ) : (
-              <li>No suggestions</li>
+          <div className="form-item row2">
+            <label>Course Code:</label>
+            <input
+              type="text"
+              value={courseCode}
+              onChange={handleCourseCodeChange}
+              required
+            />
+            {showCourseCodeSuggestions && (
+              <ul className="autocomplete-dropdown">
+                {courseCodeSuggestions.length ? (
+                  courseCodeSuggestions.map((code, index) => (
+                    <li key={index} onClick={() => handleCourseCodeSuggestionClick(code)}>
+                      {code}
+                    </li>
+                  ))
+                ) : (
+                  <li>No suggestions</li>
+                )}
+              </ul>
             )}
-          </ul>
-        )}
-      </div>
+          </div>
 
           <div className="form-item row2">
             <label>Abbreviation:</label>
@@ -440,27 +438,27 @@ const FacultyPostTimetable = () => {
           </div>
 
           <div className="form-item row2">
-        <label>Faculty Name:</label>
-        <input
-          type="text"
-          value={facultyName}
-          onChange={handleFacultyNameChange}
-          required
-        />
-        {showFacultySuggestions && (
-          <ul className="autocomplete-dropdown">
-            {facultySuggestions.length ? (
-              facultySuggestions.map((name, index) => (
-                <li key={index} onClick={() => handleFacultySuggestionClick(name)}>
-                  {name}
-                </li>
-              ))
-            ) : (
-              <li>No suggestions</li>
+            <label>Faculty Name:</label>
+            <input
+              type="text"
+              value={facultyName}
+              onChange={handleFacultyNameChange}
+              required
+            />
+            {showFacultySuggestions && (
+              <ul className="autocomplete-dropdown">
+                {facultySuggestions.length ? (
+                  facultySuggestions.map((name, index) => (
+                    <li key={index} onClick={() => handleFacultySuggestionClick(name)}>
+                      {name}
+                    </li>
+                  ))
+                ) : (
+                  <li>No suggestions</li>
+                )}
+              </ul>
             )}
-          </ul>
-        )}
-      </div>
+          </div>
 
           <div className="form-item row2">
             <label>Room:</label>

@@ -1,0 +1,16 @@
+_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
+,aashika1,aashika.jain.cse@ghrce.raisoni.net,6821469833,2021ACSC1101142,1,CSE,A,2,0,HI,student,true,0
+,aastha2,aastha.gour.cse@ghrce.raisoni.net,6533959832,2021ACSC1101043,1,CSE,A,2,0,HI,student,true,0
+,aayushi3,aayushi.dhote.cse@ghrce.raisoni.net,6599246871,2021ACSC1111020,1,CSE,A,2,0,HI,student,true,0
+,aditi4,aditi.sarode.cse@ghrce.raisoni.net,6529612996,2021ACSC1111051,1,CSE,A,2,0,HI,student,true,0
+,aditi5,aditi.kundnani.cse@ghrce.raisoni.net,6741577665,2021ACSC1101161,1,CSE,A,2,0,HI,student,true,0
+,afreen6,afreen.ansari.cse@ghrce.raisoni.net,6467278225,2021ACSC1101186,1,CSE,A,2,0,HI,student,true,0
+,aishwarya7,aishwarya.shende.cse@ghrce.raisoni.net,6780241848,2021ACSC1101084,1,CSE,A,2,0,HI,student,true,0
+,akshada8,akshada.ghule.cse@ghrce.raisoni.net,6081232800,2021ACSC1111209,1,CSE,A,2,0,HI,student,true,0
+,amita9,amita.bante.cse@ghrce.raisoni.net,6760149512,2021ACSC1108071,1,CSE,A,2,0,HI,student,true,0
+,anushri10,anushri.tiwari.cse@ghrce.raisoni.net,6539135858,2021ACSC1101060,1,CSE,A,2,0,HI,student,true,0
+,anwesha11,anwesha.bajpayeee.cse@ghrce.raisoni.net,6642950515,2021ACSC1101135,1,CSE,A,2,0,HI,student,true,0
+,archita12,archita.kotwala.cse@ghrce.raisoni.net,6575131610,2021ACSC1101146,1,CSE,A,2,0,HI,student,true,0
+,arundhati13,arundhati.rothe.cse@ghrce.raisoni.net,6500688774,2021ACSC1111203,1,CSE,A,2,0,HI,student,true,0
+,ashiya14,ashiya.thakur.cse@ghrce.raisoni.net,6563627106,2021ACSC1101037,1,CSE,A,2,0,HI,student,true,0
+,avanti15,avanti.chinchone.cse@ghrce.raisoni.net,6051724669,2021ACSC1111085,1,CSE,A,2,0,HI,student,true,0

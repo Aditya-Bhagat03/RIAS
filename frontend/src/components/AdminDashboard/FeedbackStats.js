@@ -35,17 +35,17 @@ const FeedbackStats = () => {
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/types"),
+          axios.get("https://rias-copy.vercel.app/api/feedback/feedbacks/semesters"),
+          axios.get("https://rias-copy.vercel.app/api/feedback/feedbacks/branches"),
+          axios.get("/api/feedback/feedbacks/types"),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/subject-names"
+            "https://rias-copy.vercel.app/api/feedback/feedbacks/subject-names"
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/course-names"
+            "https://rias-copy.vercel.app/api/feedback/feedbacks/course-names"
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/faculty-names"
+            "https://rias-copy.vercel.app/api/feedback/feedbacks/faculty-names"
           ),
         ]);
 
@@ -79,11 +79,11 @@ const FeedbackStats = () => {
       };
 
       const feedbackResponse = await axios.get(
-        "http://localhost:4000/api/feedback/feedbacks/filtered",
+        "https://rias-copy.vercel.app/api/feedback/feedbacks/filtered",
         { params }
       );
       const analysisResponse = await axios.get(
-        "http://localhost:4000/api/feedback/feedbacks/analysis",
+        "https://rias-copy.vercel.app/api/feedback/feedbacks/analysis",
         { params }
       );
 

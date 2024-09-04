@@ -1,7 +1,7 @@
-// SameFacultyDifferentSubjectsAnalysis.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import FeedbackPDFsame from "./pdf/FeedbackPDFsame";
 import styles from "./css/SameFacultyDifferentSubjectsAnalysis.module.css"; // Adjust the path as needed
 
 const SameFacultyDifferentSubjectsAnalysis = () => {
@@ -37,6 +37,12 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
       localStorage.setItem('analysisData', JSON.stringify(analysisData));
     }
   }, [analysisData]);
+
+  const calculateFinalAveragePercentage = (data) => {
+    if (data.length === 0) return 0;
+    const totalPercentage = data.reduce((sum, item) => sum + parseFloat(item.averagePercentage), 0);
+    return (totalPercentage / data.length).toFixed(2);
+  };
 
   const fetchAnalysis = async () => {
     try {
@@ -76,6 +82,10 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
   const theoryData = analysisData.filter(data => data.type.toLowerCase() === 'theory');
   const practicalData = analysisData.filter(data => data.type.toLowerCase() === 'practical');
 
+  const finalTheoryAverage = calculateFinalAveragePercentage(theoryData);
+  const finalPracticalAverage = calculateFinalAveragePercentage(practicalData);
+  const finalOverallAverage = ((parseFloat(finalTheoryAverage) + parseFloat(finalPracticalAverage)) / 2).toFixed(2);
+
   return (
     <div className={styles.SameFacultyDifferentSubjectsAnalysi_container}>
       <div className={styles.SameFacultyDifferentSubjectsAnalysi_card}>
@@ -86,6 +96,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
             {message}
           </div>
         )}
+        
         <div className={styles.SameFacultyDifferentSubjectsAnalysi_inputcontainer}>
           <select
             value={facultyName}
@@ -103,10 +114,23 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
             Search
           </button>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+  <div style={{ flex: 1, marginRight: '10px', textAlign: 'center' }}>
+    <h4>Final Overall Average: {finalOverallAverage}%</h4>
+  </div>
+  <div style={{ flex: 1, marginRight: '10px', textAlign: 'center' }}>
+    <h4>Theory Average: {finalTheoryAverage}%</h4>
+  </div>
+  <div style={{ flex: 1, textAlign: 'center' }}>
+    <h4>Practical Average: {finalPracticalAverage}%</h4>
+  </div>
+</div>
+
 
         {theoryData.length > 0 && (
           <>
             <h3>Theory Subjects</h3>
+           
             <div className={styles.SameFacultyDifferentSubjectsAnalysi_analysisTableWrapper}>
               <table className={styles.SameFacultyDifferentSubjectsAnalysi_analysisTable}>
                 <thead>
@@ -141,6 +165,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
         {practicalData.length > 0 && (
           <>
             <h3>Practical Subjects</h3>
+            
             <div className={styles.SameFacultyDifferentSubjectsAnalysi_analysisTableWrapper}>
               <table className={styles.SameFacultyDifferentSubjectsAnalysi_analysisTable}>
                 <thead>
@@ -172,8 +197,40 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
           </>
         )}
 
-        
-        
+        {analysisData.length > 0 && (
+          <>
+           
+            <PDFDownloadLink
+              document={<FeedbackPDFsame analysisData={analysisData} />}
+              fileName="analysis-report.pdf"
+            >
+              {({ loading }) => (
+                <button
+                  style={{
+                    backgroundColor: '#007bff', // Primary blue color
+                    border: 'none',
+                    color: '#fff',
+                    padding: '10px 20px',
+                    textAlign: 'center',
+                    textDecoration: 'none',
+                    display: 'inline-block',
+                    fontSize: '16px',
+                    margin: '4px 2px',
+                    cursor: 'pointer',
+                    borderRadius: '5px',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    transition: 'background-color 0.3s ease',
+                    marginTop: '10px'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'} // Darker blue on hover
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#007bff'} // Original blue
+                >
+                  {loading ? 'Generating PDF...' : 'Download PDF'}
+                </button>
+              )}
+            </PDFDownloadLink>
+          </>
+        )}
       </div>
     </div>
   );
@@ -184,8 +241,8 @@ const getFeedbackRemark = (percentage) => {
   if (percentage >= 80) return "Very Good";
   if (percentage >= 70) return "Good";
   if (percentage >= 60) return "Satisfactory";
-  if (percentage >= 40) return "Bad";
-  return "Very Bad";
+  
+  return "Need Improvement";
 };
 
 export default SameFacultyDifferentSubjectsAnalysis;

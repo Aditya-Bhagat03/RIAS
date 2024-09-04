@@ -1,142 +1,168 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
+// Define styles for the PDF document
 const styles = StyleSheet.create({
   page: {
-    padding: 20,
-    fontFamily: 'Helvetica',
+    flexDirection: "column",
+    padding: 30,
+    fontSize: 10,
+    fontFamily: "Helvetica",
   },
   section: {
-    marginBottom: 15,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 16,
+    marginBottom: 10,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  table: {
+    display: "table",
+    width: "100%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderCollapse: "collapse",
+    marginBottom: 10,
+  },
+  tableRow: {
+    flexDirection: "row",
+  },
+  tableCell: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#000",
+    padding: 5,
+    textAlign: "left",
+    fontSize: 10,
+  },
+  tableCellHeader: {
+    backgroundColor: "#f0f0f0",
+    fontWeight: "bold",
+  },
+  questionCell: {
+    width: "90%",
+  },
+  scoreCell: {
+    width: "10%",
+    textAlign: "center",
   },
   header: {
     fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: 10,
+    fontWeight: "bold",
   },
-  text: {
-    fontSize: 8,
-    marginBottom: 3,
-  },
-  table: {
-    display: 'table',
-    width: '100%',
-    margin: '8px 0',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  tableHeader: {
-    display: 'table-row',
-    backgroundColor: '#f0f0f0',
-    fontWeight: 'bold',
-  },
-  tableRow: {
-    display: 'table-row',
-  },
-  tableCell: {
-    display: 'table-cell',
-    padding: 4,
-    borderColor: '#ddd',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    textAlign: 'center',
-    fontSize: 8,
-  },
-  tableHeaderCell: {
-    backgroundColor: '#f0f0f0',
+  footer: {
+    position: "absolute",
+    bottom: 30,
+    left: 0,
+    right: 0,
+    textAlign: "center",
     fontSize: 10,
+    fontFamily: "Helvetica",
   },
-  infoTable: {
-    display: 'table',
-    width: '100%',
-    margin: '8px 0',
-  },
-  infoRow: {
-    display: 'table-row',
-  },
-  infoCell: {
-    display: 'table-cell',
-    padding: 4,
-    borderColor: '#ddd',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    textAlign: 'left',
-    fontSize: 8,
-    width: '33%',
-  },
-  feedbackTable: {
-    display: 'table',
-    width: '100%',
-    margin: '8px 0',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  feedbackHeader: {
-    display: 'table-row',
-    backgroundColor: '#f0f0f0',
-    fontWeight: 'bold',
-  },
-  feedbackRow: {
-    display: 'table-row',
-  },
-  feedbackCell: {
-    display: 'table-cell',
-    padding: 4,
-    borderColor: '#ddd',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    fontSize: 8,
+  footerLine: {
+    marginBottom: 2,
   },
 });
 
-const FeedbackPDF = ({ feedbacks, analysisData }) => (
-  <Document>
-    {feedbacks.map((feedback, feedbackIndex) => (
-      <Page size="A4" style={styles.page} key={feedbackIndex}>
-        <View style={styles.section}>
-          <Text style={styles.header}>Faculty Feedback Report</Text>
-          <View style={styles.infoTable}>
-            <View style={styles.infoRow}>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Faculty Name</Text>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Type</Text>
-              <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Subject</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoCell}>{feedback.facultyName}</Text>
-              <Text style={styles.infoCell}>{feedback.type}</Text>
-              <Text style={styles.infoCell}>{feedback.subjectName}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.section}>
-          <View style={styles.feedbackTable}>
-            <View style={styles.feedbackHeader}>
-              <Text style={[styles.feedbackCell, { fontWeight: 'bold', textAlign: 'left' }]}>Question</Text>
-              <Text style={[styles.feedbackCell, { fontWeight: 'bold' }]}>Average Score</Text>
-            </View>
-            {Object.entries(analysisData.questionAverages).map(([question, avg], index) => (
-              question.startsWith(`${feedbackIndex}_`) && (
-                <View style={styles.feedbackRow} key={index}>
-                  <Text style={styles.feedbackCell}>{question.split('_').slice(1).join('_')}</Text>
-                  <Text style={styles.feedbackCell}>
-                    {avg === undefined || avg === null || isNaN(avg)
-                      ? 'N/A'
-                      : parseFloat(avg).toFixed(2)}
+// Define pages to exclude (1-indexed)
+const pagesToExclude = [8, 9, 11, 12];
+
+// Define the maximum number of pages to include
+const maxPages = 100;
+
+const FeedbackPDF = ({ feedbacks }) => {
+  // Group feedbacks by faculty name
+  const groupedByFaculty = feedbacks.reduce((acc, feedback) => {
+    if (!acc[feedback.facultyName]) {
+      acc[feedback.facultyName] = [];
+    }
+    acc[feedback.facultyName].push(feedback);
+    return acc;
+  }, {});
+
+  // Convert grouped feedbacks to an array of entries
+  const facultyEntries = Object.entries(groupedByFaculty);
+
+  // Array to hold the pages to be included
+  const pages = [];
+
+  let currentPage = 1;
+
+  facultyEntries.forEach(([facultyName, feedbackList], idx) => {
+    // Check if the current page is excluded
+    if (!pagesToExclude.includes(currentPage) && pages.length < maxPages) {
+      // Create page content
+      const pageContent = (
+        <Page key={currentPage} style={styles.page}>
+          <Text style={styles.title}>{facultyName}</Text>
+          {["theory", "practical"].map((type) => {
+            const feedbackType = feedbackList.filter((fb) => fb.type === type);
+            return (
+              feedbackType.length > 0 && (
+                <View key={type} style={styles.section}>
+                  <Text style={styles.header}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)} Feedback
                   </Text>
+                  <View style={styles.table}>
+                    <View style={styles.tableRow}>
+                      <Text
+                        style={[
+                          styles.tableCell,
+                          styles.tableCellHeader,
+                          styles.questionCell,
+                        ]}
+                      >
+                        Question
+                      </Text>
+                      <Text
+                        style={[
+                          styles.tableCell,
+                          styles.tableCellHeader,
+                          styles.scoreCell,
+                        ]}
+                      >
+                        Average Score
+                      </Text>
+                    </View>
+                    {feedbackType.map((feedback, idx) =>
+                      Object.entries(feedback.responses).map(
+                        ([question, avgScore], i) => (
+                          <View style={styles.tableRow} key={i}>
+                            <Text
+                              style={[styles.tableCell, styles.questionCell]}
+                            >
+                              {question}
+                            </Text>
+                            <Text style={[styles.tableCell, styles.scoreCell]}>
+                              {avgScore}
+                            </Text>
+                          </View>
+                        )
+                      )
+                    )}
+                  </View>
                 </View>
               )
-            ))}
+            );
+          })}
+          <View style={styles.footer}>
+            <Text style={styles.footerLine}>Report generated by RIAS</Text>
+            <Text>Developed by CSE Department</Text>
           </View>
-        </View>
-      </Page>
-    ))}
-  </Document>
-);
+        </Page>
+      );
+
+      pages.push(pageContent);
+    }
+
+    currentPage++;
+  });
+
+  return <Document>{pages}</Document>;
+};
 
 export default FeedbackPDF;

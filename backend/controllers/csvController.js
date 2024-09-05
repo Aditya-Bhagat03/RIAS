@@ -25,7 +25,6 @@ exports.uploadCSV = async (req, res) => {
             branch,
             batch,
             section,
-            batch,
             rollNumber,
             academicYear,
           } = row;

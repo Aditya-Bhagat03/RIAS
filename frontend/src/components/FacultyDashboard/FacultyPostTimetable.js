@@ -24,12 +24,13 @@ const FacultyPostTimetable = () => {
   const [courseCodes, setCourseCodes] = useState([]);
   const [filteredFacultyNames, setFilteredFacultyNames] = useState([]);
   const [filteredSubjectNames, setFilteredSubjectNames] = useState([]);
-  const [facultySuggestions, setFacultySuggestions] = useState([]);
-  const [subjectSuggestions, setSubjectSuggestions] = useState([]);
-  const [courseCodeSuggestions, setCourseCodeSuggestions] = useState([]);
-  const [showFacultySuggestions, setShowFacultySuggestions] = useState(false);
-  const [showSubjectSuggestions, setShowSubjectSuggestions] = useState(false);
-  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] = useState(false);
+  const [facultySuggestions, setFacultySuggestions] = useState([]); // State for faculty name autocomplete suggestions
+  const [subjectSuggestions, setSubjectSuggestions] = useState([]); // State for subject name autocomplete suggestions
+  const [courseCodeSuggestions, setCourseCodeSuggestions] = useState([]); // State for course code autocomplete suggestions
+  const [showFacultySuggestions, setShowFacultySuggestions] = useState(false); // State to control the visibility of faculty suggestions
+  const [showSubjectSuggestions, setShowSubjectSuggestions] = useState(false); // State to control the visibility of subject suggestions
+  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] =
+    useState(false); // State to control the visibility of course code suggestions
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState("");
   const [session, setSession] = useState([]);
@@ -281,13 +282,12 @@ const FacultyPostTimetable = () => {
               onChange={(e) => setSelectedAcademicYear(e.target.value)}
               required
             >
-              <option value="2025">3</option>
+              <option value="2025">2024-25</option>
               <option value="">Select Academic</option>
               {academicYears.map((year) => (
                 <option key={year} value={year}>
                   {year}
                 </option>
-                
               ))}
             </select>
           </div>
@@ -384,50 +384,50 @@ const FacultyPostTimetable = () => {
           </div>
 
           <div className="form-item row2">
-            <label>Subject Name:</label>
-            <input
-              type="text"
-              value={subjectName}
-              onChange={handleSubjectNameChange}
-              required
-            />
-            {showSubjectSuggestions && (
-              <ul className="autocomplete-dropdown">
-                {subjectSuggestions.length ? (
-                  subjectSuggestions.map((name, index) => (
-                    <li key={index} onClick={() => handleSubjectSuggestionClick(name)}>
-                      {name}
-                    </li>
-                  ))
-                ) : (
-                  <li>No suggestions</li>
-                )}
-              </ul>
+        <label>Subject Name:</label>
+        <input
+          type="text"
+          value={subjectName}
+          onChange={handleSubjectNameChange}
+          required
+        />
+        {showSubjectSuggestions && (
+          <ul className="autocomplete-dropdown">
+            {subjectSuggestions.length ? (
+              subjectSuggestions.map((name, index) => (
+                <li key={index} onClick={() => handleSubjectSuggestionClick(name)}>
+                  {name}
+                </li>
+              ))
+            ) : (
+              <li>No suggestions</li>
             )}
-          </div>
+          </ul>
+        )}
+      </div>
 
-          <div className="form-item row2">
-            <label>Course Code:</label>
-            <input
-              type="text"
-              value={courseCode}
-              onChange={handleCourseCodeChange}
-              required
-            />
-            {showCourseCodeSuggestions && (
-              <ul className="autocomplete-dropdown">
-                {courseCodeSuggestions.length ? (
-                  courseCodeSuggestions.map((code, index) => (
-                    <li key={index} onClick={() => handleCourseCodeSuggestionClick(code)}>
-                      {code}
-                    </li>
-                  ))
-                ) : (
-                  <li>No suggestions</li>
-                )}
-              </ul>
+      <div className="form-item row2">
+        <label>Course Code:</label>
+        <input
+          type="text"
+          value={courseCode}
+          onChange={handleCourseCodeChange}
+          required
+        />
+        {showCourseCodeSuggestions && (
+          <ul className="autocomplete-dropdown">
+            {courseCodeSuggestions.length ? (
+              courseCodeSuggestions.map((code, index) => (
+                <li key={index} onClick={() => handleCourseCodeSuggestionClick(code)}>
+                  {code}
+                </li>
+              ))
+            ) : (
+              <li>No suggestions</li>
             )}
-          </div>
+          </ul>
+        )}
+      </div>
 
           <div className="form-item row2">
             <label>Abbreviation:</label>
@@ -440,27 +440,27 @@ const FacultyPostTimetable = () => {
           </div>
 
           <div className="form-item row2">
-            <label>Faculty Name:</label>
-            <input
-              type="text"
-              value={facultyName}
-              onChange={handleFacultyNameChange}
-              required
-            />
-            {showFacultySuggestions && (
-              <ul className="autocomplete-dropdown">
-                {facultySuggestions.length ? (
-                  facultySuggestions.map((name, index) => (
-                    <li key={index} onClick={() => handleFacultySuggestionClick(name)}>
-                      {name}
-                    </li>
-                  ))
-                ) : (
-                  <li>No suggestions</li>
-                )}
-              </ul>
+        <label>Faculty Name:</label>
+        <input
+          type="text"
+          value={facultyName}
+          onChange={handleFacultyNameChange}
+          required
+        />
+        {showFacultySuggestions && (
+          <ul className="autocomplete-dropdown">
+            {facultySuggestions.length ? (
+              facultySuggestions.map((name, index) => (
+                <li key={index} onClick={() => handleFacultySuggestionClick(name)}>
+                  {name}
+                </li>
+              ))
+            ) : (
+              <li>No suggestions</li>
             )}
-          </div>
+          </ul>
+        )}
+      </div>
 
           <div className="form-item row2">
             <label>Room:</label>

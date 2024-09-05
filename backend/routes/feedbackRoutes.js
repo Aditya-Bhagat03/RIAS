@@ -63,5 +63,5 @@ router.delete('/feedbacks/:feedbackId', feedbackController.deleteFeedback);
 
 
 // Route to get feedback analysis
-router.get('/feedbacks/analysis', feedbackController.getFeedbackAnalysis);
+router.get('/feedbacks/analysis', feedbackController.getAnalysisData);
 module.exports = router;

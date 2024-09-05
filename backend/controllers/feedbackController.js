@@ -360,48 +360,48 @@ exports.deleteFeedback = async (req, res) => {
 
 
 // feedbackController.js
-
-exports.getFeedbackAnalysis = async (req, res) => {
+// feedbackController.js
+// feedbackController.js
+// Get analysis data
+exports.getAnalysisData = async (req, res) => {
   try {
-    const { facultyName, courseName, type, semester, branch } = req.query;
+    const { semester, branch, type, subjectName, courseName, facultyName } = req.query;
 
     // Build the query object dynamically based on available parameters
-    const query = {};
-
-    if (facultyName) query.facultyName = facultyName;
-    if (courseName) query.courseName = courseName;
-    if (type) query.type = type;
-    if (semester) query.semester = semester;
-    if (branch) query.branch = branch;
+    const filters = {
+      ...(semester && { semester }),
+      ...(branch && { branch }),
+      ...(type && { type }),
+      ...(subjectName && { subjectName }),
+      ...(courseName && { courseName }),
+      ...(facultyName && { facultyName }),
+    };
 
     // Fetch feedbacks based on the dynamic query
-    const feedbacks = await Feedback.find(query);
+    const feedbacks = await Feedback.find(filters);
+    const totalFeedbacks = feedbacks.length;
 
     // Check if feedbacks are found
-    if (feedbacks.length === 0) {
+    if (totalFeedbacks === 0) {
       return res.status(404).json({ message: "No feedback found for the given criteria" });
     }
 
     // Initialize variables for analysis
-    let totalScores = 0;
-    let count = 0;
+    let totalScore = 0;
     let goodFeedbacks = 0;
     let badFeedbacks = 0;
-
     const questionScores = {};
     const questionCounts = {};
 
     // Process each feedback
     feedbacks.forEach(feedback => {
       const responses = Object.fromEntries(feedback.responses);
-      const keys = Object.keys(responses);
 
-      keys.forEach(key => {
+      Object.keys(responses).forEach(key => {
         const score = parseFloat(responses[key]);
 
         if (!isNaN(score)) {
-          totalScores += score;
-          count++;
+          totalScore += score;
 
           if (score >= 4) {
             goodFeedbacks++;
@@ -421,21 +421,23 @@ exports.getFeedbackAnalysis = async (req, res) => {
     });
 
     // Calculate average score
-    const averageScore = count > 0 ? ((totalScores / count) / 4 * 100).toFixed(2) : 0;
+    const averageScore = totalScore / (totalFeedbacks * Object.keys(questionCounts).length);
 
     // Calculate question averages
     const questionAverages = Object.keys(questionScores).reduce((acc, key) => {
-      acc[key] = ((questionScores[key] / questionCounts[key]) / 4 * 100).toFixed(2) + '%';
+      acc[key] = questionScores[key] / questionCounts[key];
       return acc;
     }, {});
 
     // Respond with analysis data
     res.json({
-      averageScore: `${averageScore}%`,
+      averageScore: (averageScore / 4 * 100).toFixed(2) + '%',
       goodFeedbacks,
       badFeedbacks,
-      totalFeedbacks: count,
-      questionAverages,
+      totalFeedbacks,
+      questionAverages: Object.fromEntries(
+        Object.entries(questionAverages).map(([key, avg]) => [key, (avg / 4 * 100).toFixed(2) + '%'])
+      ),
       feedbacks // include feedbacks data for detailed view
     });
   } catch (error) {

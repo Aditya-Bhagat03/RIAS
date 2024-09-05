@@ -19,4 +19,7 @@ router.get('/feedback-analysis-by-branch', adminAnalysisController.getFeedbackAn
 
 // Route for same faculty different subjects analysis
 router.get('/by-faculty', adminAnalysisController.getFeedbackAnalysisByFaculty);
+
+
+
 module.exports = router;

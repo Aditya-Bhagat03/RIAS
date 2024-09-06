@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import FeedbackPDF from "./pdf/FeedbackPDF"; // Make sure this path is correct
+import FeedbackPDF from "./pdf/FeedbackPDF"; // Adjust the path as needed
 import styles from "./css/FacultyFeedback.module.css"; // Adjust the path as needed
 
 const FeedbackStats = () => {
@@ -12,7 +12,7 @@ const FeedbackStats = () => {
   const [courses, setCourses] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({
-    semester: "",
+    semester: sessionStorage.getItem('semester') || "",
     branch: "",
     type: "",
     subject: "",
@@ -37,7 +37,7 @@ const FeedbackStats = () => {
         ] = await Promise.all([
           axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
-          axios.get("/api/feedback/feedbacks/types"),
+          axios.get("http://localhost:4000/api/feedback/feedbacks/types"),
           axios.get(
             "http://localhost:4000/api/feedback/feedbacks/subject-names"
           ),
@@ -126,11 +126,13 @@ const FeedbackStats = () => {
             facultyName,
             type: "practical",
             responses: calculateAverages(types.practical),
+            finalTotal: calculateFinalTotal(types.practical),
           },
           {
             facultyName,
             type: "theory",
             responses: calculateAverages(types.theory),
+            finalTotal: calculateFinalTotal(types.theory),
           },
         ];
       })
@@ -139,15 +141,20 @@ const FeedbackStats = () => {
 
   const calculateAverages = (responses) => {
     const averages = {};
-    const totalCount = Object.keys(responses).length;
-
     Object.entries(responses).forEach(([question, answers]) => {
       const total = answers.reduce((acc, val) => acc + val, 0);
       const average = total / answers.length;
-      averages[question] = `${Math.round((average / 4) * 100)}%`; // Assuming scale of 1-5
+      averages[question] = `${((average / 5) * 100).toFixed(2)}%`; // Assuming a scale of 1-5
     });
 
     return averages;
+  };
+
+  const calculateFinalTotal = (responses) => {
+    const allScores = Object.values(responses).flat();
+    const totalScore = allScores.reduce((acc, score) => acc + score, 0);
+    const averageScore = totalScore / allScores.length;
+    return ((averageScore / 4) * 100).toFixed(2); // Assuming a scale of 1-5
   };
 
   const handleFilterChange = (e) => {
@@ -206,17 +213,6 @@ const FeedbackStats = () => {
         </button>
         {feedbacks.length > 0 ? (
           <>
-            <div className={styles.pdfButtonContainer}>
-              <PDFDownloadLink
-                document={<FeedbackPDF feedbacks={feedbacks} />}
-                fileName="FeedbackReport.pdf"
-                className={styles.pdfButton}
-              >
-                {({ loading }) =>
-                  loading ? "Generating PDF..." : "Download PDF"
-                }
-              </PDFDownloadLink>
-            </div>
             {feedbacks.map((feedback, feedbackIndex) => (
               <div key={feedbackIndex} className={styles.feedbackContainer}>
                 <div className={styles.feedbackContainer}>
@@ -237,6 +233,17 @@ const FeedbackStats = () => {
                       {feedback.type}
                     </span>
                   </div>
+                  <div className={styles.feedbackItem}>
+                    <span
+                      style={{ marginLeft: "20px" }}
+                      className={styles.feedbackLabel}
+                    >
+                      Final Total of {feedback.type}:
+                    </span>
+                    <span className={styles.feedbackValue}>
+                      {feedback.finalTotal}
+                    </span>
+                  </div>
                 </div>
 
                 <div className={styles.feedbackTableWrapper}>
@@ -250,7 +257,7 @@ const FeedbackStats = () => {
                     <tbody>
                       {Object.entries(feedback.responses).map(
                         ([question, percentage], index) => (
-                          <tr key={index}>
+                          <tr key={index}>  
                             <td className="questionColumn">{question}</td>
                             <td className="scoreColumn">{percentage}</td>
                           </tr>
@@ -263,9 +270,16 @@ const FeedbackStats = () => {
             ))}
           </>
         ) : (
-          <p>No feedback available for the selected criteria.</p>
+          <p>No feedbacks available for the selected filters.</p>
         )}
       </div>
+      <PDFDownloadLink
+        document={<FeedbackPDF feedbacks={feedbacks} />}
+        fileName="feedback-stats.pdf"
+        className={styles.pdfButton}
+      >
+        {({ loading }) => (loading ? "Loading document..." : "Download PDF")}
+      </PDFDownloadLink>
     </div>
   );
 };

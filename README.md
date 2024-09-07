@@ -173,13 +173,14 @@ For full API documentation, visit [API Docs](link-to-api-documentation).
 ## Screenshots
 
 ### Student Dashboard
-![Student Dashboard](link-to-screenshot)
+![Student Dashboard](./screenshots/student-dashboard.png)
 
 ### Faculty Dashboard
-![Faculty Dashboard](link-to-screenshot)
+![Faculty Dashboard](./screenshots/faculty-dashboard.png)
 
 ### Admin Dashboard
-![Admin Dashboard](link-to-screenshot)
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
 
 ---
 

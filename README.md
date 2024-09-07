@@ -169,17 +169,20 @@ Here is a brief overview of the API endpoints:
 For full API documentation, visit [API Docs](link-to-api-documentation).
 
 ---
-
 ## Screenshots
 
 ### Student Dashboard
-![Student Dashboard](./screenshots/student-dashboard.png)
+![Student Dashboard](D:/RIAS/frontend/src/assets/student-dashboard.png)
 
 ### Faculty Dashboard
-![Faculty Dashboard](./screenshots/faculty-dashboard.png)
+![Faculty Dashboard](D:/RIAS/frontend/src/assets/faculty-dashboard.png)
 
 ### Admin Dashboard
-![Admin Dashboard](./screenshots/admin-dashboard.png)
+![Admin Dashboard](D:/RIAS/frontend/src/assets/admin-dashboard.png)
+
+### Login Page
+![Login Page](./frontend/src/assets/login%20page.png)
+
 
 
 ---

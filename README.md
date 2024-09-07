@@ -296,9 +296,9 @@ Contributions are what make the open-source community such an amazing place to l
 ## Contact
 
 **Your Name**  
-- LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/aditya-bhagat03/)  
-- Portfolio: [Your Portfolio](https://aditya-bhagat.netlify.app/)  
-- Email: [youremail@example.com](adityabhagat525@gmail.com)
+- LinkedIn: [Aditya Bhagat](https://www.linkedin.com/in/aditya-bhagat03/)  
+- Portfolio: [Aditya Bhagat](https://aditya-bhagat.netlify.app/)  
+- Email: [adityabhagat525@gmail.com](adityabhagat525@gmail.com)
 
 ---
 

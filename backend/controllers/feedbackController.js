@@ -431,7 +431,7 @@ exports.getAnalysisData = async (req, res) => {
 
     // Respond with analysis data
     res.json({
-      averageScore: (averageScore / 4 * 100).toFixed(2) + '%',
+      averageScore: (averageScore / 5 * 100).toFixed(2) + '%',
       goodFeedbacks,
       badFeedbacks,
       totalFeedbacks,

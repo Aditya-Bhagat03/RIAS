@@ -44,8 +44,8 @@ const Login = () => {
         navigate('/faculty-dashboard');
       } else if (userRole === 'student') {
         navigate('/student-dashboard');
-      } else {
-        setError('Invalid role');
+      } else  {
+        navigate('/class-teacher');
       }
     } catch (error) {
       setError(error.response?.data?.msg || 'Login failed');

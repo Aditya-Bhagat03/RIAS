@@ -310,9 +310,6 @@ exports.getFeedbackAnalysisByFaculty = async (req, res) => {
 
 
 
-
-
-
 exports.getFeedbackAnalysisByBranch = async (req, res) => {
   try {
     const { branch } = req.query;
@@ -370,14 +367,12 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
       const facultyData = facultyAnalysis[facultyName];
       const averageScore =
         facultyData.count > 0
-          ? (facultyData.totalScore / facultyData.count).toFixed(2)
-          : "0.00";
+          ? (facultyData.totalScore / facultyData.count).toPrecision(10)
+          : "0.0000"; // Use .toPrecision(4) to maintain four decimal places
       const averagePercentage =
         facultyData.count > 0
-          ? ((facultyData.totalScore / (facultyData.count * 4)) * 100).toFixed(
-              2
-            ) // Convert average score to percentage
-          : "0.00"; // Default to '0.00' if no data available
+          ? (((facultyData.totalScore / (facultyData.count * 4)) * 100).toPrecision(4))
+          : "0.0000"; // Use .toPrecision(4) to maintain four decimal places
 
       return {
         facultyName,

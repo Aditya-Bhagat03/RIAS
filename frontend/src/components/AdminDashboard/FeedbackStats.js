@@ -111,10 +111,11 @@ const FeedbackStats = () => {
       const feedbackType = type.toLowerCase();
 
       Object.entries(responses).forEach(([question, answer]) => {
-        if (!aggregatedFeedback[facultyName][feedbackType][question]) {
-          aggregatedFeedback[facultyName][feedbackType][question] = [];
+        const cleanQuestion = question.replace(/^\d+_/, ''); // Remove the index prefix
+        if (!aggregatedFeedback[facultyName][feedbackType][cleanQuestion]) {
+          aggregatedFeedback[facultyName][feedbackType][cleanQuestion] = [];
         }
-        aggregatedFeedback[facultyName][feedbackType][question].push(answer);
+        aggregatedFeedback[facultyName][feedbackType][cleanQuestion].push(answer);
       });
     });
 
@@ -144,7 +145,7 @@ const FeedbackStats = () => {
     Object.entries(responses).forEach(([question, answers]) => {
       const total = answers.reduce((acc, val) => acc + val, 0);
       const average = total / answers.length;
-      averages[question] = `${((average / 5) * 100).toFixed(2)}%`; // Assuming a scale of 1-5
+      averages[question] = `${((average / 4) * 100).toFixed(2)}%`; // Assuming a scale of 1-5
     });
 
     return averages;
@@ -217,31 +218,32 @@ const FeedbackStats = () => {
               <div key={feedbackIndex} className={styles.feedbackContainer}>
                 <div className={styles.feedbackContainer}>
                   <div className={styles.feedbackItem}>
-                    <span className={styles.feedbackLabel}>Faculty Name:</span>
+                    <span className={styles.feedbackLabel}><b>Faculty Name: </b>
+                    </span>
                     <span className={styles.feedbackValue}>
-                      {feedback.facultyName}
+                      <b><span>{feedback.facultyName}</span></b>
                     </span>
                   </div>
                   <div className={styles.feedbackItem}>
                     <span
-                      style={{ marginLeft: "20px" }}
+                      style={{ marginLeft: "60px" }}
                       className={styles.feedbackLabel}
                     >
-                      Type:
+                     <b> Type: </b>
                     </span>
                     <span className={styles.feedbackValue}>
-                      {feedback.type}
+                      <b>{feedback.type}</b>
                     </span>
                   </div>
                   <div className={styles.feedbackItem}>
                     <span
-                      style={{ marginLeft: "20px" }}
+                      style={{ marginLeft: "60px" }}
                       className={styles.feedbackLabel}
                     >
-                      Final Total of {feedback.type}:
+                    <b> {feedback.type}:</b>
                     </span>
                     <span className={styles.feedbackValue}>
-                      {feedback.finalTotal}
+                    <b> <span></span> {feedback.finalTotal}%</b>
                     </span>
                   </div>
                 </div>

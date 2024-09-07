@@ -242,3 +242,18 @@ button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+
+.student-dashboard-popup-button {
+  padding: 8px 16px;
+  background-color: #0e97e7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.student-dashboard-logout-button {
+  background-color: #cf3636;
+}

@@ -141,6 +141,83 @@ Follow these steps to set up the project locally.
     npm start
     ```
 
+http://localhost:3000
+
+
+
+- **Students** can log in and submit feedback.
+- **Faculty** can log in and review feedback reports.
+- **Admins** can manage user roles, view detailed insights, and access the anti-ragging feature.
+
+---
+
+## API Documentation
+
+Here is a brief overview of the API endpoints:
+
+- **Authentication**
+    - `POST /api/auth/register`: Register a new user (admin, student, faculty).
+    - `POST /api/auth/login`: Log in and obtain a JWT token.
+
+- **Feedback**
+    - `GET /api/feedback/student/:id`: Fetch feedback for a specific student.
+    - `POST /api/feedback`: Submit feedback for a session.
+
+- **Admin**
+    - `GET /api/admin/reports`: Get detailed performance and feedback reports.
+
+For full API documentation, visit [API Docs](link-to-api-documentation).
+
+---
+
+## Screenshots
+
+### Student Dashboard
+![Student Dashboard](link-to-screenshot)
+
+### Faculty Dashboard
+![Faculty Dashboard](link-to-screenshot)
+
+### Admin Dashboard
+![Admin Dashboard](link-to-screenshot)
+
+---
+
+## Future Enhancements
+
+- **Mobile App Development**: Extend support for iOS and Android platforms.
+- **AI-Enhanced Feedback Analysis**: Leverage natural language processing (NLP) to derive insights from student comments.
+- **Multilingual Support**: Add support for additional languages to cater to diverse student populations.
+- **Gamified Learning Experience**: Implement a gamified rewards system to increase student engagement.
+
+---
+
+## Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make to **RIAS** are **greatly appreciated**!
+
+1. Fork the repository.
+2. Create a new feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a pull request.
+
+---
+
+## Contact
+
+**Your Name**  
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourname)  
+- Portfolio: [Your Portfolio](https://yourportfolio.com)  
+- Email: [youremail@example.com](mailto:youremail@example.com)
+
+---
+
+**This project is licensed under the MIT License**  
+For more details, see the [LICENSE](LICENSE) file.
+
+
+
 ---
 
 ## Usage

@@ -93,59 +93,22 @@
     transition: opacity 0.3s ease;
     /* Smooth transition for disabled state */
 }
-/* Container for buttons */
-.buttonContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Space between the buttons */
-  }
-  
-  /* Style for filter button */
-  .filterButton {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-  }
-  
-  /* Style for PDF download button */
-  .pdfButton {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #000000;
-    background-color: #0be3d1;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .pdfButton:hover {
-    background-color: #00ff22;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pdfButton:active {
-    background-color: #004094;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .pdfButton:disabled {
-    background-color: #cccccc;
-    color: #666666;
+
+/* Style for disabled filter button */
+.filterButton:disabled {
+    background-color: #d0d0d0;
+    /* Light gray background */
+    color: #aaa;
+    /* Light gray text */
     cursor: not-allowed;
-  }
-  
+    /* Change cursor to indicate disabled state */
+    opacity: 0.6;
+    /* Reduced opacity */
+}
+
 /* Style for feedback table */
 .feedbackTable {
-    width: 1150px;
+    width: 1300px;
     border-collapse: collapse;
     margin-top: 20px;
 
@@ -178,7 +141,7 @@
 
 /* Style for feedback table wrapper */
 .feedbackTableWrapper {
-    max-height: 450px;
+    max-height: auto, 350px;
     /* Adjust as needed */
     overflow-y: auto;
     /* Add vertical scroll bar */
@@ -366,10 +329,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .searchContainer {
     margin: 20px 0;
     display: flex;
+    align-items: center;
     justify-content: center;
+  }
+  
+  .searchIcon {
+    width: 24px; /* Adjust size as needed */
+    height: 24px; /* Adjust size as needed */
+    margin-right: 10px;
   }
   
   .searchInput {
@@ -384,4 +368,5 @@
   .searchInput::placeholder {
     color: #888;
   }
+  
   

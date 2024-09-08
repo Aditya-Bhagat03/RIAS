@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import FeedbackPDF from "./pdf/FeedbackPDF"; // Adjust the path as needed
-import styles from "./css/FacultyFeedback.module.css"; // Adjust the path as needed
+import styles from "./css/FeedbackStats.module.css"; // Adjust the path as needed
 
 const FeedbackStats = () => {
   const [semesters, setSemesters] = useState([]);
@@ -119,25 +119,52 @@ const FeedbackStats = () => {
       });
     });
 
-    return Object.keys(aggregatedFeedback)
-      .map((facultyName) => {
-        const types = aggregatedFeedback[facultyName];
-        return [
-          {
-            facultyName,
-            type: "practical",
-            responses: calculateAverages(types.practical),
-            finalTotal: calculateFinalTotal(types.practical),
-          },
-          {
-            facultyName,
-            type: "theory",
-            responses: calculateAverages(types.theory),
-            finalTotal: calculateFinalTotal(types.theory),
-          },
-        ];
-      })
-      .flat();
+    return Object.keys(aggregatedFeedback).map((facultyName) => {
+      const types = aggregatedFeedback[facultyName];
+      const practicalAverages = calculateAverages(types.practical);
+      const theoryAverages = calculateAverages(types.theory);
+      const practicalFinalTotal = calculateFinalTotal(types.practical);
+      const theoryFinalTotal = calculateFinalTotal(types.theory);
+
+      const hasPracticalData = Object.keys(types.practical).length > 0;
+      const hasTheoryData = Object.keys(types.theory).length > 0;
+
+      const combinedFinalTotal = hasPracticalData && hasTheoryData
+        ? ((parseFloat(practicalFinalTotal) + parseFloat(theoryFinalTotal)) / 2).toFixed(2)
+        : hasPracticalData
+          ? practicalFinalTotal
+          : hasTheoryData
+            ? theoryFinalTotal
+            : "N/A";
+
+      return [
+     
+        {
+          facultyName,
+          type: "practical",
+          responses: practicalAverages,
+          finalTotal: practicalFinalTotal,
+          hasData: hasPracticalData,
+          ttype: "Final",
+          tfinalTotal: combinedFinalTotal,
+          ptype: "Theory",
+          pfinalTotal: theoryFinalTotal,
+          
+          
+        },
+        {
+          facultyName,
+          type: "theory",
+          responses: theoryAverages,
+          finalTotal: theoryFinalTotal,
+          hasData: hasTheoryData,
+          ttype: "Final",
+          tfinalTotal: combinedFinalTotal,
+          ptype: "Practical",
+          pfinalTotal: practicalFinalTotal,
+        }
+      ];
+    }).flat();
   };
 
   const calculateAverages = (responses) => {
@@ -209,80 +236,132 @@ const FeedbackStats = () => {
             </div>
           ))}
         </div>
-        <button onClick={handleFilterApply} className={styles.filterButton}>
-          Apply Filters
+        <div className={styles.buttonContainer}>
+  <button onClick={handleFilterApply} className={styles.filterButton}>
+    Apply Filters
+  </button>
+  <PDFDownloadLink
+    document={<FeedbackPDF feedbacks={feedbacks} />}
+    fileName="feedback_report.pdf"
+  >
+    {({ loading }) =>
+      loading ? (
+        <button className={styles.pdfButton} disabled>
+          Generating PDF...
         </button>
+      ) : (
+        <button className={styles.pdfButton}>Download PDF</button>
+      )
+    }
+  </PDFDownloadLink>
+</div>
+
         {feedbacks.length > 0 ? (
           <>
             {feedbacks.map((feedback, feedbackIndex) => (
               <div key={feedbackIndex} className={styles.feedbackContainer}>
-                <div className={styles.feedbackContainer}>
-                  <div className={styles.feedbackItem}>
-                    <span className={styles.feedbackLabel}><b>Faculty Name: </b>
-                    </span>
-                    <span className={styles.feedbackValue}>
-                      <b><span>{feedback.facultyName}</span></b>
-                    </span>
-                  </div>
-                  <div className={styles.feedbackItem}>
-                    <span
-                      style={{ marginLeft: "60px" }}
-                      className={styles.feedbackLabel}
-                    >
-                     <b> Type: </b>
-                    </span>
-                    <span className={styles.feedbackValue}>
-                      <b>{feedback.type}</b>
-                    </span>
-                  </div>
-                  <div className={styles.feedbackItem}>
-                    <span
-                      style={{ marginLeft: "60px" }}
-                      className={styles.feedbackLabel}
-                    >
-                    <b> {feedback.type}:</b>
-                    </span>
-                    <span className={styles.feedbackValue}>
-                    <b> <span></span> {feedback.finalTotal}%</b>
-                    </span>
-                  </div>
-                </div>
-
-                <div className={styles.feedbackTableWrapper}>
-                  <table className={styles.feedbackTable}>
-                    <thead>
-                      <tr>
-                        <th className="questionColumn">Question</th>
-                        <th className="scoreColumn">Average Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(feedback.responses).map(
-                        ([question, percentage], index) => (
-                          <tr key={index}>  
-                            <td className="questionColumn">{question}</td>
-                            <td className="scoreColumn">{percentage}</td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                {feedback.hasData && (
+                  <>
+                    <div className={styles.feedbackItem}>
+                      <span className={styles.feedbackLabel}>
+                        <b>Faculty Name: </b>
+                      </span>
+                      <span className={styles.feedbackValue}>
+                        <b>{feedback.facultyName}</b>
+                      </span>
+                    </div>
+                    <div className={styles.feedbackItem}>
+                      <span   style={{ marginLeft: "60px" }} className={styles.feedbackLabel}>
+                        <b>Type: </b>
+                      </span>
+                      <span className={styles.feedbackValue}>
+                        <b>{feedback.type}</b>
+                      </span>
+                    </div>
+                    <div className={styles.feedbackItem}>
+                      <span  style={{ marginLeft: "60px" }} className={styles.feedbackLabel}>
+                        <b>{feedback.type}:</b>
+                      </span>
+                      <span className={styles.feedbackValue}>
+                        <b>{feedback.finalTotal}%</b>
+                      </span>
+                    </div>
+                    <div className={styles.feedbackItem}>
+                      <span  style={{ marginLeft: "60px" }} className={styles.feedbackLabel}>
+                        <b>{feedback.ptype}:</b>
+                      </span>
+                      <span className={styles.feedbackValue}>
+                        <b>{feedback.pfinalTotal}%</b>
+                      </span>
+                    </div>
+                    <div className={styles.feedbackItem}>
+                      <span  style={{ marginLeft: "60px" }} className={styles.feedbackLabel}>
+                        <b>{feedback.ttype}:</b>
+                      </span>
+                      <span className={styles.feedbackValue}>
+                        <b>{feedback.tfinalTotal}%</b>
+                      </span>
+                    </div>
+                    {feedback.type === 'practical' && feedback.hasData && (
+                      <div className={styles.feedbackTableWrapper}>
+                        <h3 >Practical Feedback</h3>
+                        <table className={styles.feedbackTable}>
+                          <thead>
+                            <tr>
+                              <th className="questionColumn">Question</th>
+                              <th className="scoreColumn">Average Score</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(feedback.responses).map(
+                              ([question, avgScore], index) => (
+                                <tr key={index}>
+                                  <td>{question}</td>
+                                  <td>{avgScore}</td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    {feedback.type === 'theory' && feedback.hasData && (
+                      <div className={styles.feedbackTableWrapper}>
+                        <h3>Theory Feedback</h3>
+                        <table className={styles.feedbackTable}>
+                          <thead>
+                            <tr>
+                              <th className="questionColumn">Question</th>
+                              <th className="scoreColumn">Average Score</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(feedback.responses).map(
+                              ([question, avgScore], index) => (
+                                <tr key={index}>
+                                  <td>{question}</td>
+                                  <td>{avgScore}</td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ))}
+           
           </>
         ) : (
-          <p>No feedbacks available for the selected filters.</p>
+          <p>No feedback data available.</p>
         )}
       </div>
-      <PDFDownloadLink
-        document={<FeedbackPDF feedbacks={feedbacks} />}
-        fileName="feedback-stats.pdf"
-        className={styles.pdfButton}
-      >
-        {({ loading }) => (loading ? "Loading document..." : "Download PDF")}
-      </PDFDownloadLink>
+     
     </div>
+
+    
   );
 };
 

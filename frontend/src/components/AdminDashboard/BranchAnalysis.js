@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+import { PDFDownloadLink } from '@react-pdf/renderer'; // For PDF download
+import PdfBranchAnalysis from "./pdf/PdfBranchAnalysis"; // Import the PdfBranchAnalysis component
 import styles from "./css/BranchAnalysis.module.css"; // Adjust the path as needed
 
 const BranchAnalysis = () => {
@@ -12,7 +12,6 @@ const BranchAnalysis = () => {
   const [branches, setBranches] = useState([]);
 
   useEffect(() => {
-    // Function to fetch branches from the backend
     const fetchBranches = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/branches");
@@ -25,26 +24,21 @@ const BranchAnalysis = () => {
       }
     };
   
-    // Check if data is cached in sessionStorage
     const cachedBranches = sessionStorage.getItem("branches");
     if (cachedBranches) {
       setBranches(JSON.parse(cachedBranches));
     } else {
       fetchBranches();
     }
-  
-    // Set up an interval to fetch branches every 10 seconds
+
     const intervalId = setInterval(() => {
       fetchBranches(); // Fetch new branches every 10 seconds
-    }, 10000); // 10 seconds in milliseconds
+    }, 10000);
   
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
-  
 
   useEffect(() => {
-    // Store branch and analysisData in cache
     sessionStorage.setItem("branch", branch);
     sessionStorage.setItem("analysisData", JSON.stringify(analysisData));
   }, [branch, analysisData]);
@@ -91,39 +85,6 @@ const BranchAnalysis = () => {
     // Implement your logout logic here
   };
 
-  const getFeedbackRemark = (percentage) => {
-    if (percentage >= 90) return "Excellent";
-    if (percentage >= 80) return "Very Good";
-    if (percentage >= 70) return "Good";
-    if (percentage >= 60) return "Satisfactory";
-    
-    return "Need Improvement";
-  };
-
-  const handleDownloadPDF = () => {
-    const input = document.getElementById('analysisTable');
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        const imgWidth = 210; // A4 width in mm
-        const pageHeight = 295; // A4 height in mm
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        let heightLeft = imgHeight;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, -heightLeft, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-
-        pdf.save("Branch_Analysis_Report.pdf");
-      });
-  };
-
   return (
     <div className={styles.BranchAnalysis_container}>
       <div className={styles.BranchAnalysis_card}>
@@ -150,9 +111,15 @@ const BranchAnalysis = () => {
           <button onClick={handleSearch} className={styles.BranchAnalysis_searchButton}>
             Search
           </button>
-          <button onClick={handleDownloadPDF} className={styles.BranchAnalysis_pdfButton}>
-            Download PDF
-          </button>
+          {analysisData.length > 0 && (
+            <PDFDownloadLink
+              document={<PdfBranchAnalysis analysisData={analysisData} />}
+              fileName="Branch_Analysis_Report.pdf"
+              className={styles.BranchAnalysis_pdfButton}
+            >
+              {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
+            </PDFDownloadLink>
+          )}
         </div>
         {analysisData.length > 0 ? (
           <div className={styles.BranchAnalysis_analysisTableWrapper}>
@@ -175,7 +142,7 @@ const BranchAnalysis = () => {
                     <td>{data.studentCount}</td>
                     <td>{data.averageRating !== '0.00' ? data.averageRating : "0"}</td>
                     <td>{data.averagePercentage !== '0.00' ? data.averagePercentage : "0%"}</td>
-                    <td>{getFeedbackRemark(data.averagePercentage)}</td>
+                    <td>{data.averagePercentage >= 90 ? "Excellent" : data.averagePercentage >= 80 ? "Very Good" : data.averagePercentage >= 70 ? "Good" : data.averagePercentage >= 60 ? "Satisfactory" : "Need Improvement"}</td>
                   </tr>
                 ))}
               </tbody>

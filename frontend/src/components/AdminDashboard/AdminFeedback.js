@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./css/FacultyFeedback.module.css";
+import styles from "./css/Adminfeedback.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons"; // Import the search icon
 
 const AdminFeedback = () => {
   const [semesters, setSemesters] = useState([]);
@@ -18,6 +20,8 @@ const AdminFeedback = () => {
   const [selectedFaculty, setSelectedFaculty] = useState("");
 
   const [feedbacks, setFeedbacks] = useState([]);
+  const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
 
@@ -61,6 +65,22 @@ const AdminFeedback = () => {
 
     fetchOptions();
   }, []);
+
+  useEffect(() => {
+    const applySearchFilter = () => {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      const filtered = feedbacks.filter(
+        (feedback) =>
+          feedback.studentId?.username
+            .toLowerCase()
+            .includes(lowercasedSearchTerm) ||
+          feedback.subjectName.toLowerCase().includes(lowercasedSearchTerm)
+      );
+      setFilteredFeedbacks(filtered);
+    };
+
+    applySearchFilter();
+  }, [searchTerm, feedbacks]);
 
   const fetchFeedbacks = async () => {
     try {
@@ -109,85 +129,107 @@ const AdminFeedback = () => {
   };
 
   return (
-    <div style={{ marginTop: '70px', marginLeft: '70px' }} className={styles.container}>
-        <div className={styles.feedbackCard}>
-            <h2>Admin Feedback</h2>
-            <p>Review feedback provided by students and manage them.</p>
-            {message && (
-                <div className={`${styles.message} ${styles[messageType]}`}>
-                    {message}
-                </div>
-            )}
-            <div className={styles.dropdownContainer}>
-                {[
-                    { id: 'semester', label: 'Semester', options: semesters },
-                    { id: 'branch', label: 'Branch', options: branches },
-                    { id: 'section', label: 'Section', options: sections },
-                    { id: 'subject', label: 'Subject', options: subjects },
-                    { id: 'course', label: 'Course', options: courses },
-                    { id: 'faculty', label: 'Faculty', options: faculties },
-                ].map(({ id, label, options }) => (
-                    <div key={id} className={styles.dropdownItem}>
-                        <label htmlFor={id}>{label}:</label>
-                        <select
-                            id={id}
-                            value={eval(`selected${label.replace(/^\w/, c => c.toUpperCase())}`)}
-                            onChange={(e) => eval(`setSelected${label.replace(/^\w/, c => c.toUpperCase())}`)(e.target.value)}
-                        >
-                            <option value="">Select {label}</option>
-                            {options.map((option, index) => (
-                                <option key={index} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+    <div
+      style={{ marginTop: "70px", marginLeft: "70px" }}
+      className={styles.container}
+    >
+      <div className={styles.feedbackCard}>
+        <h2>Admin Feedback</h2>
+        <p>Review feedback provided by students and manage them.</p>
+        {message && (
+          <div className={`${styles.message} ${styles[messageType]}`}>
+            {message}
+          </div>
+        )}
+        <div className={styles.dropdownContainer}>
+          {[
+            { id: "semester", label: "Semester", options: semesters },
+            { id: "branch", label: "Branch", options: branches },
+            { id: "section", label: "Section", options: sections },
+            { id: "subject", label: "Subject", options: subjects },
+            { id: "course", label: "Course", options: courses },
+            { id: "faculty", label: "Faculty", options: faculties },
+          ].map(({ id, label, options }) => (
+            <div key={id} className={styles.dropdownItem}>
+              <label htmlFor={id}>{label}:</label>
+              <select
+                id={id}
+                value={eval(
+                  `selected${label.replace(/^\w/, (c) => c.toUpperCase())}`
+                )}
+                onChange={(e) =>
+                  eval(
+                    `setSelected${label.replace(/^\w/, (c) => c.toUpperCase())}`
+                  )(e.target.value)
+                }
+              >
+                <option value="">Select {label}</option>
+                {options.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
                 ))}
+              </select>
             </div>
-            <button onClick={handleFilterApply} className={styles.filterButton}>Apply Filters</button>
-            {feedbacks.length > 0 && (
-                <div className={styles.feedbackTableWrapper}>
-                    <table className={styles.feedbackTable}>
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Faculty Name</th>
-                                <th>Course Name</th>
-                                <th>Branch</th>
-                                <th>Section</th>
-                                <th>Semester</th>
-                                <th>Subject Name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {feedbacks.map((feedback) => (
-                                <tr key={feedback._id}>
-                                    <td>{feedback.studentId?.username || 'N/A'}</td>
-                                    <td>{feedback.facultyName || 'N/A'}</td>
-                                    <td>{feedback.courseName || 'N/A'}</td>
-                                    <td>{feedback.branch || 'N/A'}</td>
-                                    <td>{feedback.section || 'N/A'}</td>
-                                    <td>{feedback.semester || 'N/A'}</td>
-                                    <td>{feedback.subjectName || 'N/A'}</td>
-                                    <td>
-                                        <button 
-                                            className={styles.deleteButton}
-                                            onClick={() => handleDeleteFeedback(feedback._id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+          ))}
         </div>
-    </div>
-);
+        <button onClick={handleFilterApply} className={styles.filterButton}>
+          Apply Filters
+        </button>
 
+        <div className={styles.searchContainer}>
+          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+          <input
+            type="text"
+            placeholder="Search by Username or Subject"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+
+        {filteredFeedbacks.length > 0 && (
+          <div className={styles.feedbackTableWrapper}>
+            <table className={styles.feedbackTable}>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Faculty Name</th>
+                  <th>Course Name</th>
+                  <th>Branch</th>
+                  <th>Section</th>
+                  <th>Semester</th>
+                  <th>Subject Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredFeedbacks.map((feedback) => (
+                  <tr key={feedback._id}>
+                    <td>{feedback.studentId?.username || "N/A"}</td>
+                    <td>{feedback.facultyName || "N/A"}</td>
+                    <td>{feedback.courseName || "N/A"}</td>
+                    <td>{feedback.branch || "N/A"}</td>
+                    <td>{feedback.section || "N/A"}</td>
+                    <td>{feedback.semester || "N/A"}</td>
+                    <td>{feedback.subjectName || "N/A"}</td>
+                    <td>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDeleteFeedback(feedback._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default AdminFeedback;

@@ -2,6 +2,10 @@
 .chartContainer {
   margin-top: 70px;
   margin-left: 70px;
+  width: 100%; /* Ensures the container takes full width */
+  min-width: 1550px; /* Minimum width to prevent it from shrinking too much */
+  max-width: 1800px; /* Optional: Set a maximum width if desired */
+  box-sizing: border-box; /* Ensures padding is included in the width */
 }
 
 /* Style for chart feedback card */

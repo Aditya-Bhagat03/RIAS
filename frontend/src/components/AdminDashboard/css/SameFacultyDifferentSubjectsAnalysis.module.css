@@ -1,10 +1,14 @@
 .SameFacultyDifferentSubjectsAnalysi_container {
-  margin-top: 7%;
+  margin-top: 5.5%;
   margin-left: 7%;
   overflow-y: scroll; /* Ensure the content is scrollable */
-  max-height: 80vh; /* Adjust the max height to limit the container size */
+  max-height: 90vh; /* Adjust the max height to limit the container size */
   scrollbar-width: none; /* For Firefox */
   -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  width: 100%; /* Ensures the container takes full width */
+  min-width: 1200px; /* Minimum width to prevent it from shrinking too much */
+  max-width: 1300px; /* Optional: Set a maximum width if desired */
+  box-sizing: border-box; /* Ensures padding is included in the width */
 }
 
 .SameFacultyDifferentSubjectsAnalysi_container::-webkit-scrollbar {
@@ -17,7 +21,10 @@
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     padding: 25px;
-    max-width: 900px;
+    width: 100%; /* Ensures the container takes full width */
+    min-width: 1200px; /* Minimum width to prevent it from shrinking too much */
+    max-width: 1400px; /* Optional: Set a maximum width if desired */
+    box-sizing: border-box; /* Ensures padding is included in the width */
     margin: 0 auto;
     border: 1px solid #e0e0e0;
   }

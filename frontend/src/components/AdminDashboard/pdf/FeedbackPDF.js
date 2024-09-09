@@ -68,55 +68,6 @@ const styles = StyleSheet.create({
   },
 });
 
-<<<<<<< HEAD
-const FeedbackPDF = ({ feedbacks, analysisData }) => {
-  console.log('Feedbacks in PDF:', feedbacks);
-  console.log('Analysis Data in PDF:', analysisData);
-
-  return (
-    <Document>
-      {feedbacks.map((feedback, feedbackIndex) => (
-        <Page size="A4" style={styles.page} key={feedbackIndex}>
-          <View style={styles.section}>
-            <Text style={styles.header}>Faculty Feedback Report</Text>
-            <View style={styles.infoTable}>
-              <View style={styles.infoRow}>
-                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Faculty Name</Text>
-                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Type</Text>
-                <Text style={[styles.infoCell, { fontWeight: 'bold' }]}>Subject</Text>
-              </View>
-              <View style={styles.infoRow}>
-                <Text style={styles.infoCell}>{feedback.facultyName}</Text>
-                <Text style={styles.infoCell}>{feedback.type}</Text>
-                <Text style={styles.infoCell}>{feedback.subjectName}</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.section}>
-            <View style={styles.feedbackTable}>
-              <View style={styles.feedbackHeader}>
-                <Text style={[styles.feedbackCell, { fontWeight: 'bold', textAlign: 'left' }]}>Question</Text>
-                <Text style={[styles.feedbackCell, { fontWeight: 'bold' }]}>Average Score</Text>
-              </View>
-              {Object.entries(analysisData.questionAverages).map(([question, avg], index) => (
-                question.startsWith(`${feedbackIndex}_`) && (
-                  <View style={styles.feedbackRow} key={index}>
-                    <Text style={styles.feedbackCell}>{question.split('_').slice(1).join('_')}</Text>
-                    <Text style={styles.feedbackCell}>
-                      {avg !== undefined && avg !== null && !isNaN(avg)
-                        ? parseFloat(avg).toFixed(2)
-                        : 'N/A'}
-                    </Text>
-                  </View>
-                )
-              ))}
-            </View>
-          </View>
-        </Page>
-      ))}
-    </Document>
-  );
-=======
 // Define pages to exclude (1-indexed)
 const pagesToExclude = [8, 9, 11, 12];
 
@@ -212,7 +163,6 @@ const FeedbackPDF = ({ feedbacks }) => {
   });
 
   return <Document>{pages}</Document>;
->>>>>>> 978e76f0e9bbd9cad0482b66d49a1e48c3b64eb4
 };
 
 export default FeedbackPDF;

@@ -12,7 +12,10 @@ const AuthRoute = ({ element }) => {
       return <Navigate to="/faculty-dashboard" />;
     } else if (role === 'student') {
       return <Navigate to="/student-dashboard" />;
+    } else if (role === 'class-teacher') {
+      return <Navigate to="/class-teacher" />;
     }
+    
   }
 
   return element;

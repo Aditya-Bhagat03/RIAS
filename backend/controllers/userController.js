@@ -86,14 +86,14 @@ exports.getnotadmin = async (req, res) => {
     const loggedInUser = req.user;
 
     // Check if the logged-in user is a class teacher
-    if (loggedInUser.role === 'faculty' && loggedInUser.isApproved) {
+    if (loggedInUser.role === 'faculty' || loggedInUser.role === 'class-teacher' && loggedInUser.isApproved) {
       // Fetch students with the same branch, section, and semester as the class teacher
       const students = await User.find({
         role: 'student',
         branch: loggedInUser.branch,
         section: loggedInUser.section,
         semester: loggedInUser.semester,
-        isApproved: true // Optional: Only fetch approved students
+        
       }).select('-password');
 
       res.status(200).json(students);

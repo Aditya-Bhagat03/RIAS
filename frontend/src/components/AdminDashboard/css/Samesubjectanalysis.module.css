@@ -1,6 +1,10 @@
 .samesubjectanalysisContainer {
     margin-top: 100px;
-    margin-left: 100px;
+
+    width: 100%; /* Ensures the container takes full width */
+    min-width: 1000px; /* Minimum width to prevent it from shrinking too much */
+    max-width: 1200px; /* Optional: Set a maximum width if desired */
+    box-sizing: border-box; /* Ensures padding is included in the width */
 }
 
 .samesubjectanalysisCard {
@@ -11,6 +15,13 @@
     max-width: 900px;
     margin: 0 auto;
     border: 1px solid #e0e0e0;
+    height: 100%;
+    width: 100%; /* Ensures the container takes full width */
+    min-width: 1000px; /* Minimum width to prevent it from shrinking too much */
+    max-width: 1200px; /* Optional: Set a maximum width if desired */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+    margin-left: 8%;
+
 }
 
 .samesubjectanalysisTitle {
@@ -50,20 +61,23 @@
     display: flex;
     align-items: center;
     margin-bottom: 25px;
+    gap: 30px;
 }
 
 .samesubjectanalysisDropdown {
     flex-grow: 1;
+    
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
     color: #333;
     transition: border-color 0.3s;
+    
 }
 
 .samesubjectanalysisDropdown:focus {
-    border-color: #007bff;
+    border-color: #171717;
     outline: none;
 }
 
@@ -86,6 +100,7 @@
 .samesubjectanalysisTableWrapper {
     margin-top: 25px;
     overflow-x: auto;
+    
 }
 
 .samesubjectanalysisTable {

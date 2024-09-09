@@ -13,8 +13,10 @@ import StudentMainContentPart1 from "./components/Studentdashobard/StudentMainCo
 import Timetable from "./components/Studentdashobard/Timetable"; // Updated import path
 import DashboardLayout from "./components/Studentdashobard/DashboardLayout"; // Updated import path
 import DashboardLayoutf from "./components/FacultyDashboard/DashboardLayout"; // Updated import path
+import DashboardLayoutc from "./components/class-teacher/DashboardLayout"; // Updated import path
 import StudentProfile from "./components/Studentdashobard/StudentProfile"; // Updated import path
 import Users from "./components/FacultyDashboard/users"; // Updated import path
+import Userclass from "./components/class-teacher/users"; // Updated import path
 import Survey from "./components/FacultyDashboard/FacultySurvey";
 import Surveyf from "./components/FacultyDashboard/SurveyForm";
 import Facultyimetable from "./components/FacultyDashboard/StudentTable";
@@ -39,7 +41,7 @@ import Facultyprofilee from "./components/FacultyDashboard/StudentProfile"; // U
 import Facultyregister from "./components/FacultyDashboard/FacultyRegister"; // Updated import path
 import Stutable from "./components/FacultyDashboard/StudentTable"; // Updated import path
 import FacultyPostmapping from "./components/FacultyDashboard/EditMappingfaculty"; // Updated import path
-
+import Profileclass from "./components/class-teacher/StudentProfile"; // Updated import path
 
 const AuthRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -101,10 +103,28 @@ function App() {
                     <Route path="adminuser" element={<Adminusers />} />
                     <Route path="samesubject" element={<Samesubject />} />
                     <Route path="samefaculty" element={<Samefaculty />} />
-                    <Route path="Department-Analysis" element={<Deptanalysis />} />
+                    <Route
+                      path="Department-Analysis"
+                      element={<Deptanalysis />}
+                    />
                     <Route path="admin-csv" element={<Aaadmincsv />} />
                   </Routes>
                 </AdminDashboard>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/class-teacher/*"
+            element={
+              <ProtectedRoute allowedRoles={["class-teacher"]}>
+                <DashboardLayoutc>
+                  <Routes>
+                    <Route path="" element={<Userclass />} />
+                    <Route path="users" element={<Userclass />} />
+                    <Route path="F-profile" element={<Profileclass />} />
+                    {/* Add more routes as needed */}
+                  </Routes>
+                </DashboardLayoutc>
               </ProtectedRoute>
             }
           />
@@ -120,7 +140,10 @@ function App() {
                     <Route path="Surveyform" element={<Surveyf />} />
                     <Route path="Feedback" element={<FacultyPostmapping />} />
                     <Route path="F-profile" element={<Facultyprofilee />} />
-                    <Route path="faculty-register" element={<Facultyregister />} />
+                    <Route
+                      path="faculty-register"
+                      element={<Facultyregister />}
+                    />
                     <Route path="faculty-csv" element={<Facultycsv />} />
 
                     <Route
@@ -150,6 +173,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          
 
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

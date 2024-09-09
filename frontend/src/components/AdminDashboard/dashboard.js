@@ -1,71 +1,34 @@
-// ./components/AdminDashboard/dashboard.js
-
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import Sidebar from './Sidebar'; // Import the Sidebar component
-import './css/dasboard.css'; // Import your CSS file for styling
+import { Link } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import './css/dashboard.css'; // Ensure the CSS file path is correct
 
 const Adashboard = () => {
   return (
     <div className="admin-dashboard-layout">
-      <Sidebar /> {/* Add the Sidebar component */}
+      <Sidebar />
       <div className="admin-dashboard-container">
-        {/* Dashboard title */}
-        <div className="admin-dashboard-header">
-         
-        </div>
         
-        {/* Cards container */}
         <div className="admin-dashboard-cards">
-          
-
-          <div className="admin-dashboard-card">
-            <h2> Timetables</h2>
-            <p>This is the Timetables card content.</p>
-            <Link to="/admin-dashboard/Feedback">
-              <button className="admin-dashboard-button">Go to Timetables</button>
-            </Link>
-          </div>
-
-          <div className="admin-dashboard-card">
-            <h2> Feedback</h2>
-            <p>This is the Feedback card content.</p>
-            <Link to="/admin-dashboard/Stats">
-              <button className="admin-dashboard-button">Go to Feedback</button>
-            </Link>
-          </div>
-
-          <div className="admin-dashboard-card">
-            <h2> Reports</h2>
-            <p>This is the Reports card content.</p>
-            <Link to="/admin-dashboard/adminchart">
-              <button className="admin-dashboard-button">Go to Reports</button>
-            </Link>
-          </div>
-
-          <div className="admin-dashboard-card">
-            <h2> Surveys</h2>
-            <p>This is the Surveys card content.</p>
-            <Link to="/student-dashboard/Surveystu">
-              <button className="admin-dashboard-button">Go to Surveys</button>
-            </Link>
-          </div>
-
-          <div className="admin-dashboard-card">
-            <h2> Users</h2>
-            <p>This is the Users card content.</p>
-            <Link to="/admin-dashboard/adminuser">
-              <button className="admin-dashboard-button">Go to Users</button>
-            </Link>
-          </div>
-
-          <div className="admin-dashboard-card">
-            <h2> Settings</h2>
-            <p>This is the Settings card content.</p>
-            <Link to="/admin-dashboard/samesubject">
-              <button className="admin-dashboard-button">Go to Settings</button>
-            </Link>
-          </div>
+          {[
+            { title: "Branch Feedback Analysis", link: "/admin-dashboard/Department-Analysis", buttonText: "View Timetables" },
+            { title: "Same Subject Feedback Analysis", link: "/admin-dashboard/samesubject", buttonText: "View Feedback" },
+            { title: "Same Faculty, Different Subjects Feedback Analysis", link: "/admin-dashboard/samefaculty", buttonText: "View Reports" },
+            { title: "Feedback Statistics", link: "/admin-dashboard/Stats", buttonText: "View Surveys" },
+            { title: "Feedback Statistics in Graphs", link: "/admin-dashboard/adminchart", buttonText: "View Charts" },
+            { title: "Student Feedback View", link: "/admin-dashboard/Feedback", buttonText: "View Feedback" },
+            { title: "Users", link: "/admin-dashboard/adminuser", buttonText: "Manage Users" },
+            { title: "Profile", link: "/student-dashboard/profile", buttonText: "View Profile" },
+            { title: "CSV Upload", link: "/admin-dashboard/admin-csv", buttonText: "Upload CSV" }
+          ].map(({ title, link, buttonText }, index) => (
+            <div className="admin-dashboard-card" key={index}>
+              <h2>{title}</h2>
+              <p>This is the card content.</p>
+              <Link to={link}>
+                <button className="admin-dashboard-button">{buttonText}</button>
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </div>

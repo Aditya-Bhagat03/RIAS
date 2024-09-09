@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import "./CSS/Stufeedback.css";
 
 const theoryQuestions = [
@@ -41,6 +42,50 @@ const FeedbackForm = () => {
 
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const navigate = useNavigate(); // Define useNavigate
+
+
+
+
+  // Define handleLogout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/login'); // Use navigate to redirect to login
+  };
+
+  const validateForm = () => {
+    let errors = {};
+  
+    // Validate theory questions
+    theoryQuestions.forEach((question, questionIndex) => {
+      filteredTheoryTimetable.forEach((item, timetableIndex) => {
+        const fieldKey = `theory_${timetableIndex}_${questionIndex}`;
+        // Check if the response is undefined or an empty string, not just falsy
+        if (responses[fieldKey] === undefined || responses[fieldKey] === "") {
+          errors[fieldKey] = "This field is required";
+        }
+      });
+    });
+  
+    // Validate practical questions
+    practicalQuestions.forEach((question, questionIndex) => {
+      filteredPracticalTimetable.forEach((item, timetableIndex) => {
+        const fieldKey = `practical_${timetableIndex}_${questionIndex}`;
+        // Check if the response is undefined or an empty string, not just falsy
+        if (responses[fieldKey] === undefined || responses[fieldKey] === "") {
+          errors[fieldKey] = "This field is required";
+        }
+      });
+    });
+  
+    setValidationErrors(errors);
+  
+    // Return true if there are no validation errors
+    return Object.keys(errors).length === 0;
+  };
+  
 
   // Fetch profile data
   const fetchProfileData = async () => {
@@ -134,7 +179,6 @@ const FeedbackForm = () => {
     }));
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setShowConfirmPopup(true);
@@ -142,13 +186,22 @@ const FeedbackForm = () => {
 
   const confirmSubmit = async () => {
     setShowConfirmPopup(false);
+
+    // Validate form before submission
+    const isValid = validateForm();
+    if (!isValid) {
+      setError("Please fill in all required fields.");
+      setPendingSubmit(false); // Stop the pending state
+      return;
+    }
+
     setPendingSubmit(true);
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No authentication token found');
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No authentication token found");
 
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
       const studentId = decodedToken.id;
 
       // Function to generate feedback entries
@@ -177,21 +230,20 @@ const FeedbackForm = () => {
       const theoryFeedbackEntries = generateFeedbackEntries(
         filteredTheoryTimetable,
         theoryQuestions,
-        'theory'
+        "theory"
       );
-
       const practicalFeedbackEntries = generateFeedbackEntries(
         filteredPracticalTimetable,
         practicalQuestions,
-        'practical'
+        "practical"
       );
 
       // Submit both feedbacks in parallel
       const [theoryResponse, practicalResponse] = await Promise.all([
-        fetch('http://localhost:4000/api/feedback/theory/submit', {
-          method: 'POST',
+        fetch("http://localhost:4000/api/feedback/theory/submit", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -199,10 +251,10 @@ const FeedbackForm = () => {
             feedbackEntries: theoryFeedbackEntries,
           }),
         }),
-        fetch('http://localhost:4000/api/feedback/practical/submit', {
-          method: 'POST',
+        fetch("http://localhost:4000/api/feedback/practical/submit", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -215,28 +267,35 @@ const FeedbackForm = () => {
       // Check if any response indicates an error
       if (!theoryResponse.ok) {
         const theoryError = await theoryResponse.json();
-        throw new Error(theoryError.message || 'Failed to submit theory feedback');
-      }
-      if (!practicalResponse.ok) {
-        const practicalError = await practicalResponse.json();
-        throw new Error(practicalError.message || 'Failed to submit practical feedback');
+        console.error("Theory submission error:", theoryError);
+        throw new Error(
+          theoryError.message || "Failed to submit theory feedback"
+        );
       }
 
-      setSuccess('Theory and Practical feedback submitted successfully!');
-      setError('');
+      if (!practicalResponse.ok) {
+        const practicalError = await practicalResponse.json();
+        console.error("Practical submission error:", practicalError);
+        throw new Error(
+          practicalError.message || "Failed to submit practical feedback"
+        );
+      }
+
+      setSuccess("Theory and Practical feedback submitted successfully!");
+      setError("");
     } catch (err) {
-      console.error('Error:', err);
-      setError(err.message || 'Error submitting feedback. Please try again.');
-      setSuccess('');
+      console.error("Error:", err); // Log the full error object
+      setError(err.message || "Error submitting feedback. Please try again.");
+      setSuccess("");
     } finally {
-      setPendingSubmit(false);
+      setPendingSubmit(false); // Stop the pending state after completion
     }
   };
 
   const cancelSubmit = () => {
     setShowConfirmPopup(false);
   };
-  
+
   const styles = {
     th: { padding: "10px", border: "1px solid #ddd" },
     td: { padding: "10px", border: "1px solid #ddd" },
@@ -385,7 +444,13 @@ const FeedbackForm = () => {
                               )
                             }
                             style={{ textAlign: "left" }}
-                            className="student-dashboard-feedback-select"
+                            className={`student-dashboard-feedback-select ${
+                              validationErrors[
+                                `theory_${timetableIndex}_${questionIndex}`
+                              ]
+                                ? "error-border"
+                                : ""
+                            }`}
                           >
                             <option value="">Select</option>
                             {[0, 1, 2, 3, 4].map((num) => (
@@ -499,7 +564,13 @@ const FeedbackForm = () => {
                                   "practical"
                                 )
                               }
-                              className="student-dashboard-feedback-select"
+                              className={`student-dashboard-feedback-select ${
+                                validationErrors[
+                                  `practical_${timetableIndex}_${questionIndex}`
+                                ]
+                                  ? "error-border"
+                                  : ""
+                              }`}
                             >
                               <option value="">Select</option>
                               {[0, 1, 2, 3, 4].map((num) => (
@@ -521,39 +592,63 @@ const FeedbackForm = () => {
             </form>
           </>
         )}
-       <div>
-      <form onSubmit={handleSubmit}>
-        <button type="submit" className="student-dashboard-submit-button">
-          Submit Feedback
-        </button>
-      </form>
-
-      {showConfirmPopup && (
-        <>
-          <div className="student-dashboard-backdrop"></div>
-          <div className="student-dashboard-popup student-dashboard-confirm-popup">
-            <p>Are you sure you want to submit the feedback?</p>
-            <button onClick={confirmSubmit} disabled={pendingSubmit}>
-              {pendingSubmit ? 'Submitting...' : 'Confirm'}
+        <div>
+          <form onSubmit={handleSubmit}>
+            <button type="submit" className="student-dashboard-submit-button">
+              Submit Feedback
             </button>
-            <button onClick={cancelSubmit} disabled={pendingSubmit}>
-              Cancel
-            </button>
-          </div>
-        </>
-      )}
+          </form>
 
-      {error && (
-        <div className="student-dashboard-popup student-dashboard-error-popup">
-          {error}
-        </div>
-      )}
-      {success && (
+          {showConfirmPopup && (
+            <>
+              <div className="student-dashboard-backdrop"></div>
+              <div className="student-dashboard-popup student-dashboard-confirm-popup">
+                <p>Are you sure you want to submit the feedback?</p>
+                <button onClick={confirmSubmit} disabled={pendingSubmit}>
+                  {pendingSubmit ? "Submitting..." : "Confirm"}
+                </button>
+                <button onClick={cancelSubmit} disabled={pendingSubmit}>
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+
+          {error && (
+            <div className="student-dashboard-popup student-dashboard-error-popup">
+              <div className="student-dashboard-popup-content">
+                <p>{error}</p>
+                <button
+                  onClick={() => setError("")}
+                  className="student-dashboard-popup-button"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
+          {success && (
         <div className="student-dashboard-popup student-dashboard-success-popup">
-          {success}
+          <div className="student-dashboard-popup-content">
+            <p>{success}</p>
+            <div className="student-dashboard-popup-buttons">
+              <button
+                onClick={() => setSuccess('')}
+                className="student-dashboard-popup-button"
+              >
+                OK
+              </button>
+              <button
+                onClick={handleLogout} // Call handleLogout when clicking Logout
+                className="student-dashboard-popup-button student-dashboard-logout-button"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </div>
+        </div>
       </div>
     </div>
   );

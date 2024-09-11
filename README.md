@@ -295,19 +295,16 @@ Contributions are what make the open-source community such an amazing place to l
 
 ## Contact
 
-**Your Name**  
+**Aditya Bhagat**  
 - LinkedIn: [Aditya Bhagat](https://www.linkedin.com/in/aditya-bhagat03/)  
 - Portfolio: [Aditya Bhagat](https://aditya-bhagat.netlify.app/)  
 - Email: [adityabhagat525@gmail.com](adityabhagat525@gmail.com)
 
 ---
 
-**This project is licensed under the MIT License**  
-For more details, see the [LICENSE](LICENSE) file.
 
 
 
----
 
 ## Usage
 

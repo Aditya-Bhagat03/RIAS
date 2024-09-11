@@ -1,5 +1,14 @@
 {
+  "name": "RIAS",
+  "version": "1.0.0",
+  "scripts": {
+    "frontend": "npm start --prefix frontend",
+    "backend": "npm run dev --prefix backend",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "bcryptjs": "^2.4.3",
     "browserify-zlib": "^0.2.0",
     "chart.js": "^4.4.3",
@@ -15,5 +24,8 @@
     "querystring-es3": "^0.2.1",
     "react-calendar": "^5.0.0",
     "react-chartjs-2": "^5.2.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
   }
 }

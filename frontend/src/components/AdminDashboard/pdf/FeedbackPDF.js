@@ -9,9 +9,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Helvetica",
   },
-  section: {
-    marginBottom: 10,
-  },
+  section: { marginBottom: 10 },
   title: {
     fontSize: 16,
     marginBottom: 10,
@@ -27,9 +25,7 @@ const styles = StyleSheet.create({
     borderCollapse: "collapse",
     marginBottom: 10,
   },
-  tableRow: {
-    flexDirection: "row",
-  },
+  tableRow: { flexDirection: "row" },
   tableCell: {
     borderStyle: "solid",
     borderWidth: 1,
@@ -38,22 +34,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 10,
   },
-  tableCellHeader: {
-    backgroundColor: "#f0f0f0",
-    fontWeight: "bold",
-  },
-  questionCell: {
-    width: "70%",
-  },
-  scoreCell: {
-    width: "30%",
-    textAlign: "center",
-  },
-  header: {
-    fontSize: 12,
-    marginBottom: 10,
-    fontWeight: "bold",
-  },
+  tableCellHeader: { backgroundColor: "#f0f0f0", fontWeight: "bold" },
+  questionCell: { width: "70%" },
+  scoreCell: { width: "30%", textAlign: "center" },
+  header: { fontSize: 12, marginBottom: 10, fontWeight: "bold" },
   footer: {
     position: "absolute",
     bottom: 30,
@@ -63,196 +47,156 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "Helvetica",
   },
-  footerLine: {
-    marginBottom: 2,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  facultyName: {
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  finalAverage: {
-    fontSize: 12,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  finalTotalText: {
-    marginRight: 10, // Add space to the right of the Final Total
-  },
-  theoryText: {
-    marginRight: 10, // Add space to the right of the Theory
-  },
-  practicalText: {
-    marginRight: 0, // No extra space after Practical
-  },
+  footerLine: { marginBottom: 2 },
+  facultyName: { fontSize: 12, fontWeight: "bold" },
 });
 
-const FeedbackPDF = ({ feedbacks }) => {
-  // Group feedbacks by faculty name
-  const groupedByFaculty = feedbacks.reduce((acc, feedback) => {
-    if (!acc[feedback.facultyName]) {
-      acc[feedback.facultyName] = [];
-    }
-    acc[feedback.facultyName].push(feedback);
-    return acc;
-  }, {});
 
-  // Convert grouped feedbacks to an array of entries
-  const facultyEntries = Object.entries(groupedByFaculty);
+// Helper function to calculate the percentage
+const calculatePercentage = (score, total = 4) => {
+  if (total === 0) return "N/A"; // Handle division by zero
+  return ((score / total) * 100).toFixed(0) + "%";
+};
 
-  // Array to hold the pages to be included
-  const pages = [];
 
-  let currentPage = 1;
 
-  facultyEntries.forEach(([facultyName, feedbackList]) => {
-    // Calculate final totals
-    const totalTheory = feedbackList.filter((fb) => fb.type === "theory");
-    const totalPractical = feedbackList.filter((fb) => fb.type === "practical");
+// Define the PDF component
+const FeedbackPDF = ({ data }) => {
+  const { theory, practical } = data;
 
-    const avgTheory =
-      totalTheory.length > 0
-        ? totalTheory.reduce((acc, feedback) => acc + feedback.finalTotal, 0) /
-          totalTheory.length
-        : 0;
+  // Ensure that theory and practical are arrays
+  const theoryArray = Array.isArray(theory) ? theory : [];
+  const practicalArray = Array.isArray(practical) ? practical : [];
 
-    const avgPractical =
-      totalPractical.length > 0
-        ? totalPractical.reduce((acc, feedback) => acc + feedback.finalTotal, 0) /
-          totalPractical.length
-        : 0;
-
-    // Determine final total based on available data
-    const finalTotal =
-      avgTheory > 0 && avgPractical > 0
-        ? (avgTheory + avgPractical) / 2
-        : avgTheory > 0
-        ? avgTheory
-        : avgPractical > 0
-        ? avgPractical
-        : null;
-
-    if (finalTotal !== null) {
-      // Create page content
-      const pageContent = (
-        <Page key={currentPage} style={styles.page}>
-          <View style={styles.row}>
-            <Text style={styles.facultyName}>{facultyName}</Text>
-            <View style={styles.finalAverage}>
-              <Text style={styles.finalTotalText}>
-                Final Total: {finalTotal.toFixed(2)}%
-              </Text>
-              {avgTheory > 0 && (
-                <Text style={styles.theoryText}>
-                  Theory: {avgTheory.toFixed(2)}%
-                </Text>
-              )}
-              {avgPractical > 0 && (
-                <Text style={styles.practicalText}>
-                  Practical: {avgPractical.toFixed(2)}%
-                </Text>
-              )}
-            </View>
-          </View>
-          {avgTheory > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.header}>Theory Feedback</Text>
-              <View style={styles.table}>
-                <View style={styles.tableRow}>
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      styles.tableCellHeader,
-                      styles.questionCell,
-                    ]}
-                  >
-                    Question
-                  </Text>
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      styles.tableCellHeader,
-                      styles.scoreCell,
-                    ]}
-                  >
-                    Average Score
-                  </Text>
-                </View>
-                {totalTheory.map((feedback, idx) =>
-                  Object.entries(feedback.responses).map(
-                    ([question, avgScore], i) => (
-                      <View style={styles.tableRow} key={i}>
-                        <Text style={[styles.tableCell, styles.questionCell]}>
-                          {question}
-                        </Text>
-                        <Text style={[styles.tableCell, styles.scoreCell]}>
-                          {avgScore}
-                        </Text>
-                      </View>
-                    )
-                  )
-                )}
-              </View>
-            </View>
-          )}
-          {avgPractical > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.header}>Practical Feedback</Text>
-              <View style={styles.table}>
-                <View style={styles.tableRow}>
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      styles.tableCellHeader,
-                      styles.questionCell,
-                    ]}
-                  >
-                    Question
-                  </Text>
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      styles.tableCellHeader,
-                      styles.scoreCell,
-                    ]}
-                  >
-                    Average Score
-                  </Text>
-                </View>
-                {totalPractical.map((feedback, idx) =>
-                  Object.entries(feedback.responses).map(
-                    ([question, avgScore], i) => (
-                      <View style={styles.tableRow} key={i}>
-                        <Text style={[styles.tableCell, styles.questionCell]}>
-                          {question}
-                        </Text>
-                        <Text style={[styles.tableCell, styles.scoreCell]}>
-                          {avgScore}
-                        </Text>
-                      </View>
-                    )
-                  )
-                )}
-              </View>
-            </View>
-          )}
-          <View style={styles.footer}>
-            <Text style={styles.footerLine}>Report generated by RIAS</Text>
-            <Text>Developed by CSE Department</Text>
-          </View>
-        </Page>
-      );
-
-      pages.push(pageContent);
-      currentPage++;
+  // Combine theory and practical feedback for each faculty member
+  const combinedFeedback = {};
+  theoryArray.forEach(item => {
+    if (!combinedFeedback[item.facultyName]) {
+      combinedFeedback[item.facultyName] = { theory: item, practical: [] };
+    } else {
+      combinedFeedback[item.facultyName].theory = item;
     }
   });
 
-  return <Document>{pages}</Document>;
+  practicalArray.forEach(item => {
+    if (combinedFeedback[item.facultyName]) {
+      combinedFeedback[item.facultyName].practical.push(item);
+    } else {
+      combinedFeedback[item.facultyName] = { theory: null, practical: [item] };
+    }
+  });
+
+ // Calculate final average
+ const calculateFinalAverage = (theoryAverage, practicalArray) => {
+  const practicalAverages = practicalArray.map(item => parseFloat(item.practicalAverage.replace('%', '')));
+  const practicalAverage = practicalAverages.length > 0 ? practicalAverages.reduce((acc, avg) => acc + avg, 0) / practicalAverages.length : null;
+  if (theoryAverage !== null && practicalAverage !== null) {
+    return calculatePercentage((parseFloat(theoryAverage.replace('%', '')) + practicalAverage) / 50);
+  }
+  return theoryAverage !== null ? theoryAverage : practicalAverage;
+};
+
+  return (
+    <Document>
+      {Object.keys(combinedFeedback).map(facultyName => {
+         const feedback = combinedFeedback[facultyName];
+         const theoryAverage = feedback.theory ? feedback.theory.theoryAverage : null;
+         const finalAverage = calculateFinalAverage(theoryAverage, feedback.practical);
+        return (
+          <Page key={facultyName} style={styles.page}>
+            <View style={styles.section}>
+              <Text style={styles.header}>Feedback Statistics</Text>
+              <Text style={styles.facultyName}>
+                Faculty: {facultyName}
+              </Text>
+
+              {/* Theory Feedback */}
+              {feedback.theory && (
+                <View style={styles.section}>
+                  <Text style={styles.title}>Theory Feedback</Text>
+                  <Text>Subjects: {feedback.theory.subjectNames.join(", ")}</Text>
+                  <Text>Theory Average: {feedback.theory.theoryAverage}</Text>
+                  <Text>Final Average: {finalAverage ? finalAverage : "N/A"}</Text>
+                  
+                  
+
+                  <View style={styles.table}>
+                    <View style={styles.tableRow}>
+                      <Text style={[styles.tableCell, styles.tableCellHeader, styles.questionCell]}>
+                        Question
+                      </Text>
+                      {feedback.theory.subjectNames.map((subject, index) => (
+                        <Text key={index} style={[styles.tableCell, styles.tableCellHeader, styles.scoreCell]}>
+                          {subject}
+                        </Text>
+                      ))}
+                    </View>
+                    {Object.entries(feedback.theory.responses).map(([question, responses]) => (
+                      <View key={question} style={styles.tableRow}>
+                        <Text style={[styles.tableCell, styles.questionCell]}>
+                          {question}
+                        </Text>
+                        {responses.map((response, index) => (
+                          <Text key={index} style={[styles.tableCell, styles.scoreCell]}>
+                            {response}
+                          </Text>
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
+
+              {/* Practical Feedback */}
+              {feedback.practical.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.title}>Practical Feedback</Text>
+                  {feedback.practical.map((item, index) => (
+                    <View key={index}>
+                      <Text>Subjects: {item.subjectNames.join(", ")}</Text>
+                      <Text>Practical Average: {item.practicalAverage}</Text>
+                      
+
+                      <View style={styles.table}>
+                        <View style={styles.tableRow}>
+                          <Text style={[styles.tableCell, styles.tableCellHeader, styles.questionCell]}>
+                            Question
+                          </Text>
+                          {item.subjectNames.map((subject, index) => (
+                            <Text key={index} style={[styles.tableCell, styles.tableCellHeader, styles.scoreCell]}>
+                              {subject}
+                            </Text>
+                          ))}
+                        </View>
+                        {Object.entries(item.responses).map(([question, responses]) => (
+                          <View key={question} style={styles.tableRow}>
+                            <Text style={[styles.tableCell, styles.questionCell]}>
+                              {question}
+                            </Text>
+                            {responses.map((response, index) => (
+                              <Text key={index} style={[styles.tableCell, styles.scoreCell]}>
+                                {response}
+                              </Text>
+                            ))}
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+             
+            </View>
+
+            <View style={styles.footer}>
+              <Text style={styles.footerLine}>Generated by RIAS System</Text>
+            </View>
+          </Page>
+        );
+      })}
+    </Document>
+  );
 };
 
 export default FeedbackPDF;

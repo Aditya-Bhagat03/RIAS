@@ -5,8 +5,6 @@ import DashboardIcon from "../../assets/grid.svg";
 import TimetablesIcon from "../../assets/tt.svg";
 import FeedbackIcon from "../../assets/feedback.svg";
 import ReportsIcon from "../../assets/report.svg";
-import SurveysIcon from "../../assets/survey.svg";
-import AntiRaggingIcon from "../../assets/ragging.svg";
 import RewardsIcon from "../../assets/reward.svg";
 import SettingsIcon from "../../assets/Subject Analysis.svg";
 import LogoutIcon from "../../assets/log-out.svg";

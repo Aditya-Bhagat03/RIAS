@@ -21,7 +21,7 @@
   top: 61px; /* Adjusted to be 1 inch below the upper navbar */
   height: 100%; /* Full height minus the navbar height */
   width: 250px; /* Default width when open */
-  transition: width 0.4s ease; /* Smooth transition for width change */
+  transition: width 10s ease; /* Smooth transition for width change */
   white-space: nowrap;
   z-index: 1;
   box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1); /* Shadow on the right side */

@@ -211,6 +211,9 @@ For full API documentation, visit [API Docs](https://drive.google.com/file/d/1x-
 ### Student Timetable Mapping page
 ![Student Dashboard](./frontend/src/assets/StudentMapping%20&%20Timetable%20page.png)
 
+### Student Feedback page
+![Student Dashboard](./frontend/src/assets/student%20feedback.png)
+
 ### Faculty Dashboard
 ### Faculty Mapping Subject and Faculty to student Manually
 ![Faculty Dashboard](./frontend/src/assets/Facullty%20Mapping%20Manually.png)

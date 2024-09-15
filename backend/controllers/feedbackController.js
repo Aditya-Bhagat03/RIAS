@@ -64,7 +64,7 @@ exports.submitPracticalFeedback = async (req, res) => {
     }
 
     // Define the required fields for feedback entries
-    const requiredFields = ['facultyName', 'courseName', 'branch', 'section', 'semester', 'batch', 'subjectName', 'courseCode', 'responses'];
+    const requiredFields = ['facultyName', 'courseName', 'branch', 'section', 'semester', 'batch', 'subjectName', 'courseCode','time', 'responses'];
 
     // Check if all feedback entries have the required fields and are not empty
     const areEntriesValid = feedbackEntries.every(entry =>

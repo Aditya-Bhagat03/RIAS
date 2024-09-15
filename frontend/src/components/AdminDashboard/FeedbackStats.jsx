@@ -71,7 +71,7 @@ const FeedbackStats = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const { semester, branch, type, subject, course, faculty } = selectedFilters;
+      const { semester, branch, type, subject, course, faculty, } = selectedFilters;
       const params = {
         semester,
         branch,
@@ -106,7 +106,6 @@ const FeedbackStats = () => {
     return calculatePercentage(totalScore / count);
   };
 
-  // Function to aggregate feedbacks
   const aggregateFeedbacks = (feedbacks) => {
     if (!Array.isArray(feedbacks)) {
       console.error('Expected feedbacks to be an array.');
@@ -119,13 +118,14 @@ const FeedbackStats = () => {
     };
 
     feedbacks.forEach((feedback) => {
-      const { facultyName, subjectName, courseCode, type, responses } = feedback;
+      const { facultyName, subjectName, courseCode, type, time, responses } = feedback;
       const category = type === 'theory' ? 'theory' : 'practical';
 
       if (!aggregated[category][facultyName]) {
         aggregated[category][facultyName] = {
           subjects: new Set(),
           courseCodes: new Set(),
+          times: new Set(), // Changed from 'time' to 'times'
           responses: {},
           totalScore: 0,
           count: 0
@@ -134,6 +134,7 @@ const FeedbackStats = () => {
 
       aggregated[category][facultyName].subjects.add(subjectName);
       aggregated[category][facultyName].courseCodes.add(courseCode);
+      aggregated[category][facultyName].times.add(time); // Add time
 
       Object.entries(responses).forEach(([question, score]) => {
         const cleanQuestionText = cleanQuestion(question);
@@ -172,6 +173,7 @@ const FeedbackStats = () => {
         return {
           facultyName,
           subjectNames,
+          times: Array.from(facultyData.times), // Added times
           courseCodes: Array.from(facultyData.courseCodes),
           responses: averageResponses,
           theoryAverage
@@ -197,16 +199,16 @@ const FeedbackStats = () => {
           facultyName,
           subjectNames,
           courseCodes: Array.from(facultyData.courseCodes),
+          times: Array.from(facultyData.times), // Added times
           responses: averageResponses,
           practicalAverage
         };
       })
     };
 
-
-
-    setAggregatedData({ ...result, });
+    setAggregatedData({ ...result });
   };
+
 
   // Function to parse percentage from a string
   const parsePercentage = (percentageString) => {
@@ -316,31 +318,31 @@ const FeedbackStats = () => {
         </div>
 
         <div className={styles.buttonContainer}>
-          <button onClick={handleFilterApply} className={styles.applyButton}>
+          <button onClick={handleFilterApply} className={styles.filterButton}>
             Apply Filters
           </button>
-         
 
-            {showPDFLink && (
-              <div className={styles.pdfLinkContainer}>
-                <PDFDownloadLink
-                  document={<FeedbackPDF data={aggregatedData} />}
-                  fileName="FeedbackStatistics.pdf"
-                >
-                  {({ loading }) =>
-                    loading ? (
-                      <button className={styles.pdfButton} disabled>
-                        Generating PDF...
-                      </button>
-                    ) : (
-                      <button className={styles.pdfButton}>Download PDF</button>
-                    )
-                  }
-                </PDFDownloadLink>
-              </div>
-            )}
 
-        
+          {showPDFLink && (
+            <div className={styles.pdfLinkContainer}>
+              <PDFDownloadLink
+                document={<FeedbackPDF data={aggregatedData} />}
+                fileName="FeedbackStatistics.pdf"
+              >
+                {({ loading }) =>
+                  loading ? (
+                    <button className={styles.pdfButton} disabled>
+                      Generating PDF...
+                    </button>
+                  ) : (
+                    <button className={styles.pdfButton}>Download PDF</button>
+                  )
+                }
+              </PDFDownloadLink>
+            </div>
+          )}
+
+
 
 
         </div>
@@ -353,29 +355,39 @@ const FeedbackStats = () => {
 
               return (
                 <div key={facultyName} className={styles.questioncard}>
-                  <h3>Faculty: {facultyName}</h3>
+
 
 
                   {data.theory && (
                     <div className={styles.feedbackSection}>
-                      <h4>Theory Feedback</h4>
-                      <h5>Theory Subject: {data.theory.subjectNames.join(", ")}</h5>
+                      <div> 
+                        <h3 style={{ display: 'inline', marginRight: '250px' }}  >Theory Feedback</h3>
+                        <h3 style={{ display: 'inline', marginRight: '80px' }}  >Faculty: {facultyName}</h3></div>
+                      
 
-                      {/* Display Theory Average */}
-                      {data.theory.theoryAverage && (
-                        <p><strong>Theory Average:</strong> {data.theory.theoryAverage}</p>
-                      )}
 
-                      {/* Display Final Average */}
-                      {data.overallAverage && (
-                        <p><strong>Final Average:</strong> {data.overallAverage}</p>
-                      )}
+                      <div style={{ marginTop: '20px' }}>
+                      <h5 style={{ display: 'inline', marginRight: '80px' }}  >Theory Subject: {data.theory.subjectNames.join(", ")}</h5>
+                        {data.theory.theoryAverage && (
+                          <p style={{ display: 'inline', marginRight: '80px' }}>
+                            <strong>Theory Average:</strong> {data.theory.theoryAverage}
+                          </p>
+                        )}
+
+
+                        {data.overallAverage && (
+                          <p style={{ display: 'inline' }}>
+                            <strong>Final Average:</strong> {data.overallAverage}
+                          </p>
+                        )}
+                      </div>
+
 
 
 
 
                       <div className={styles.feedbackTable}>
-                        <table>
+                        <table className={styles.feedbackTable}>
                           <thead>
                             <tr>
                               <th>Question</th>
@@ -400,18 +412,22 @@ const FeedbackStats = () => {
                   )}
 
                   {data.practical.length > 0 && (
-                    <div className={styles.feedbackSection}>
-                      <h4>Practical Feedback</h4>
+                    <div className={styles.feedbackSection} >
+                      
 
-                      {/* Display Practical Average */}
-                      {data.practical[0].practicalAverage && (
-                        <p><strong>Practical Average:</strong> {data.practical[0].practicalAverage}</p>
-                      )}
+
 
                       {data.practical.map((practicalFeedback, index) => (
                         <div key={index} className={styles.feedbackTable}>
-                          <h5>Practical Feedback for {practicalFeedback.subjectNames.join(", ")}</h5>
-                          <table>
+                          <div style={{ marginTop: '80px' }} >
+                          <h3 style={{ display: 'inline', marginRight: '110px' }}>Practical Feedback</h3>
+                            <h4 style={{ display: 'inline', marginRight: '80px' }} >Practical Subjects:  <span></span> {practicalFeedback.subjectNames.join(", ")}</h4>
+                            {/* Display Practical Average */}
+                            {data.practical[0].practicalAverage && (
+                              <p style={{ display: 'inline', marginRight: '80px' }} ><strong>Practical Average:</strong> {data.practical[0].practicalAverage}</p>
+                            )}</div>
+
+                          <table className={styles.feedbackTable}>
                             <thead>
                               <tr>
                                 <th>Question</th>

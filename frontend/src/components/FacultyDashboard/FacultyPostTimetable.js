@@ -181,22 +181,26 @@ const FacultyPostTimetable = () => {
     const fetchTimetables = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/timetables"
+          "https://rias-copy.vercel.app/api/timetables"
         );
         setTimetables(response.data);
-        setFilteredTimetables(response.data);
+        setFilteredTimetables(response.data); // Initially display all timetables
       } catch (error) {
         console.error("Error fetching timetables:", error);
-        setError("Failed to load timetables.");
+        setError("Failed to load timetables. Please try again later.");
       }
     };
-
-    // Fetch timetables every second
-    const intervalId = setInterval(fetchTimetables, 1000);
-
+  
+    // Fetch timetables on component mount
+    fetchTimetables();
+  
+    // Poll every 30 seconds
+    const intervalId = setInterval(fetchTimetables, 30000);
+  
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, []); // Empty dependency array ensures this runs once on mount
+  
 
   useEffect(() => {
     const filtered = timetables.filter((timetable) => {

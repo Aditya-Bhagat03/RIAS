@@ -10,6 +10,7 @@ const feedbackSchema = new mongoose.Schema({
   batch: { type: String, required: true },
   subjectName: { type: String, required: true },
   courseCode: { type: String, required: true },
+  time: { type: String, required: true },
   type: { type: String, required: true }, // Theory or Practical
   responses: {
     type: Map,

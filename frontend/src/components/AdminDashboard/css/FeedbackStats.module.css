@@ -164,9 +164,10 @@
 
 /* Style for feedback table */
 .feedbackTable {
-  width: 1150px;
+
   border-collapse: collapse;
   margin-top: 20px;
+  width: 100%;
 
 }
 
@@ -183,6 +184,9 @@
 
 .feedbackTable th {
   background-color: #f4f4f4;
+  max-width: 200px;
+  min-width: 80px;
+  font-size: 12px;
 }
 
 .feedbackTable .questionColumn {
@@ -191,13 +195,15 @@
 }
 
 .feedbackTable .scoreColumn {
-  width: 100px;
+  max-width: 100px;
+  min-width: 80px;
   /* 20% width for Average Score column */
 }
 
 /* Style for feedback table wrapper */
 .feedbackTableWrapper {
   max-height: 450px;
+  max-width: 100%;
   /* Adjust as needed */
   overflow-y: auto;
   /* Add vertical scroll bar */
@@ -205,7 +211,7 @@
   /* Hide horizontal scroll bar if not needed */
   margin-top: 20px;
   align-items: flex-start;
-  max-width: 100%;
+
   display: block;
 }
 

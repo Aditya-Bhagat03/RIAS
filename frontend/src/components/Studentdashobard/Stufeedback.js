@@ -215,6 +215,7 @@ const FeedbackForm = () => {
           batch: item.batch,
           subjectName: item.subjectName,
           courseCode: item.courseCode,
+          time: item.time,
           responses: questions.reduce(
             (acc, question, questionIndex) => ({
               ...acc,

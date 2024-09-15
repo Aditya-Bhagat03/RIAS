@@ -18,15 +18,17 @@
 .sidebar {
   background-color: var(--bg-sidebar);
   position: fixed;
-  top: 61px; /* Adjusted to be 1 inch below the upper navbar */
-  height: 100%; /* Full height minus the navbar height */
-  width: 250px; /* Default width when open */
-  transition: width 10s ease; /* Smooth transition for width change */
+  top: 61px;
+  height: 100%;
+  width: 80px; /* Adjusted width when closed */
+  transition: width 0.4s ease; 
   white-space: nowrap;
   z-index: 1;
-  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1); /* Shadow on the right side */
-  border-radius: 0 10px 10px 0; /* Rounded corners on the right */
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 0 10px 10px 0;
+  overflow: hidden; /* Ensure content does not overflow */
 }
+
 
 .sidebar.closed {
   width: 80px; /* Width when closed */
@@ -147,10 +149,11 @@ header .sidebar-title {
   left: 0;
   top: 0;
   height: 100%;
-  width: 50px; /* Adjust as needed to cover the hover area */
+  width: 50px; /* Adjust if necessary */
   background: transparent;
   z-index: 0; /* Ensure it's behind the sidebar */
 }
+
 
 
 

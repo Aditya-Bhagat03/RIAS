@@ -1,7 +1,6 @@
 .student-dashboard-feedback-card {
   position: relative;
-  width: 100%;
-  width: 1400px; /* Max width constraint */
+  width: 1800px,100%;
   height: 100%; /* Initial height */
   padding: 20px;
   border: 1px solid #ccc;
@@ -10,6 +9,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 80px auto;
   margin-left: -50px;
+  margin-right: -140px;
   margin-top: 3.5%;
   overflow-y: auto;
   resize: both; /* Allows resizing in both width and height */
@@ -18,6 +18,33 @@
   min-height: 600px; /* Minimum height constraint */
 }
 
+/* Media query for smaller screens */
+@media screen and (max-width: 1400px) {
+  .student-dashboard-feedback-card {
+    max-width: 1200px;
+    max-height: 800px; /* Set to reduce based on screen size */
+    padding: 15px;
+    margin-left: auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .student-dashboard-feedback-card {
+    max-width: 700px;
+    max-height: 500px; /* Adjust height accordingly */
+    padding: 10px;
+    margin-left: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .student-dashboard-feedback-card {
+    max-width: auto;
+    max-height: 300px; /* Set max height for small screens */
+    padding: 8px;
+    margin-left: auto;
+  }
+}
 
 
 

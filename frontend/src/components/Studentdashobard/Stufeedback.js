@@ -46,56 +46,56 @@ const FeedbackForm = () => {
   const navigate = useNavigate(); // Define useNavigate
 
   function enableDragging() {
-    const card = document.querySelector('.student-dashboard-feedback-card');
+    const card = document.querySelector(".student-dashboard-feedback-card");
     if (card) {
       let isDragging = false;
       let offsetX, offsetY;
-  
+
       // Mouse down event
-      card.addEventListener('mousedown', (e) => {
-        if (e.ctrlKey) { // Check if Ctrl key is pressed
+      card.addEventListener("mousedown", (e) => {
+        if (e.ctrlKey) {
+          // Check if Ctrl key is pressed
           isDragging = true;
           offsetX = e.clientX - card.getBoundingClientRect().left;
           offsetY = e.clientY - card.getBoundingClientRect().top;
-          card.style.cursor = 'grabbing'; // Change cursor to grabbing
+          card.style.cursor = "grabbing"; // Change cursor to grabbing
           e.preventDefault(); // Prevent default action to avoid any interference
         }
       });
-  
+
       // Mouse move event
-      document.addEventListener('mousemove', (e) => {
+      document.addEventListener("mousemove", (e) => {
         if (isDragging) {
           const left = e.clientX - offsetX;
           const top = e.clientY - offsetY;
-  
+
           // Update card's position
           card.style.left = `${Math.max(0, left)}px`; // Ensure card stays within viewport bounds
           card.style.top = `${Math.max(0, top)}px`; // Ensure card stays within viewport bounds
         }
       });
-  
+
       // Mouse up event
-      document.addEventListener('mouseup', () => {
+      document.addEventListener("mouseup", () => {
         if (isDragging) {
           isDragging = false;
-          card.style.cursor = 'grab'; // Change cursor back to grab
+          card.style.cursor = "grab"; // Change cursor back to grab
         }
       });
-  
+
       // Key up event to reset dragging state if Ctrl is released
-      document.addEventListener('keyup', (e) => {
-        if (e.key === 'Control') {
+      document.addEventListener("keyup", (e) => {
+        if (e.key === "Control") {
           isDragging = false;
-          card.style.cursor = 'grab'; // Change cursor back to grab
+          card.style.cursor = "grab"; // Change cursor back to grab
         }
       });
     }
   }
-  
+
   // Initialize dragging functionality
   enableDragging();
-  
-  
+
   // Define handleLogout
   const handleLogout = () => {
     localStorage.removeItem("token");

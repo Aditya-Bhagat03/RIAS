@@ -2,7 +2,8 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: url('../assets/bglogin.png') no-repeat center center;
+  background-color: #252323;
+  
 }
 
 /* Container for the entire register page */
@@ -12,6 +13,11 @@ body {
   align-items: center;
   height: 100vh;
   background: url('../assets/bglogin.png') no-repeat center center;
+  background-size: cover;
+  margin-left: -14%; /* Adjust as needed */
+  margin-top: -2%; /* Adjust as needed */
+  margin-right: -14%;
+  
 }
 
 /* Container for the card elements */

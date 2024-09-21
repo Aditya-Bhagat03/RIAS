@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   mobileNumber: { type: String },
-  registrationNumber: { type: String, unique: true},
+  registrationNumber: { type: String },
   semester: { type: String },
   branch: { type: String },
   section: { type: String },
@@ -15,12 +15,12 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, required: true },
   session: { type: String }, // Added session field
   academicyear: { type: String }, // Added academicYear field
-  isApproved: { type: Boolean, default: false }
+  isApproved: { type: Boolean, default: false },
 });
 
 // Hash password before saving
-UserSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();
@@ -31,4 +31,4 @@ UserSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -16,7 +16,7 @@
     background-color: #252323;
     border-radius: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    max-width: 120%;
     height: 800px; /* Adjusted for dynamic content */
     box-sizing: border-box;
     margin-top: 50px;
@@ -44,8 +44,8 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin: 10px;
     box-sizing: border-box;
-    width: 600px; /* Fixed width */
-    max-width: 100%; /* Ensure responsiveness */
+    width: 500px; /* Fixed width */
+    max-width: 50%; /* Ensure responsiveness */
     height: auto; /* Dynamic height */
     overflow-y: auto; /* Allows scrolling if content overflows */
     color: #ddd;

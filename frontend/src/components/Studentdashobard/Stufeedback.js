@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./CSS/Stufeedback.css";
 
 const theoryQuestions = [
@@ -45,19 +45,67 @@ const FeedbackForm = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const navigate = useNavigate(); // Define useNavigate
 
-
-
-
+  function enableDragging() {
+    const card = document.querySelector('.student-dashboard-feedback-card');
+    if (card) {
+      let isDragging = false;
+      let offsetX, offsetY;
+  
+      // Mouse down event
+      card.addEventListener('mousedown', (e) => {
+        if (e.ctrlKey) { // Check if Ctrl key is pressed
+          isDragging = true;
+          offsetX = e.clientX - card.getBoundingClientRect().left;
+          offsetY = e.clientY - card.getBoundingClientRect().top;
+          card.style.cursor = 'grabbing'; // Change cursor to grabbing
+          e.preventDefault(); // Prevent default action to avoid any interference
+        }
+      });
+  
+      // Mouse move event
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          const left = e.clientX - offsetX;
+          const top = e.clientY - offsetY;
+  
+          // Update card's position
+          card.style.left = `${Math.max(0, left)}px`; // Ensure card stays within viewport bounds
+          card.style.top = `${Math.max(0, top)}px`; // Ensure card stays within viewport bounds
+        }
+      });
+  
+      // Mouse up event
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          card.style.cursor = 'grab'; // Change cursor back to grab
+        }
+      });
+  
+      // Key up event to reset dragging state if Ctrl is released
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'Control') {
+          isDragging = false;
+          card.style.cursor = 'grab'; // Change cursor back to grab
+        }
+      });
+    }
+  }
+  
+  // Initialize dragging functionality
+  enableDragging();
+  
+  
   // Define handleLogout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    navigate('/login'); // Use navigate to redirect to login
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login"); // Use navigate to redirect to login
   };
 
   const validateForm = () => {
     let errors = {};
-  
+
     // Validate theory questions
     theoryQuestions.forEach((question, questionIndex) => {
       filteredTheoryTimetable.forEach((item, timetableIndex) => {
@@ -68,7 +116,7 @@ const FeedbackForm = () => {
         }
       });
     });
-  
+
     // Validate practical questions
     practicalQuestions.forEach((question, questionIndex) => {
       filteredPracticalTimetable.forEach((item, timetableIndex) => {
@@ -79,13 +127,12 @@ const FeedbackForm = () => {
         }
       });
     });
-  
+
     setValidationErrors(errors);
-  
+
     // Return true if there are no validation errors
     return Object.keys(errors).length === 0;
   };
-  
 
   // Fetch profile data
   const fetchProfileData = async () => {
@@ -629,26 +676,26 @@ const FeedbackForm = () => {
             </div>
           )}
           {success && (
-        <div className="student-dashboard-popup student-dashboard-success-popup">
-          <div className="student-dashboard-popup-content">
-            <p>{success}</p>
-            <div className="student-dashboard-popup-buttons">
-              <button
-                onClick={() => setSuccess('')}
-                className="student-dashboard-popup-button"
-              >
-                OK
-              </button>
-              <button
-                onClick={handleLogout} // Call handleLogout when clicking Logout
-                className="student-dashboard-popup-button student-dashboard-logout-button"
-              >
-                Logout
-              </button>
+            <div className="student-dashboard-popup student-dashboard-success-popup">
+              <div className="student-dashboard-popup-content">
+                <p>{success}</p>
+                <div className="student-dashboard-popup-buttons">
+                  <button
+                    onClick={() => setSuccess("")}
+                    className="student-dashboard-popup-button"
+                  >
+                    OK
+                  </button>
+                  <button
+                    onClick={handleLogout} // Call handleLogout when clicking Logout
+                    className="student-dashboard-popup-button student-dashboard-logout-button"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
         </div>
       </div>
     </div>

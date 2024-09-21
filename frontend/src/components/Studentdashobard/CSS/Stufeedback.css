@@ -1,29 +1,27 @@
 .student-dashboard-feedback-card {
   position: relative;
   width: 100%;
-  max-width: 1400px;
-  height: 610px;
+  width: 1400px; /* Max width constraint */
+  height: 100%; /* Initial height */
   padding: 20px;
   border: 1px solid #ccc;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 80px auto;
-  margin-left: 80px;
-  margin-top: 50px;
+  margin-left: -50px;
+  margin-top: 3.5%;
   overflow-y: auto;
+  resize: both; /* Allows resizing in both width and height */
+  overflow: auto; /* Adds scrollbars if content overflows */
+  min-width: 600px; /* Minimum width constraint */
+  min-height: 600px; /* Minimum height constraint */
 }
 
-.student-dashboard-feedback-content {
-  max-height: calc(100% - 100px);
-  /* Adjust height based on card padding and other elements */
-}
 
-.student-dashboard-feedback-form-container {
-  margin-top: 20px;
-  max-height: calc(100% - 200px);
-  /* Adjust height based on card padding and other elements */
-}
+
+
+
 
 .student-dashboard-submit-button {
   position: absolute;

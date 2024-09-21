@@ -2,15 +2,15 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import UpperNavbar from '../UpperNavbar';
 import Sidebar from '../Sidebar'; // Ensure this path is correct
-import './CSS/DashboardLayout.css'; // Add styles for layout
+import styles from './CSS/DashboardLayout.module.css'; // Import CSS module
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="dashboard-container">
+    <div className={styles.dashboardContainer}>
       <UpperNavbar />
-      <div className="main-layout">
+      <div className={styles.mainLayout}>
         <Sidebar />
-        <div className="main-content">
+        <div className={styles.mainContent}>
           {children}
           <Outlet /> {/* This will render the nested routes */}
         </div>

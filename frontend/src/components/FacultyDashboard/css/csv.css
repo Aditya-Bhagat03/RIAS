@@ -60,3 +60,20 @@
   color: #0e99d4;
   text-align: center;
 }
+
+
+
+
+
+
+
+
+
+.csv-select {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  font-size: 1rem;
+}

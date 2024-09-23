@@ -140,14 +140,14 @@ const FacultyPostTimetable = () => {
           subjectName,
           coursecode,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/semesters"),
-          axios.get("http://localhost:4000/api/branches"),
-          axios.get("http://localhost:4000/api/sections"),
-          axios.get("http://localhost:4000/api/facultyname"),
+          axios.get("http://localhost:4000/api/facultyregister/semesters"),
+          axios.get("http://localhost:4000/api/facultyregister/branches"),
+          axios.get("http://localhost:4000/api/facultyregister/sections"),
+          axios.get("http://localhost:4000/api/facultyregister/facultyname"),
           axios.get("http://localhost:4000/api/users/academic-years"),
           axios.get("http://localhost:4000/api/users/session"),
-          axios.get("http://localhost:4000/api/users/subject-names"),
-          axios.get("http://localhost:4000/api/users/course-code"),
+          axios.get("http://localhost:4000/api/facultyregister/subjects"),
+          axios.get("http://localhost:4000/api/facultyregister/coursecodes"),
         ]);
 
         setSemesters(semestersRes.data);
@@ -281,8 +281,12 @@ const FacultyPostTimetable = () => {
               onChange={(e) => setSelectedAcademicYear(e.target.value)}
               required
             >
-              <option value="2025">3</option>
+              
               <option value="">Select Academic</option>
+              <option value="2025">2025</option>
+              <option value="2025">2026</option>
+              <option value="2025">2027</option>
+              <option value="2025">2028</option>
               {academicYears.map((year) => (
                 <option key={year} value={year}>
                   {year}

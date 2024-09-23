@@ -6,10 +6,15 @@ import './css/csv.css'; // Ensure this CSS file exists for styling
 const FacultyCsv = () => {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [uploadType, setUploadType] = useState('faculty'); // Default upload type
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+  };
+
+  const handleUploadTypeChange = (e) => {
+    setUploadType(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -24,7 +29,7 @@ const FacultyCsv = () => {
     formData.append('file', file);
   
     try {
-      const response = await axios.post('http://localhost:4000/api/csv/upload-timetable-csv', formData, {
+      const response = await axios.post(`http://localhost:4000/api/csv/upload-${uploadType}-csv`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -41,12 +46,15 @@ const FacultyCsv = () => {
       setMessage(errorMsg);
     }
   };
-  
 
   return (
     <div className="csv-container">
       <div className="csv-content">
-        <h2 className="csv-title">Upload Mapping CSV File</h2>
+        <h2 className="csv-title">Upload CSV File</h2>
+        <select onChange={handleUploadTypeChange} className="csv-select">
+          <option value="faculty">Faculty CSV</option>
+          <option value="timetable">Timetable CSV</option>
+        </select>
         <form onSubmit={handleSubmit} className="csv-form">
           <input
             type="file"

@@ -25,12 +25,23 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  type: {
+  batch: {
     type: String,
-    enum: ['Full-Time', 'Part-Time'],
     required: true
   },
-  batch: {
+  academicYear: {
+    type: String,
+    required: true
+  },
+  session: {
+    type: String,
+    required: true
+  },
+  room: {
+    type: String,
+    required: true
+  },
+  parentDepartment: {
     type: String,
     required: true
   }

@@ -10,9 +10,16 @@ const FacultyRegister = () => {
     branch: '',
     section: '',
     semester: '',
-    type: '',
-    batch: ''
+    batch: '',
+    academicYear: '',
+    session: '',
+    room: '',
+    parentDepartment: ''
   });
+
+  const [csvFile, setCsvFile] = useState(null); // State for the CSV file
+  const [alertMessage, setAlertMessage] = useState(''); // State for the alert message
+  const [showAlert, setShowAlert] = useState(false); // State for controlling the alert modal
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,11 +30,48 @@ const FacultyRegister = () => {
     e.preventDefault();
     try {
       await axios.post('http://localhost:4000/api/facultyregister/create/faculty', formData);
-      alert('Faculty registered successfully');
+      displayAlert('Faculty registered successfully');
     } catch (error) {
       console.error(error);
-      alert('Error registering faculty');
+      displayAlert('Error registering faculty');
     }
+  };
+
+  const handleCsvChange = (e) => {
+    setCsvFile(e.target.files[0]); // Set the selected file
+  };
+
+  const handleCsvUpload = async (e) => {
+    e.preventDefault();
+    if (!csvFile) {
+      displayAlert('Please select a CSV file to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', csvFile);
+
+    try {
+      await axios.post('http://localhost:4000/api/csv/upload-faculty-csv', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      displayAlert('Faculty data uploaded successfully from CSV');
+    } catch (error) {
+      console.error(error);
+      displayAlert('Error uploading faculty data from CSV');
+    }
+  };
+
+  const displayAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
+
+  const closeAlert = () => {
+    setShowAlert(false);
+    setAlertMessage('');
   };
 
   return (
@@ -90,9 +134,6 @@ const FacultyRegister = () => {
               className={styles.input}
             />
           </div>
-        </div>
-
-        <div className={styles.partition}>
           <div className={styles.field}>
             <label className={styles.label}>Semester:</label>
             <input
@@ -104,20 +145,9 @@ const FacultyRegister = () => {
               className={styles.input}
             />
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Type:</label>
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              required
-              className={styles.select}
-            >
-              <option value="">Select type</option>
-              <option value="Full-Time">Full-Time</option>
-              <option value="Part-Time">Part-Time</option>
-            </select>
-          </div>
+        </div>
+
+        <div className={styles.partition}>
           <div className={styles.field}>
             <label className={styles.label}>Batch:</label>
             <input
@@ -129,9 +159,76 @@ const FacultyRegister = () => {
               className={styles.input}
             />
           </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Academic Year:</label>
+            <input
+              type="text"
+              name="academicYear"
+              value={formData.academicYear}
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Session:</label>
+            <input
+              type="text"
+              name="session"
+              value={formData.session}
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Room:</label>
+            <input
+              type="text"
+              name="room"
+              value={formData.room}
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Parent Department:</label>
+            <input
+              type="text"
+              name="parentDepartment"
+              value={formData.parentDepartment}
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
           <button type="submit" className={styles.submit}>Register</button>
         </div>
       </form>
+
+      <h2 className={styles.header}>Upload Faculty CSV</h2>
+      <form onSubmit={handleCsvUpload} className={styles.form}>
+        <div className={styles.field}>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleCsvChange}
+            required
+            className={styles.input}
+          />
+        </div>
+        <button type="submit" className={styles.submitt}>Upload CSV</button>
+      </form>
+
+      {showAlert && (
+        <div className={styles.alert}>
+          <div className={styles.alertContent}>
+            <span>{alertMessage}</span>
+            <button onClick={closeAlert} className={styles.alertClose}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

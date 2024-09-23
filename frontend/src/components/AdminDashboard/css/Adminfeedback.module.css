@@ -29,6 +29,7 @@
     padding: 20px;
     margin: 10px;
     max-width: 95%;
+    max-height: 650px;
     /* Set a maximum height and enable scrolling */
     flex: 1;
     box-sizing: border-box;
@@ -111,6 +112,7 @@
     width: 1300px;
     border-collapse: collapse;
     margin-top: 20px;
+    max-height: 400px;
 
 }
 
@@ -141,7 +143,7 @@
 
 /* Style for feedback table wrapper */
 .feedbackTableWrapper {
-    max-height: auto, 350px;
+    max-height:  350px;
     /* Adjust as needed */
     overflow-y: auto;
     /* Add vertical scroll bar */
@@ -151,6 +153,7 @@
     align-items: flex-start;
     max-width: 100%;
     display: block;
+    overflow-y: y;
 }
 
 /* Style for delete button */

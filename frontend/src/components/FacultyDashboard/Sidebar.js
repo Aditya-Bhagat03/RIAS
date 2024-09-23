@@ -8,7 +8,7 @@ import ReportsIcon from "../../assets/report.svg";
 import SurveysIcon from "../../assets/survey.svg";
 import AntiRaggingIcon from "../../assets/ragging.svg";
 import RewardsIcon from "../../assets/reward.svg";
-import SettingsIcon from "../../assets/settings.svg";
+import SettingsIcon from "../../assets/facultyregistration.svg";
 import LogoutIcon from "../../assets/log-out.svg";
 import "../../css/Sidebar.css"; // Ensure path is correct
 
@@ -45,6 +45,14 @@ const Sidebar = () => {
               <img className="icon" src={TimetablesIcon} alt="Timetables" />
               <span className={`${isOpen ? "" : "hideElement"}`}>
                 Mapping Course
+              </span>
+            </Link>
+          </li>
+          <li className="timetables-link">
+            <Link to="/faculty-dashboard/faculty-register">
+              <img className="icon" src={ReportsIcon} alt="Timetables" />
+              <span className={`${isOpen ? "" : "hideElement"}`}>
+                Faculty Registration
               </span>
             </Link>
           </li>

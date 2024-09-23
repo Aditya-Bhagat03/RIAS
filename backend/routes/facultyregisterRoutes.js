@@ -6,6 +6,37 @@ const facultyregisterController = require('../controllers/facultyregisterControl
 // Register faculty
 router.post('/create/faculty', facultyregisterController.createFaculty);
 
-// Add other routes if needed
+// Fetch all faculty names
+router.get('/facultyname', facultyregisterController.getFacultyNames);
+
+// Fetch distinct subjects
+router.get('/subjects', facultyregisterController.getSubjects);
+
+// Fetch distinct course codes
+router.get('/coursecodes', facultyregisterController.getCourseCodes);
+
+// Fetch distinct branches
+router.get('/branches', facultyregisterController.getBranches);
+
+// Fetch distinct sections
+router.get('/sections', facultyregisterController.getSections);
+
+// Fetch distinct semesters
+router.get('/semesters', facultyregisterController.getSemesters);
+
+// Fetch distinct batches
+router.get('/batches', facultyregisterController.getBatches);
+
+// Fetch distinct academic years
+router.get('/academicyears', facultyregisterController.getAcademicYears);
+
+// Fetch distinct sessions
+router.get('/sessions', facultyregisterController.getSessions);
+
+// Fetch distinct rooms
+router.get('/rooms', facultyregisterController.getRooms);
+
+// Fetch distinct parent departments
+router.get('/parentdepartments', facultyregisterController.getParentDepartments);
 
 module.exports = router;

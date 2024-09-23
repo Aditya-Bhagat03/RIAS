@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const csv = require("csv-parser");
 const Timetable = require("../models/Timetable");
+const Faculty = require('../models/facultyModel'); // Import the Faculty model
 
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
@@ -144,5 +145,79 @@ exports.uploadTimetableCSV = async (req, res) => {
   } catch (err) {
       console.error(err.message);
       res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.uploadFacultyCSV = async (req, res) => {
+  try {
+    const results = [];
+
+    fs.createReadStream(req.file.path)
+      .pipe(csv())
+      .on("data", (data) => results.push(data))
+      .on("end", async () => {
+        for (const row of results) {
+          const {
+            facultyName,
+            subjectName,
+            courseCode,
+            branch,
+            section,
+            semester,
+            batch,
+            academicYear,
+            session,
+            room,
+            parentDepartment,
+          } = row;
+
+          const newFaculty = new Faculty({
+            facultyName,
+            subjectName,
+            courseCode,
+            branch,
+            section,
+            semester,
+            batch,
+            academicYear,
+            session,
+            room,
+            parentDepartment,
+            createdBy: req.user ? req.user._id : null, // Handle absence of req.user
+          });
+
+          await newFaculty.save();
+        }
+
+        res.status(201).json({ msg: "Faculty data uploaded successfully from CSV" });
+      });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
   }
 };

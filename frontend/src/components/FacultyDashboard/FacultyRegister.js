@@ -8,12 +8,9 @@ const FacultyRegister = () => {
     subjectName: '',
     courseCode: '',
     branch: '',
-    section: '',
     semester: '',
-    batch: '',
     academicYear: '',
     session: '',
-    room: '',
     parentDepartment: ''
   });
 
@@ -123,37 +120,15 @@ const FacultyRegister = () => {
               className={styles.input}
             />
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Section:</label>
-            <input
-              type="text"
-              name="section"
-              value={formData.section}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
+        </div>
+
+        <div className={styles.partition}>
           <div className={styles.field}>
             <label className={styles.label}>Semester:</label>
             <input
               type="text"
               name="semester"
               value={formData.semester}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-        </div>
-
-        <div className={styles.partition}>
-          <div className={styles.field}>
-            <label className={styles.label}>Batch:</label>
-            <input
-              type="text"
-              name="batch"
-              value={formData.batch}
               onChange={handleChange}
               required
               className={styles.input}
@@ -182,17 +157,6 @@ const FacultyRegister = () => {
             />
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>Room:</label>
-            <input
-              type="text"
-              name="room"
-              value={formData.room}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.field}>
             <label className={styles.label}>Parent Department:</label>
             <input
               type="text"
@@ -203,9 +167,10 @@ const FacultyRegister = () => {
               className={styles.input}
             />
           </div>
-          <button type="submit" className={styles.submit}>Register</button>
         </div>
       </form>
+      {/* Register button placed outside the form */}
+      <button onClick={handleSubmit} className={styles.submit}>Register</button>
 
       <h2 className={styles.header}>Upload Faculty CSV</h2>
       <form onSubmit={handleCsvUpload} className={styles.form}>

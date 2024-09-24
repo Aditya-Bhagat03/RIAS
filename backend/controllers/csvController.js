@@ -187,12 +187,13 @@ exports.uploadFacultyCSV = async (req, res) => {
             subjectName,
             courseCode,
             branch,
-            section,
             semester,
-            batch,
+
+
+
             academicYear,
             session,
-            room,
+
             parentDepartment,
           } = row;
 
@@ -201,12 +202,12 @@ exports.uploadFacultyCSV = async (req, res) => {
             subjectName,
             courseCode,
             branch,
-            section,
+
             semester,
-            batch,
+
             academicYear,
             session,
-            room,
+
             parentDepartment,
             createdBy: req.user ? req.user._id : null, // Handle absence of req.user
           });

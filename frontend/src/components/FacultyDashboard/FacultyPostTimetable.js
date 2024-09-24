@@ -140,9 +140,9 @@ const FacultyPostTimetable = () => {
           subjectName,
           coursecode,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/facultyregister/semesters"),
-          axios.get("http://localhost:4000/api/facultyregister/branches"),
-          axios.get("http://localhost:4000/api/facultyregister/sections"),
+          axios.get("http://localhost:4000/api/semesters"),
+          axios.get("http://localhost:4000/api/branches"),
+          axios.get("http://localhost:4000/api/sections"),
           axios.get("http://localhost:4000/api/facultyregister/facultyname"),
           axios.get("http://localhost:4000/api/users/academic-years"),
           axios.get("http://localhost:4000/api/users/session"),

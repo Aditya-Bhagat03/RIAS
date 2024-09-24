@@ -39,4 +39,13 @@ router.get('/rooms', facultyregisterController.getRooms);
 // Fetch distinct parent departments
 router.get('/parentdepartments', facultyregisterController.getParentDepartments);
 
+
+
+
+
+// Routes for faculty management
+router.get('/faculty', facultyregisterController.getAllFaculty);
+router.put('/faculty/edit/:id', facultyregisterController.editFaculty);
+router.delete('/faculty/delete/:id', facultyregisterController.deleteFaculty);
+
 module.exports = router;

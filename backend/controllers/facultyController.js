@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require("../models/User");
 
 // Get all users who are not approved
 const getUnapprovedUsers = async (req, res) => {
@@ -6,10 +6,9 @@ const getUnapprovedUsers = async (req, res) => {
     // Fetch users who are not approved
     const unapprovedUsers = await User.find({ isApproved: false });
     res.status(200).json(unapprovedUsers);
-
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ msg: 'Server error', error: err.message });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 
@@ -21,24 +20,22 @@ const approveUser = async (req, res) => {
     // Check if user exists
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ msg: "User not found" });
     }
 
     // Approve user if they are not already approved
     if (!user.isApproved) {
       user.isApproved = true;
       await user.save();
-      return res.status(200).json({ msg: 'User approved' });
+      return res.status(200).json({ msg: "User approved" });
     } else {
-      return res.status(400).json({ msg: 'User is already approved' });
+      return res.status(400).json({ msg: "User is already approved" });
     }
-
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ msg: 'Server error', error: err.message });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
-
 
 // Reject user by updating their approval status
 const rejectUser = async (req, res) => {
@@ -48,21 +45,20 @@ const rejectUser = async (req, res) => {
     // Check if user exists
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ msg: "User not found" });
     }
 
     // Reject user if they are not already rejected
     if (user.isApproved) {
       user.isApproved = false;
       await user.save();
-      return res.status(200).json({ msg: 'User rejected' });
+      return res.status(200).json({ msg: "User rejected" });
     } else {
-      return res.status(400).json({ msg: 'User is already rejected' });
+      return res.status(400).json({ msg: "User is already rejected" });
     }
-
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ msg: 'Server error', error: err.message });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 
@@ -70,5 +66,4 @@ module.exports = {
   getUnapprovedUsers,
   approveUser,
   rejectUser,
-
 };

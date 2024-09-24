@@ -10,9 +10,62 @@ exports.createFaculty = async (req, res) => {
     res.status(201).json({ message: 'Faculty registered successfully', data: newFaculty });
   } catch (error) {
     console.error(error); // Log error for debugging
+
+    // Check if the error is a duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({ message: 'Error registering faculty: Faculty name must be unique.', error: error.message });
+    }
+
+    // Handle other types of errors
     res.status(400).json({ message: 'Error registering faculty', error: error.message });
   }
 };
+
+// controllers/FacultyController.js
+
+
+// Get all faculty
+exports.getAllFaculty = async (req, res) => {
+  try {
+    const facultyList = await Faculty.find();
+    res.status(200).json(facultyList);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving faculty data', error });
+  }
+};
+
+// Edit a faculty member
+exports.editFaculty = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  try {
+    const updatedFaculty = await Faculty.findByIdAndUpdate(id, updatedData, { new: true });
+    if (!updatedFaculty) {
+      return res.status(404).json({ message: 'Faculty not found' });
+    }
+    res.status(200).json(updatedFaculty);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating faculty', error });
+  }
+};
+
+// Delete a faculty member
+exports.deleteFaculty = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedFaculty = await Faculty.findByIdAndDelete(id);
+    if (!deletedFaculty) {
+      return res.status(404).json({ message: 'Faculty not found' });
+    }
+    res.status(200).json({ message: 'Faculty deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting faculty', error });
+  }
+};
+
+
 
 
 // Fetch distinct faculty names

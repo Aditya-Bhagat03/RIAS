@@ -317,23 +317,23 @@ exports.getFeedbackAnalysisByFaculty = async (req, res) => {
 
 
 
-
-
-
 exports.getFeedbackAnalysisByBranch = async (req, res) => {
   try {
-    const { parentDepartment } = req.query;
+    const { parentDepartment, academicYear } = req.query;
 
     if (!parentDepartment) {
       return res.status(400).json({ message: "Branch is required" });
     }
 
-    const feedbacks = await Feedback.find({ parentDepartment });
+    if (!academicYear) {
+      return res.status(400).json({ message: "Academic Year is required" });
+    }
+
+    // Fetch feedbacks based on both the parentDepartment and academicYear
+    const feedbacks = await Feedback.find({ parentDepartment, academicYear });
 
     if (feedbacks.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No feedback found for the given parentDepartment" });
+      return res.status(404).json({ message: "No feedback found for the given parentDepartment and academic year" });
     }
 
     const facultyAnalysis = {};
@@ -345,9 +345,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
       const responsesObj = Object.fromEntries(responses);
 
       // Convert responses to a scale of 4
-      const scores = Object.values(responsesObj).map((score) =>
-        parseFloat(score)
-      );
+      const scores = Object.values(responsesObj).map((score) => parseFloat(score));
       const validScores = scores.filter((score) => !isNaN(score));
       const totalScore = validScores.reduce((acc, score) => acc + score, 0);
       const count = validScores.length;
@@ -367,8 +365,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
 
       facultyAnalysis[facultyName].totalScore += averageScore;
       facultyAnalysis[facultyName].count += 1;
-      facultyAnalysis[facultyName].totalQuestions +=
-        Object.keys(responsesObj).length;
+      facultyAnalysis[facultyName].totalQuestions += Object.keys(responsesObj).length;
       facultyAnalysis[facultyName].courses.add(courseName); // Add courseName to the set
     });
 
@@ -377,7 +374,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
       const facultyData = facultyAnalysis[facultyName];
       const averageScore =
         facultyData.count > 0
-          ? (facultyData.totalScore / facultyData.count).toPrecision(10)
+          ? (facultyData.totalScore / facultyData.count).toPrecision(4)
           : "0.0000"; // Use .toPrecision(4) to maintain four decimal places
       const averagePercentage =
         facultyData.count > 0
@@ -395,9 +392,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
 
     res.json({ facultyData: result });
   } catch (error) {
-    console.error("Error analyzing feedback by parentDepartment:", error);
-    res
-      .status(500)
-      .json({ message: "Error analyzing feedback by parentDepartment", error });
+    console.error("Error analyzing feedback by parentDepartment and academic year:", error);
+    res.status(500).json({ message: "Error analyzing feedback by parentDepartment and academic year", error });
   }
 };

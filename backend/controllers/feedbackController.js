@@ -64,7 +64,7 @@ exports.submitPracticalFeedback = async (req, res) => {
     }
 
     // Define the required fields for feedback entries
-    const requiredFields = ['facultyName', 'courseName', 'branch','parentDepartment', 'section', 'semester', 'batch', 'subjectName', 'courseCode','courseAbbreviation', 'responses'];
+    const requiredFields = ['facultyName', 'courseName', 'branch','parentDepartment', 'section', 'semester', 'batch', 'subjectName', 'courseCode','academicYear','courseAbbreviation', 'responses'];
 
     // Check if all feedback entries have the required fields and are not empty
     const areEntriesValid = feedbackEntries.every(entry =>
@@ -298,6 +298,26 @@ exports.getSectionsFromFeedbacks = async (req, res) => {
 
 
 
+exports.getAcademicYearsFromFeedbacks = async (req, res) => {
+  try {
+    const academicYears = await Feedback.distinct("academicYear");
+    if (academicYears.length > 0) {
+      res.json(academicYears);
+    } else {
+      res.status(404).json({ message: "No academic years found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching academic years from feedbacks", error });
+  }
+};
+
+
+
+
+
+
 
 
 exports.getSubjectNamesFromFeedbacks = async (req, res) => {
@@ -357,17 +377,15 @@ exports.getSubjectNamesFromFeedbacks = async (req, res) => {
 
 
 
-
 exports.getFilteredFeedback = async (req, res) => {
   try {
-    const { semester, parentDepartment, section, subjectName, courseName, facultyName } =
-      req.query;
+    const { semester, parentDepartment, academicYear, subjectName, courseName, facultyName } = req.query; // Corrected from academicYears to academicYear
 
     // Construct filter object
     const filter = {};
     if (semester) filter.semester = semester;
     if (parentDepartment) filter.parentDepartment = parentDepartment;
-    if (section) filter.section = section;
+    if (academicYear) filter.academicYear = academicYear; // Corrected key
     if (subjectName) filter.subjectName = subjectName;
     if (courseName) filter.courseName = courseName;
     if (facultyName) filter.facultyName = facultyName;
@@ -386,9 +404,7 @@ exports.getFilteredFeedback = async (req, res) => {
       res.status(404).json({ message: "No feedback found" });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching filtered feedback", error });
+    res.status(500).json({ message: "Error fetching filtered feedback", error });
   }
 };
 

@@ -6,56 +6,54 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const FeedbackStats = () => {
   const [semesters, setSemesters] = useState([]);
-  const [parentDepartmentes, setBranches] = useState([]);
-  const [types, setTypes] = useState([]);
+  const [parentDepartments, setBranches] = useState([]); // Fixed parentDepartmentes naming
+  const [academicYears, setAcademicYears] = useState([]); // Corrected to use academicYears
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
   const [faculties, setFaculties] = useState([]);
-  const [showPDFLink, setShowPDFLink] = useState(false);
+  const [showPDFLink, setShowPDFLink] = useState(false); // For PDF download visibility
 
   const [selectedFilters, setSelectedFilters] = useState({
     semester: sessionStorage.getItem('semester') || "",
     parentDepartment: "",
-    type: "",
+    academicYear: "", // Added correct academicYear key
     subject: "",
     course: "",
     faculty: "",
   });
+
   const [feedbacks, setFeedbacks] = useState([]);
   const [aggregatedData, setAggregatedData] = useState({
     theory: [],
     practical: []
   });
+
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
-
-
-
-
-
+  // Fetch all filter options: semesters, parentDepartments, academicYears, subjects, courses, faculties
   useEffect(() => {
     const fetchOptions = async () => {
       try {
         const [
           semestersRes,
-          parentDepartmentesRes,
-          typesRes,
+          parentDepartmentsRes,
+          academicYearsRes,
           subjectsRes,
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
           axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/parentdepartment"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/types"),
+          axios.get("http://localhost:4000/api/feedback/feedbacks/academicyear"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/subject-names"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/course-names"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/faculty-names"),
         ]);
 
         setSemesters(semestersRes.data);
-        setBranches(parentDepartmentesRes.data);
-        setTypes(typesRes.data);
+        setBranches(parentDepartmentsRes.data);
+        setAcademicYears(academicYearsRes.data); // Fixed the naming
         setSubjects(subjectsRes.data);
         setCourses(coursesRes.data);
         setFaculties(facultiesRes.data);
@@ -69,15 +67,17 @@ const FeedbackStats = () => {
     fetchOptions();
   }, []);
 
+  // Fetch feedback data based on selected filters
   const fetchFeedbacks = async () => {
     try {
-      const { semester, parentDepartment, type, subject, course, faculty, } = selectedFilters;
+      const { semester, parentDepartment, academicYear, subject, course, faculty } = selectedFilters;
       const params = {
         semester,
         parentDepartment,
-        type,
+        academicYear, // Use academicYear filter
         subjectName: subject,
         courseName: course,
+        academicYear:academicYear,
         facultyName: faculty,
       };
 
@@ -91,21 +91,25 @@ const FeedbackStats = () => {
       setMessageType("error");
     }
   };
-  // Define other functions
+
+  // Helper function to clean up the question text
   const cleanQuestion = (question) => {
     return question.replace(/^\d+_/, ''); // Remove the index prefix
   };
 
+  // Function to calculate the percentage based on a score out of total
   const calculatePercentage = (score, total = 4) => {
     if (total === 0) return "N/A"; // Handle division by zero
     return ((score / total) * 100).toFixed(0) + "%";
   };
 
+  // Function to calculate the average score
   const calculateAverage = (totalScore, count) => {
     if (count === 0) return "N/A"; // Handle zero count
     return calculatePercentage(totalScore / count);
   };
 
+  // Function to aggregate feedback data into theory and practical categories
   const aggregateFeedbacks = (feedbacks) => {
     if (!Array.isArray(feedbacks)) {
       console.error('Expected feedbacks to be an array.');
@@ -118,14 +122,14 @@ const FeedbackStats = () => {
     };
 
     feedbacks.forEach((feedback) => {
-      const { facultyName, subjectName, courseCode, type, time, responses } = feedback;
+      const { facultyName, subjectName, courseCode, type, time, responses } = feedback; // Use `type` instead of `academicyear`
       const category = type === 'theory' ? 'theory' : 'practical';
 
       if (!aggregated[category][facultyName]) {
         aggregated[category][facultyName] = {
           subjects: new Set(),
           courseCodes: new Set(),
-          times: new Set(), // Changed from 'time' to 'times'
+          times: new Set(),
           responses: {},
           totalScore: 0,
           count: 0
@@ -134,7 +138,7 @@ const FeedbackStats = () => {
 
       aggregated[category][facultyName].subjects.add(subjectName);
       aggregated[category][facultyName].courseCodes.add(courseCode);
-      aggregated[category][facultyName].times.add(time); // Add time
+      aggregated[category][facultyName].times.add(time);
 
       Object.entries(responses).forEach(([question, score]) => {
         const cleanQuestionText = cleanQuestion(question);
@@ -146,7 +150,6 @@ const FeedbackStats = () => {
         }
         aggregated[category][facultyName].responses[cleanQuestionText][subjectName].push(score);
 
-        // Update totalScore and count
         const subjectScores = aggregated[category][facultyName].responses[cleanQuestionText][subjectName];
         aggregated[category][facultyName].totalScore += subjectScores.reduce((sum, s) => sum + s, 0);
         aggregated[category][facultyName].count += subjectScores.length;
@@ -173,7 +176,7 @@ const FeedbackStats = () => {
         return {
           facultyName,
           subjectNames,
-          times: Array.from(facultyData.times), // Added times
+          times: Array.from(facultyData.times),
           courseCodes: Array.from(facultyData.courseCodes),
           responses: averageResponses,
           theoryAverage
@@ -199,7 +202,7 @@ const FeedbackStats = () => {
           facultyName,
           subjectNames,
           courseCodes: Array.from(facultyData.courseCodes),
-          times: Array.from(facultyData.times), // Added times
+          times: Array.from(facultyData.times),
           responses: averageResponses,
           practicalAverage
         };
@@ -209,27 +212,25 @@ const FeedbackStats = () => {
     setAggregatedData({ ...result });
   };
 
-
-  // Function to parse percentage from a string
+  // Function to parse a percentage from a string
   const parsePercentage = (percentageString) => {
     if (percentageString === "N/A") return NaN;
     return parseFloat(percentageString.replace('%', ''));
   };
 
-  // Rest of your component code
-
-
-
+  // Handle filter changes for dropdowns
   const handleFilterChange = (event) => {
     const { id, value } = event.target;
     setSelectedFilters((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Apply selected filters and fetch feedback data
   const handleFilterApply = () => {
     fetchFeedbacks();
-    setShowPDFLink(true);
+    setShowPDFLink(true); // Show PDF download option once filters are applied
   };
 
+  // Group feedback data for displaying in tables
   const groupedFeedbackData = () => {
     const groupedData = {};
 
@@ -272,12 +273,6 @@ const FeedbackStats = () => {
     return groupedData;
   };
 
-
-
-
-
-
-
   return (
     <div className={styles.container}>
       <div className={`${styles.feedbackCard} ${styles.scrollableContainer}`}>
@@ -290,11 +285,13 @@ const FeedbackStats = () => {
           </div>
         )}
 
+        {/* Dropdown filters */}
         <div className={styles.dropdownContainer}>
           {[
+            { id: "academicYear", label: "Academic Year", options: academicYears }, // Updated to academicYear
+            { id: "parentDepartment", label: "Branch", options: parentDepartments },
             { id: "semester", label: "Semester", options: semesters },
-            { id: "parentDepartment", label: "Branch", options: parentDepartmentes },
-            { id: "type", label: "Type", options: types },
+
             { id: "subject", label: "Subject", options: subjects },
             { id: "course", label: "Course", options: courses },
             { id: "faculty", label: "Faculty", options: faculties },
@@ -317,11 +314,11 @@ const FeedbackStats = () => {
           ))}
         </div>
 
+        {/* Apply filter button */}
         <div className={styles.buttonContainer}>
           <button onClick={handleFilterApply} className={styles.filterButton}>
             Apply Filters
           </button>
-
 
           {showPDFLink && (
             <div className={styles.pdfLinkContainer}>
@@ -341,39 +338,30 @@ const FeedbackStats = () => {
               </PDFDownloadLink>
             </div>
           )}
-
-
-
-
         </div>
 
+        {/* Results container */}
         <div className={styles.resultsContainer}>
           {feedbacks.length > 0 ? (
             Object.keys(groupedFeedbackData()).map((facultyName) => {
               const data = groupedFeedbackData()[facultyName];
 
-
               return (
                 <div key={facultyName} className={styles.questioncard}>
-
-
-
                   {data.theory && (
                     <div className={styles.feedbackSection}>
-                      <div> 
-                        <h2 style={{ display: 'inline', marginRight: '250px' }}  >Theory Feedback</h2>
-                        <h3 style={{ display: 'inline', marginRight: '80px' }}  >Faculty: {facultyName}</h3></div>
-                      
-
+                      <div>
+                        <h2 style={{ display: 'inline', marginRight: '250px' }}>Theory Feedback</h2>
+                        <h3 style={{ display: 'inline', marginRight: '80px' }}>Faculty: {facultyName}</h3>
+                      </div>
 
                       <div style={{ marginTop: '20px' }}>
-                      <h5 style={{ display: 'inline', marginRight: '80px' }}  >Theory Subject: {data.theory.subjectNames.join(", ")}</h5>
+                        <h5 style={{ display: 'inline', marginRight: '80px' }}>Theory Subject: {data.theory.subjectNames.join(", ")}</h5>
                         {data.theory.theoryAverage && (
                           <p style={{ display: 'inline', marginRight: '80px' }}>
                             <strong>Theory Average:</strong> {data.theory.theoryAverage}
                           </p>
                         )}
-
 
                         {data.overallAverage && (
                           <p style={{ display: 'inline' }}>
@@ -381,10 +369,6 @@ const FeedbackStats = () => {
                           </p>
                         )}
                       </div>
-
-
-
-
 
                       <div className={styles.feedbackTable}>
                         <table className={styles.feedbackTable}>
@@ -412,30 +396,22 @@ const FeedbackStats = () => {
                   )}
 
                   {data.practical.length > 0 && (
-                    <div key={facultyName}  className={styles.feedbackSection} >
-                      
-
-
-
+                    <div key={facultyName} className={styles.feedbackSection}>
                       {data.practical.map((practicalFeedback, index) => (
-                        
                         <div key={index} className={styles.feedbackTable}>
-                        <div>
-                        <h2 style={{ display: 'inline', marginRight: '300px' }}>Practical Feedback</h2>
-                          
-                          <h3 style={{ display: 'inline', marginleft: '80px' }}  >Faculty: {facultyName}</h3>
-                        </div>
+                          <div>
+                            <h2 style={{ display: 'inline', marginRight: '300px' }}>Practical Feedback</h2>
+                            <h3 style={{ display: 'inline', marginleft: '80px' }}>Faculty: {facultyName}</h3>
+                          </div>
 
-                          <div style={{ marginTop: '30px' }} >
+                          <div style={{ marginTop: '30px' }}>
+                            <h4 style={{ display: 'inline', marginRight: '80px' }}>Practical Subjects: {practicalFeedback.subjectNames.join(", ")}</h4>
 
-
-                          
-                          
-                            <h4 style={{ display: 'inline', marginRight: '80px' }} >Practical Subjects:  <span></span> {practicalFeedback.subjectNames.join(", ")}</h4>
                             {/* Display Practical Average */}
                             {data.practical[0].practicalAverage && (
-                              <p style={{ display: 'inline', marginRight: '80px' }} ><strong>Practical Average:</strong> {data.practical[0].practicalAverage}</p>
-                            )}</div>
+                              <p style={{ display: 'inline', marginRight: '80px' }}><strong>Practical Average:</strong> {data.practical[0].practicalAverage}</p>
+                            )}
+                          </div>
 
                           <table className={styles.feedbackTable}>
                             <thead>
@@ -467,13 +443,8 @@ const FeedbackStats = () => {
           ) : (
             <p>No feedback data available for the selected filters.</p>
           )}
-
-          {/* PDF Download Link */}
-
         </div>
-
       </div>
-
     </div>
   );
 };

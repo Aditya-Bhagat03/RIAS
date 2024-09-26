@@ -6,10 +6,12 @@ import styles from "./css/BranchAnalysis.module.css"; // Adjust the path as need
 
 const BranchAnalysis = () => {
   const [parentDepartment, setBranch] = useState(sessionStorage.getItem("parentDepartment") || "");
+  const [academicYear, setAcademicYear] = useState(sessionStorage.getItem("academicYear") || "");
   const [analysisData, setAnalysisData] = useState(JSON.parse(sessionStorage.getItem("analysisData")) || []);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [parentDepartmentes, setBranches] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -23,36 +25,58 @@ const BranchAnalysis = () => {
         setMessageType("error");
       }
     };
-  
+
+    const fetchAcademicYears = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/academicyear");
+        setAcademicYears(response.data);
+        sessionStorage.setItem("academicYears", JSON.stringify(response.data)); // Cache academic years data
+      } catch (error) {
+        console.error("Error fetching academic years:", error);
+        setMessage("Failed to load academic years.");
+        setMessageType("error");
+      }
+    };
+
     const cachedBranches = sessionStorage.getItem("parentDepartmentes");
+    const cachedAcademicYears = sessionStorage.getItem("academicYears");
+
     if (cachedBranches) {
       setBranches(JSON.parse(cachedBranches));
     } else {
       fetchBranches();
     }
 
+    if (cachedAcademicYears) {
+      setAcademicYears(JSON.parse(cachedAcademicYears));
+    } else {
+      fetchAcademicYears();
+    }
+
     const intervalId = setInterval(() => {
       fetchBranches(); // Fetch new parentDepartmentes every 10 seconds
+      fetchAcademicYears(); // Fetch academic years every 10 seconds
     }, 10000);
-  
+
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
     sessionStorage.setItem("parentDepartment", parentDepartment);
+    sessionStorage.setItem("academicYear", academicYear);
     sessionStorage.setItem("analysisData", JSON.stringify(analysisData));
-  }, [parentDepartment, analysisData]);
+  }, [parentDepartment, academicYear, analysisData]);
 
   const fetchAnalysis = async () => {
     try {
-      if (!parentDepartment) {
-        setMessage("Please select a parentDepartment.");
+      if (!parentDepartment || !academicYear) {
+        setMessage("Please select a parentDepartment and academic year.");
         setMessageType("error");
         return;
       }
 
       const response = await axios.get("http://localhost:4000/api/admin/feedback-analysis-by-branch", {
-        params: { parentDepartment },
+        params: { parentDepartment, academicYear },
       });
 
       if (response.data && response.data.facultyData.length > 0) {
@@ -60,7 +84,7 @@ const BranchAnalysis = () => {
         setMessage("");
       } else {
         setAnalysisData([]);
-        setMessage("No analysis data available for the selected parentDepartment.");
+        setMessage("No analysis data available for the selected parentDepartment and academic year.");
         setMessageType("info");
       }
     } catch (error) {
@@ -74,14 +98,20 @@ const BranchAnalysis = () => {
     setBranch(e.target.value);
   };
 
+  const handleAcademicYearChange = (e) => {
+    setAcademicYear(e.target.value);
+  };
+
   const handleSearch = () => {
     fetchAnalysis();
   };
 
   const handleLogout = () => {
     sessionStorage.removeItem("parentDepartment");
+    sessionStorage.removeItem("academicYear");
     sessionStorage.removeItem("analysisData");
     sessionStorage.removeItem("parentDepartmentes");
+    sessionStorage.removeItem("academicYears");
     // Implement your logout logic here
   };
 
@@ -89,7 +119,7 @@ const BranchAnalysis = () => {
     <div className={styles.BranchAnalysis_container}>
       <div className={styles.BranchAnalysis_card}>
         <h2>Branch Feedback Analysis</h2>
-        <p>Select a parentDepartment to analyze feedback across faculty members.</p>
+        <p>Select a parentDepartment and academic year to analyze feedback across faculty members.</p>
         {message && (
           <div className={`${styles.BranchAnalysis_message} ${styles[messageType]}`}>
             {message}
@@ -108,9 +138,24 @@ const BranchAnalysis = () => {
               </option>
             ))}
           </select>
+
+          <select
+            value={academicYear}
+            onChange={handleAcademicYearChange}
+            className={styles.BranchAnalysis_academicYearDropdown}
+          >
+            <option value="">Select Academic Year</option>
+            {academicYears.map((year, index) => (
+              <option key={index} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+
           <button onClick={handleSearch} className={styles.BranchAnalysis_searchButton}>
             Search
           </button>
+
           {analysisData.length > 0 && (
             <PDFDownloadLink
               document={<PdfBranchAnalysis analysisData={analysisData} />}
@@ -121,6 +166,7 @@ const BranchAnalysis = () => {
             </PDFDownloadLink>
           )}
         </div>
+
         {analysisData.length > 0 ? (
           <div className={styles.BranchAnalysis_analysisTableWrapper}>
             <table id="analysisTable" className={styles.BranchAnalysis_analysisTable}>
@@ -149,7 +195,7 @@ const BranchAnalysis = () => {
             </table>
           </div>
         ) : (
-          messageType !== "error" && <p>No analysis data available for the selected parentDepartment.</p>
+          messageType !== "error" && <p>No analysis data available for the selected parentDepartment and academic year.</p>
         )}
       </div>
     </div>

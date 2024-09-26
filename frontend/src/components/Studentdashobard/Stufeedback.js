@@ -264,6 +264,7 @@ const FeedbackForm = () => {
           subjectName: item.subjectName,
           courseCode: item.courseCode,
           parentDepartment: item.parentDepartment,
+          academicYear: item.academicYear,
           courseAbbreviation: item.courseAbbreviation,
           responses: questions.reduce(
             (acc, question, questionIndex) => ({

@@ -16,6 +16,7 @@ const feedbackSchema = new mongoose.Schema({
   subjectName: { type: String, required: true },
   courseCode: { type: String, required: true },
   courseAbbreviation: { type: String, required: true },
+  academicYear: { type: String, required: true },
   type: { type: String, required: true }, // Theory or Practical
   responses: {
     type: Map,

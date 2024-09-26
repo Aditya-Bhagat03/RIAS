@@ -51,6 +51,10 @@ router.get('/feedbacks/types', feedbackController.getTypesFromFeedbacks);
 router.get('/feedbacks/semesters', feedbackController.getSemestersFromFeedbacks);
 
 
+// Route to get semester names from feedbacks
+router.get('/feedbacks/academicyear', feedbackController.getAcademicYearsFromFeedbacks);
+
+
 // Route to get section names from feedbacks
 router.get('/feedbacks/sections', feedbackController.getSectionsFromFeedbacks);
 

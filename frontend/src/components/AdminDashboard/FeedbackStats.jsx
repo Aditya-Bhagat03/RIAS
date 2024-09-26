@@ -361,7 +361,7 @@ const FeedbackStats = () => {
                   {data.theory && (
                     <div className={styles.feedbackSection}>
                       <div> 
-                        <h3 style={{ display: 'inline', marginRight: '250px' }}  >Theory Feedback</h3>
+                        <h2 style={{ display: 'inline', marginRight: '250px' }}  >Theory Feedback</h2>
                         <h3 style={{ display: 'inline', marginRight: '80px' }}  >Faculty: {facultyName}</h3></div>
                       
 
@@ -412,15 +412,25 @@ const FeedbackStats = () => {
                   )}
 
                   {data.practical.length > 0 && (
-                    <div className={styles.feedbackSection} >
+                    <div key={facultyName}  className={styles.feedbackSection} >
                       
 
 
 
                       {data.practical.map((practicalFeedback, index) => (
+                        
                         <div key={index} className={styles.feedbackTable}>
-                          <div style={{ marginTop: '80px' }} >
-                          <h3 style={{ display: 'inline', marginRight: '110px' }}>Practical Feedback</h3>
+                        <div>
+                        <h2 style={{ display: 'inline', marginRight: '300px' }}>Practical Feedback</h2>
+                          
+                          <h3 style={{ display: 'inline', marginleft: '80px' }}  >Faculty: {facultyName}</h3>
+                        </div>
+
+                          <div style={{ marginTop: '30px' }} >
+
+
+                          
+                          
                             <h4 style={{ display: 'inline', marginRight: '80px' }} >Practical Subjects:  <span></span> {practicalFeedback.subjectNames.join(", ")}</h4>
                             {/* Display Practical Average */}
                             {data.practical[0].practicalAverage && (

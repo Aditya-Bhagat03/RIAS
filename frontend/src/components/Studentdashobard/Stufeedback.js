@@ -4,29 +4,30 @@ import "./CSS/Stufeedback.css";
 
 const theoryQuestions = [
   // Add your theory questions here
-  "Lecture preparation, organization and course material (structure)",
-  "Board writing, organization and use of audio-visual aids used",
-  "Lecture delivered with emphasis on fundamental concepts and with illustrative examples and faculty has command over the subject",
-  "Difficult topics were taught with adequate attention and ease",
-  "The teacher is enthusiastic about teaching and able to deliver lecture with good communication skills",
-  "Encouraged to ask questions to make lecture interactive and lively",
-  "The TAE Parameters and tests were challenging (with new and novel problem-solving approach)",
-  "TAE & CAE marks were displayed regularly",
-  "CAE question paper was discussed in the class after exam and answer sheets were shown",
-  "The evaluations were fair and impartial and it helps to improve students",
+  "The lecture effectively covered with fundamental concepts and  clear examples, and faculty has command over the subject",
+  "Challenging topics were explained with clarity and careful attention",
+  "The teacher communicated the lecture effectively",
+  "Encouraged students to ask questions to enhance interactivity",
+  "Well-prepared lecture with organized structure and course material",
+  "Clear and well-organized blackboard writing",
+  "Effective use of audio-visual aids",
+  "The teacher was readily available for guidance and support outside class hours",
+  "CAE questions were discussed in class, and answer sheets were shown",
+  "Fair and impartial evaluations helped improve students",
 ];
 
+
 const practicalQuestions = [
-  "Practical sessions were well-organized and conducted in a structured manner",
-  "The equipment and resources used in practical sessions were appropriate and in good condition",
-  "The practical sessions included relevant and practical exercises that enhanced understanding",
-  "The instructor provided clear instructions and guidance during practical sessions",
-  "The practical tasks and problems were challenging and contributed to skill development",
-  "Feedback on practical work was provided in a timely and constructive manner",
-  "The practical sessions encouraged active participation and problem-solving",
-  "The evaluation criteria for practical work were clear and fair",
-  "Adequate time was given for practical tasks and exercises",
-  "The practical sessions were integrated well with the theoretical concepts taught",
+  "The experiments aligned well with the theory",
+  "Faculty demonstrated practicals using machines, equipment, and software",
+  "The experiment led to clear conclusions and interpretations",
+  "The teacher assisted students in understanding the experiment's outcomes and addressing difficulties",
+  "The experimental setup was well-maintained, fully operational, and adequate",
+  "The teacher regularly assesses experiments and provides feedback",
+  "The lab session effectively clarified students' theoretical knowledge",
+  "Practical marks were awarded after each experiment",
+  "Students are confident in using concepts and instruments for further studies",
+  "Clear, updated, and self-explanatory lab manuals were provided",
 ];
 const FeedbackForm = () => {
   const [profileData, setProfileData] = useState(null);

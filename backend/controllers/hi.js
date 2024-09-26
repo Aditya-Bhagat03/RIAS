@@ -1,18 +1,19 @@
 
+
 exports.getFeedbackAnalysisByBranch = async (req, res) => {
     try {
-      const { branch } = req.query;
+      const { parentDepartment } = req.query;
   
-      if (!branch) {
+      if (!parentDepartment) {
         return res.status(400).json({ message: "Branch is required" });
       }
   
-      const feedbacks = await Feedback.find({ branch });
+      const feedbacks = await Feedback.find({ parentDepartment });
   
       if (feedbacks.length === 0) {
         return res
           .status(404)
-          .json({ message: "No feedback found for the given branch" });
+          .json({ message: "No feedback found for the given parentDepartment" });
       }
   
       const facultyAnalysis = {};
@@ -74,10 +75,10 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
   
       res.json({ facultyData: result });
     } catch (error) {
-      console.error("Error analyzing feedback by branch:", error);
+      console.error("Error analyzing feedback by parentDepartment:", error);
       res
         .status(500)
-        .json({ message: "Error analyzing feedback by branch", error });
+        .json({ message: "Error analyzing feedback by parentDepartment", error });
     }
   };
   

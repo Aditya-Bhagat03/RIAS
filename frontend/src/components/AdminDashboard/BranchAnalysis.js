@@ -5,26 +5,26 @@ import PdfBranchAnalysis from "./pdf/PdfBranchAnalysis"; // Import the PdfBranch
 import styles from "./css/BranchAnalysis.module.css"; // Adjust the path as needed
 
 const BranchAnalysis = () => {
-  const [branch, setBranch] = useState(sessionStorage.getItem("branch") || "");
+  const [parentDepartment, setBranch] = useState(sessionStorage.getItem("parentDepartment") || "");
   const [analysisData, setAnalysisData] = useState(JSON.parse(sessionStorage.getItem("analysisData")) || []);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-  const [branches, setBranches] = useState([]);
+  const [parentDepartmentes, setBranches] = useState([]);
 
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/branches");
+        const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/parentDepartment");
         setBranches(response.data);
-        sessionStorage.setItem("branches", JSON.stringify(response.data)); // Cache branches data
+        sessionStorage.setItem("parentDepartmentes", JSON.stringify(response.data)); // Cache parentDepartmentes data
       } catch (error) {
-        console.error("Error fetching branches:", error);
-        setMessage("Failed to load branches.");
+        console.error("Error fetching parentDepartmentes:", error);
+        setMessage("Failed to load parentDepartmentes.");
         setMessageType("error");
       }
     };
   
-    const cachedBranches = sessionStorage.getItem("branches");
+    const cachedBranches = sessionStorage.getItem("parentDepartmentes");
     if (cachedBranches) {
       setBranches(JSON.parse(cachedBranches));
     } else {
@@ -32,27 +32,27 @@ const BranchAnalysis = () => {
     }
 
     const intervalId = setInterval(() => {
-      fetchBranches(); // Fetch new branches every 10 seconds
+      fetchBranches(); // Fetch new parentDepartmentes every 10 seconds
     }, 10000);
   
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem("branch", branch);
+    sessionStorage.setItem("parentDepartment", parentDepartment);
     sessionStorage.setItem("analysisData", JSON.stringify(analysisData));
-  }, [branch, analysisData]);
+  }, [parentDepartment, analysisData]);
 
   const fetchAnalysis = async () => {
     try {
-      if (!branch) {
-        setMessage("Please select a branch.");
+      if (!parentDepartment) {
+        setMessage("Please select a parentDepartment.");
         setMessageType("error");
         return;
       }
 
       const response = await axios.get("http://localhost:4000/api/admin/feedback-analysis-by-branch", {
-        params: { branch },
+        params: { parentDepartment },
       });
 
       if (response.data && response.data.facultyData.length > 0) {
@@ -60,7 +60,7 @@ const BranchAnalysis = () => {
         setMessage("");
       } else {
         setAnalysisData([]);
-        setMessage("No analysis data available for the selected branch.");
+        setMessage("No analysis data available for the selected parentDepartment.");
         setMessageType("info");
       }
     } catch (error) {
@@ -79,9 +79,9 @@ const BranchAnalysis = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("branch");
+    sessionStorage.removeItem("parentDepartment");
     sessionStorage.removeItem("analysisData");
-    sessionStorage.removeItem("branches");
+    sessionStorage.removeItem("parentDepartmentes");
     // Implement your logout logic here
   };
 
@@ -89,7 +89,7 @@ const BranchAnalysis = () => {
     <div className={styles.BranchAnalysis_container}>
       <div className={styles.BranchAnalysis_card}>
         <h2>Branch Feedback Analysis</h2>
-        <p>Select a branch to analyze feedback across faculty members.</p>
+        <p>Select a parentDepartment to analyze feedback across faculty members.</p>
         {message && (
           <div className={`${styles.BranchAnalysis_message} ${styles[messageType]}`}>
             {message}
@@ -97,12 +97,12 @@ const BranchAnalysis = () => {
         )}
         <div className={styles.BranchAnalysis_inputcontainer}>
           <select
-            value={branch}
+            value={parentDepartment}
             onChange={handleBranchChange}
-            className={styles.BranchAnalysis_branchDropdown}
+            className={styles.BranchAnalysis_parentDepartmentDropdown}
           >
             <option value="">Select Branch</option>
-            {branches.map((br, index) => (
+            {parentDepartmentes.map((br, index) => (
               <option key={index} value={br}>
                 {br}
               </option>
@@ -149,7 +149,7 @@ const BranchAnalysis = () => {
             </table>
           </div>
         ) : (
-          messageType !== "error" && <p>No analysis data available for the selected branch.</p>
+          messageType !== "error" && <p>No analysis data available for the selected parentDepartment.</p>
         )}
       </div>
     </div>

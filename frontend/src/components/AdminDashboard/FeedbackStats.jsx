@@ -6,7 +6,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const FeedbackStats = () => {
   const [semesters, setSemesters] = useState([]);
-  const [branches, setBranches] = useState([]);
+  const [parentDepartmentes, setBranches] = useState([]);
   const [types, setTypes] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -15,7 +15,7 @@ const FeedbackStats = () => {
 
   const [selectedFilters, setSelectedFilters] = useState({
     semester: sessionStorage.getItem('semester') || "",
-    branch: "",
+    parentDepartment: "",
     type: "",
     subject: "",
     course: "",
@@ -39,14 +39,14 @@ const FeedbackStats = () => {
       try {
         const [
           semestersRes,
-          branchesRes,
+          parentDepartmentesRes,
           typesRes,
           subjectsRes,
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
           axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
+          axios.get("http://localhost:4000/api/feedback/feedbacks/parentdepartment"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/types"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/subject-names"),
           axios.get("http://localhost:4000/api/feedback/feedbacks/course-names"),
@@ -54,7 +54,7 @@ const FeedbackStats = () => {
         ]);
 
         setSemesters(semestersRes.data);
-        setBranches(branchesRes.data);
+        setBranches(parentDepartmentesRes.data);
         setTypes(typesRes.data);
         setSubjects(subjectsRes.data);
         setCourses(coursesRes.data);
@@ -71,10 +71,10 @@ const FeedbackStats = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const { semester, branch, type, subject, course, faculty, } = selectedFilters;
+      const { semester, parentDepartment, type, subject, course, faculty, } = selectedFilters;
       const params = {
         semester,
-        branch,
+        parentDepartment,
         type,
         subjectName: subject,
         courseName: course,
@@ -293,7 +293,7 @@ const FeedbackStats = () => {
         <div className={styles.dropdownContainer}>
           {[
             { id: "semester", label: "Semester", options: semesters },
-            { id: "branch", label: "Branch", options: branches },
+            { id: "parentDepartment", label: "Branch", options: parentDepartmentes },
             { id: "type", label: "Type", options: types },
             { id: "subject", label: "Subject", options: subjects },
             { id: "course", label: "Course", options: courses },

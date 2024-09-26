@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import styles from './css/FacultyRegister.module.css'; // Import the CSS Module
 
 const FacultyRegister = () => {
@@ -34,32 +36,66 @@ const FacultyRegister = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+
+  const handleNavigate = () => {
+    navigate('F--rege-view'); // Navigate to the F--rege-view route
+  };
+
+
   const handleCsvChange = (e) => {
     setCsvFile(e.target.files[0]); // Set the selected file
   };
 
   const handleCsvUpload = async (e) => {
     e.preventDefault();
+  
     if (!csvFile) {
       displayAlert('Please select a CSV file to upload.');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('file', csvFile);
-
-    try {
-      await axios.post('http://localhost:4000/api/csv/upload-faculty-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+  
+    const reader = new FileReader();
+  
+    reader.onload = async (event) => {
+      const csvData = event.target.result;
+  
+      try {
+        console.log('CSV Data:', csvData); // Debugging line
+        // Send the CSV data as an object
+        const response = await axios.post('http://localhost:4000/api/csv/upload-faculty-csv', { csvData }, {
+          headers: {
+            'Content-Type': 'application/json' // Change to JSON
+          }
+        });
+        if (response.status === 201) {
+          displayAlert('Faculty data uploaded successfully from CSV');
+        } else {
+          displayAlert('Unexpected response from the server.');
         }
-      });
-      displayAlert('Faculty data uploaded successfully from CSV');
-    } catch (error) {
-      console.error(error);
-      displayAlert('Error uploading faculty data from CSV');
-    }
+      } catch (error) {
+        if (error.response) {
+          console.error("Error response:", error.response.data);
+          displayAlert(`Error uploading faculty data: ${error.response.data.message || 'An error occurred'}`);
+        } else if (error.request) {
+          console.error("Error request:", error.request);
+          displayAlert('No response received from the server.');
+        } else {
+          console.error("Error message:", error.message);
+          displayAlert('Error uploading faculty data from CSV.');
+        }
+      }
+    };
+  
+    reader.onerror = () => {
+      displayAlert('Error reading the CSV file.');
+    };
+  
+    reader.readAsText(csvFile);
   };
+  
+
 
   const displayAlert = (message) => {
     setAlertMessage(message);
@@ -171,6 +207,8 @@ const FacultyRegister = () => {
       </form>
       {/* Register button placed outside the form */}
       <button onClick={handleSubmit} className={styles.submit}>Register</button>
+      <button onClick={handleNavigate}className={styles.submit}>View Register Faculty</button>
+
 
       <h2 className={styles.header}>Upload Faculty CSV</h2>
       <form onSubmit={handleCsvUpload} className={styles.form}>

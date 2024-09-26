@@ -64,7 +64,7 @@ exports.submitPracticalFeedback = async (req, res) => {
     }
 
     // Define the required fields for feedback entries
-    const requiredFields = ['facultyName', 'courseName', 'branch', 'section', 'semester', 'batch', 'subjectName', 'courseCode','time', 'responses'];
+    const requiredFields = ['facultyName', 'courseName', 'branch','parentDepartment', 'section', 'semester', 'batch', 'subjectName', 'courseCode','courseAbbreviation', 'responses'];
 
     // Check if all feedback entries have the required fields and are not empty
     const areEntriesValid = feedbackEntries.every(entry =>
@@ -228,6 +228,25 @@ exports.getBranchesFromFeedbacks = async (req, res) => {
 
 
 
+exports.getParentDepartmentsFromFeedbacks = async (req, res) => {
+  try {
+    // Fetch distinct parentDepartment from the Feedback collection
+    const parentDepartments = await Feedback.distinct("parentDepartment");
+    
+    if (parentDepartments.length > 0) {
+      res.json(parentDepartments);
+    } else {
+      res.status(404).json({ message: "No parent departments found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching parent departments from feedbacks", error });
+  }
+};
+
+
+
 // Add this function in your feedbackController.js
 
 exports.getTypesFromFeedbacks = async (req, res) => {
@@ -295,15 +314,59 @@ exports.getSubjectNamesFromFeedbacks = async (req, res) => {
       .json({ message: "Error fetching subject names from feedbacks", error });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 exports.getFilteredFeedback = async (req, res) => {
   try {
-    const { semester, branch, section, subjectName, courseName, facultyName } =
+    const { semester, parentDepartment, section, subjectName, courseName, facultyName } =
       req.query;
 
     // Construct filter object
     const filter = {};
     if (semester) filter.semester = semester;
-    if (branch) filter.branch = branch;
+    if (parentDepartment) filter.parentDepartment = parentDepartment;
     if (section) filter.section = section;
     if (subjectName) filter.subjectName = subjectName;
     if (courseName) filter.courseName = courseName;
@@ -329,6 +392,44 @@ exports.getFilteredFeedback = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Function to delete feedback
 exports.deleteFeedback = async (req, res) => {
   try {
@@ -346,6 +447,24 @@ exports.deleteFeedback = async (req, res) => {
     res.status(500).json({ message: "Error deleting feedback", error });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

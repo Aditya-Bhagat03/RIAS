@@ -1,6 +1,0 @@
-_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
-,Aditya Pakade,aditya.pakde.cse@ghrce.raisoni.net,1234567890,2021ACSC1101154,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,0
-,Aditya Chikte,aditya.chikte.cse@ghrce.raisoni.net,1234567891,2021ACSC1101155,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,
-,Aditya Bhagat,aditya.bhagat.cse@ghrce.raisoni.net,1234567892,2021ACSC1101156,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,
-,Aditya Sinha,aditya.sinha.cse@ghrce.raisoni.net,1234567893,2021ACSC1101157,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,
-,Aditya Yadav,aditya.yadav.cse@ghrce.raisoni.net,1234567894,2021ACSC1101158,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,

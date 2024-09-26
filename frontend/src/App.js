@@ -42,6 +42,7 @@ import Facultyregister from "./components/FacultyDashboard/FacultyRegister"; // 
 import Stutable from "./components/FacultyDashboard/StudentTable"; // Updated import path
 import FacultyPostmapping from "./components/FacultyDashboard/EditMappingfaculty"; // Updated import path
 import Profileclass from "./components/class-teacher/StudentProfile"; // Updated import path
+import Facultyregiterview from "./components/FacultyDashboard/FacultyregisterTable"; // Updated import path
 
 const AuthRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -140,6 +141,8 @@ function App() {
                     <Route path="Surveyform" element={<Surveyf />} />
                     <Route path="Feedback" element={<FacultyPostmapping />} />
                     <Route path="F-profile" element={<Facultyprofilee />} />
+                    <Route path="faculty-register/F--rege-view" element={<Facultyregiterview />} />
+
                     <Route
                       path="faculty-register"
                       element={<Facultyregister />}

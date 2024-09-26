@@ -15,8 +15,8 @@ const FacultyPostTimetable = () => {
   const [section, setSection] = useState("");
   const [semester, setSemester] = useState("");
   const [type, setType] = useState("");
-  const [time, setTime] = useState("");
-  const [room, setRoom] = useState("");
+  const [courseAbbreviation, setTime] = useState("");
+  const [parentDepartment, setRoom] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [facultyNames, setFacultyNames] = useState([]);
@@ -226,8 +226,8 @@ const FacultyPostTimetable = () => {
         section,
         semester,
         type,
-        time,
-        room,
+        courseAbbreviation,
+        parentDepartment,
         batch,
         academicYear: selectedAcademicYear,
         session: selectedSession,
@@ -437,7 +437,7 @@ const FacultyPostTimetable = () => {
             <label>Abbreviation:</label>
             <input
               type="text"
-              value={time}
+              value={courseAbbreviation}
               onChange={(e) => setTime(e.target.value)}
               required
             />
@@ -467,10 +467,10 @@ const FacultyPostTimetable = () => {
           </div>
 
           <div className="form-item row2">
-            <label>Room:</label>
+            <label>ParentDepartment:</label>
             <input
               type="text"
-              value={room}
+              value={parentDepartment}
               onChange={(e) => setRoom(e.target.value)}
               required
             />
@@ -581,8 +581,8 @@ const FacultyPostTimetable = () => {
                     <td>{timetable.section}</td>
                     <td>{timetable.semester}</td>
                     <td>{timetable.type}</td>
-                    <td>{timetable.time}</td>
-                    <td>{timetable.room}</td>
+                    <td>{timetable.courseAbbreviation}</td>
+                    <td>{timetable.parentDepartment}</td>
                     <td>{timetable.batch}</td>
                   </tr>
                 ))

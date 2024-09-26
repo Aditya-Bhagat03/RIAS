@@ -1,2 +1,0 @@
-_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
-,facultywww@gmail.com,facultywwww@gmail.com,12,124,7,CSE,A,2,214,HI,student,Summer,TRUE,0

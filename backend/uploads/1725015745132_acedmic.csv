@@ -1,6 +1,0 @@
-_id,username,email,password,role, isApproved,isApproved,__v,branch,mobileNumber,registrationNumber,rollNumber,section,semester,batch,session,academicYear
-,Harman02,111Harman02@gmail.com,$2a$10$SuQsLRfkyW0R5yjDRLm06u0Qlt8lxe/hqkVAKqrGUkByzzCXyYX/a,student,,FALSE,0,CSE,7865478967,2021harman,71,B,7,2,,
-,testcsv,11testcsv@gmail.com,$2a$10$RtRY5/4cUl82y7z0hU/.SOR4kJ1XUCdI0Ml0Vk4o3Af3XfhTaeBXS,student,,FALSE,0,CSE,242424,24242,2424,A,7,,,
-,testcsv1,111testcsv1@gmail.com,$2a$10$ZXLzoBqDml4OikUf3/ErMuZFnEneu44ZPv/LBdlefnNKXm5yaQkf6,student,,FALSE,0,CSE,242424,24242,2424,B,7,,,
-,csesectiona,111csesectiona@gmail.com,$2a$10$ifcx0viubc0UeWInpLOF5uWQvR88Hd5guQoygiWTQRbi6ttvTbwMy,faculty,,TRUE,0,CSE,8998998998,8989,89,A,7,2,Winter,
-,adadad,111uniadadadityabhagat525@gmail.com,$2a$10$t3XcO0QrJkyK8de4J9qbg.267cEw2bnT6XvPMXLMUAIrXHBKEG9uK,student,,TRUE,0,CSE,134567,54323,24356,A,7,2,Summer,2025

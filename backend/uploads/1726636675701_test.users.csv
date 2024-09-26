@@ -1,3 +1,0 @@
-_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
-,Ayush Pandey,aditya.pakde.cse@ghrce.raisoni.net,1234567890,2021ACSC110115412,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,0
-,Harsh Patel,harsh.patel.cse@ghrce.raisoni.net,1234567891,2021ACSC110115522,7,CSE,A,2,38,$2a$10$QCe5gSDC2rmKfJL6fgTPd.j7xoaaOhCxneWD2lFbtWiq9AA2YtXgq,student,2025,TRUE,

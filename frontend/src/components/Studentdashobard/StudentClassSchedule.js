@@ -55,8 +55,8 @@ const StudentClassSchedule = () => {
               <td>{schedule ? schedule.branch : 'N/A'}</td>
               <td>{schedule ? schedule.facultyName : 'N/A'}</td>
               <td>{schedule ? schedule.type : 'N/A'}</td>
-              <td>{schedule ? schedule.time : 'N/A'}</td>
-              <td>{schedule ? schedule.room : 'N/A'}</td>
+              <td>{schedule ? schedule.courseAbbreviation : 'N/A'}</td>
+              <td>{schedule ? schedule.parentDepartment : 'N/A'}</td>
             </tr>
           ))}
         </tbody>

@@ -1,2 +1,0 @@
-_id,username,email,password,role,isApproved,branch,mobileNumber,registrationNumber,rollNumber,section,semester,__v
-,1faculty name,1faculty@gmail.com,HI,faculty,true,CSE,123456789,0987654321,,B,7,

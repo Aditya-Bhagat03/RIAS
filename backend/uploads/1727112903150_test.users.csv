@@ -1,2 +1,0 @@
-_id,username,email,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber,password,role,session,isApproved,__v
-66d471fcb9ef36138892a9aa,facultywww@gmail.com,facultywwww@gmail.com,12,124,7,CSE,A,2,214,$2a$10$XtcAy1KXpiVUunFK5pBFGe9WsZbQNMvWAZy6wtIxgNnCmeUYtgEcC,faculty,Summer,TRUE,0

@@ -24,8 +24,8 @@ const TimetableList = () => {
     subjectName: '',
     courseCode: '',
     type: '',
-    time: '',
-    room: '',
+    courseAbbreviation: '',
+    parentDepartment: '',
     academicYear: '',
     session: '',
   });
@@ -92,8 +92,8 @@ const TimetableList = () => {
         subjectName: '',
         courseCode: '',
         type: '',
-        time: '',
-        room: '',
+        courseAbbreviation: '',
+        parentDepartment: '',
         academicYear: '',
         session: '',
       }); // Reset form data
@@ -114,8 +114,8 @@ const TimetableList = () => {
       subjectName: timetable.subjectName || '',
       courseCode: timetable.courseCode || '',
       type: timetable.type || '',
-      time: timetable.time || '',
-      room: timetable.room || '',
+      courseAbbreviation: timetable.courseAbbreviation || '',
+      parentDepartment: timetable.parentDepartment || '',
       academicYear: timetable.academicYear || '',
       session: timetable.session || '',
     });
@@ -244,15 +244,15 @@ const TimetableList = () => {
             />
             <input
               type="text"
-              name="time"
-              value={formData.time}
+              name="courseAbbreviation"
+              value={formData.courseAbbreviation}
               onChange={handleFormChange}
               placeholder="Time"
             />
             <input
               type="text"
-              name="room"
-              value={formData.room}
+              name="parentDepartment"
+              value={formData.parentDepartment}
               onChange={handleFormChange}
               placeholder="Room"
             />
@@ -307,8 +307,8 @@ const TimetableList = () => {
                   <td>{timetable.subjectName}</td>
                   <td>{timetable.courseCode}</td>
                   <td>{timetable.type}</td>
-                  <td>{timetable.time}</td>
-                  <td>{timetable.room}</td>
+                  <td>{timetable.courseAbbreviation}</td>
+                  <td>{timetable.parentDepartment}</td>
                   <td>{timetable.academicYear}</td>
                   <td>{timetable.session}</td>
                   <td>

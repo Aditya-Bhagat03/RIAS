@@ -205,18 +205,18 @@ exports.getSessions = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-// Fetch distinct rooms
+// Fetch distinct parentDepartments
 exports.getRooms = async (req, res) => {
   try {
-    const rooms = await Faculty.distinct('room');
+    const parentDepartments = await Faculty.distinct('parentDepartment');
     
-    if (rooms.length === 0) {
-      console.log('No rooms found.');
+    if (parentDepartments.length === 0) {
+      console.log('No parentDepartments found.');
     }
     
-    res.status(200).json(rooms);
+    res.status(200).json(parentDepartments);
   } catch (error) {
-    console.error('Error fetching rooms:', error);
+    console.error('Error fetching parentDepartments:', error);
     res.status(500).json({ error: error.message });
   }
 };

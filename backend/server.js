@@ -1,24 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const multer = require('multer');
+
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-// Set up Multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage });
 
 // Import and use routes
 const authRoutes = require("./routes/authRoutes");
@@ -30,10 +18,10 @@ const surveyRoutes = require("./routes/surveyRoutes");
 const timetableRoutes = require("./routes/timetableRoutes");
 const facultytt = require("./routes/facultytimetable");
 const feedbackRoutes = require("./routes/feedbackRoutes");
-const antiRaggingRoutes = require('./routes/aa');
-const adminchart = require('./routes/adminAnalysis');
-const csv = require('./routes/adminRoutes');
-const facultyregisterRoutes= require('./routes/facultyregisterRoutes');
+const antiRaggingRoutes = require("./routes/aa");
+const adminchart = require("./routes/adminAnalysis");
+const csv = require("./routes/adminRoutes");
+const facultyregisterRoutes = require("./routes/facultyregisterRoutes");
 
 app.use("/api", authRoutes); // Authentication routes
 app.use("/api/class-schedules", classSchedulesRoutes); // Class schedules routes
@@ -44,10 +32,10 @@ app.use("/api/surveys", surveyRoutes); // Surveys routes
 app.use("/api", timetableRoutes); // Update route prefix as needed
 app.use("/api", facultytt);
 app.use("/api/feedback", feedbackRoutes);
-app.use('/api/antiragging', antiRaggingRoutes);
-app.use('/api/admin', adminchart);
-app.use('/api/csv', csv);
-app.use('/api/facultyregister', facultyregisterRoutes);
+app.use("/api/antiragging", antiRaggingRoutes);
+app.use("/api/admin", adminchart);
+app.use("/api/csv", csv);
+app.use("/api/facultyregister", facultyregisterRoutes);
 
 // Connect to MongoDB
 mongoose

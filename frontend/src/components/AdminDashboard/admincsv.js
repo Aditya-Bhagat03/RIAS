@@ -4,44 +4,53 @@ import { useNavigate } from 'react-router-dom';
 import './css/csv.css'; // Ensure this CSS file exists for styling
 
 const AdminCsv = () => {
-  const [file, setFile] = useState(null);
+  const [csvData, setCsvData] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setCsvData(event.target.result); // Set CSV data from file
+      };
+      reader.readAsText(file); // Read the file as text
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!file) {
-      setMessage('Please select a file first');
+
+    if (!csvData) {
+      setMessage('Please select a CSV file first');
       return;
     }
-  
-    const formData = new FormData();
-    formData.append('file', file);
-  
+
+    console.log("Uploading CSV Data:", csvData); // Log the CSV data being uploaded
+
     try {
-      const response = await axios.post('http://localhost:4000/api/csv/upload-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post('http://localhost:4000/api/csv/upload-csv', {
+        csvData: csvData, // Send CSV data in the request body
       });
-  
+
       if (response.status === 201) {
-        setMessage(response.data.msg || 'File uploaded successfully');
+        setMessage(response.data.msg || 'CSV uploaded successfully');
       } else {
         setMessage('Unexpected response status');
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
-      const errorMsg = error.response?.data?.message || 'Error uploading file';
+      console.error('Error uploading CSV:', error);
+      const errorMsg = error.response?.data?.message || 'Error uploading CSV';
       setMessage(errorMsg);
+
+      // Log the entire error response for better debugging
+      console.error('Error Response:', error.response);
+      console.error('Error Data:', error.response?.data);
+      console.error('Error Status:', error.response?.status);
+      console.error('Error Headers:', error.response?.headers);
     }
   };
-  
 
   return (
     <div className="csv-container">

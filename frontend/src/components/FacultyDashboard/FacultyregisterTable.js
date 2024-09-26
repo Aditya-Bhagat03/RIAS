@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './css/FacultyPostTimetable.css'; // Import your CSS module
+import styles from './css/FacultyRegisterTableView.module.css'; // Import your CSS module
 
 const FacultyTable = () => {
   const [facultyList, setFacultyList] = useState([]);
@@ -56,8 +56,7 @@ const FacultyTable = () => {
             <th>Subject Name</th>
             <th>Course Code</th>
             <th>Branch</th>
-            <th>Semester</th>
-            <th>Academic Year</th>
+
             <th>Session</th>
             <th>Parent Department</th>
             <th>Actions</th>
@@ -70,8 +69,7 @@ const FacultyTable = () => {
               <td>{faculty.subjectName}</td>
               <td>{faculty.courseCode}</td>
               <td>{faculty.branch}</td>
-              <td>{faculty.semester}</td>
-              <td>{faculty.academicYear}</td>
+
               <td>{faculty.session}</td>
               <td>{faculty.parentDepartment}</td>
               <td>

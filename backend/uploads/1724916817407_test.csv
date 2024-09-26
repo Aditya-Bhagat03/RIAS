@@ -1,3 +1,0 @@
-_id,username,email,password,role, isApproved,isApproved,__v,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber
-,testcsv,testcsv@gmail.com,HI,student,,TRUE,0,242424,24242,7,CSE,A,2,2424
-,testcsv1,testcsv1@gmail.com,HI,student,,TRUE,0,242424,24242,7,CSE,B,2,2424

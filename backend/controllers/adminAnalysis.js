@@ -310,6 +310,16 @@ exports.getFeedbackAnalysisByFaculty = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
 exports.getFeedbackAnalysisByBranch = async (req, res) => {
   try {
     const { branch } = req.query;

@@ -262,7 +262,8 @@ const FeedbackForm = () => {
           batch: item.batch,
           subjectName: item.subjectName,
           courseCode: item.courseCode,
-          time: item.time,
+          parentDepartment: item.parentDepartment,
+          courseAbbreviation: item.courseAbbreviation,
           responses: questions.reduce(
             (acc, question, questionIndex) => ({
               ...acc,
@@ -454,7 +455,7 @@ const FeedbackForm = () => {
                         key={item._id}
                         className="student-dashboard-feedback-th"
                       >
-                        {item.time}
+                        {item.courseAbbreviation}
                       </th>
                     ))}
                   </tr>
@@ -574,7 +575,7 @@ const FeedbackForm = () => {
                         key={item._id}
                         className="student-dashboard-feedback-th"
                       >
-                        {item.time}
+                        {item.courseAbbreviation}
                       </th>
                     ))}
                   </tr>

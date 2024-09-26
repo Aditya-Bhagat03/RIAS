@@ -5,7 +5,7 @@ const User = require("../models/User"); // Import User model if needed
 exports.createTimetable = async (req, res) => {
   try {
     // Destructure academicYear and session from req.body
-    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type, time, room, academicYear, session } = req.body;
+    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type, courseAbbreviation, parentDepartment, academicYear, session } = req.body;
 
     // Create a new Timetable instance including academicYear and session
     const newTimetable = new Timetable({
@@ -17,8 +17,8 @@ exports.createTimetable = async (req, res) => {
       subjectName,
       courseCode,
       type,
-      time,
-      room,
+      courseAbbreviation,
+      parentDepartment,
       academicYear, // Include academicYear in the creation
       session,      // Include session in the creation
       createdBy: req.user._id // Assuming req.user is set by authentication middleware
@@ -97,11 +97,11 @@ exports.updateTimetable = async (req, res) => {
       return res.status(400).json({ message: 'Invalid ID format' });
     }
 
-    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type, time, room } = req.body;
+    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type, courseAbbreviation, parentDepartment } = req.body;
 
     const timetable = await Timetable.findByIdAndUpdate(
       id,
-      { branch, section, semester, batch, facultyName, subjectName, courseCode, type, time, room },
+      { branch, section, semester, batch, facultyName, subjectName, courseCode, type, courseAbbreviation, parentDepartment },
       { new: true, runValidators: true }
     );
 

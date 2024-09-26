@@ -38,7 +38,11 @@ router.get('/feedbacks/course-names', feedbackController.getCourseNamesFromFeedb
 // Route to get all feedback
 
 // Route to get branch names from feedbacks
-router.get('/feedbacks/branches', feedbackController.getBranchesFromFeedbacks);
+router.get('/feedbacks/branches', feedbackController.getBranchesFromFeedbacks );
+
+
+router.get('/feedbacks/parentdepartment', feedbackController.getParentDepartmentsFromFeedbacks );
+
 
 // Route to get type names from feedbacks
 router.get('/feedbacks/types', feedbackController.getTypesFromFeedbacks);

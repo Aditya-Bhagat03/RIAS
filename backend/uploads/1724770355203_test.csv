@@ -1,2 +1,0 @@
-_id,username,email,password,role, isApproved,isApproved,__v,mobileNumber,registrationNumber,semester,branch,section,batch,rollNumber
-,testadityabhagat525@gmail.com,testadityabhagat525@gmail.com,$2a$10$wymBsaHdPhZBY5FfwMaGr.annd0k9m6oNcox5riqy4F0NVq2Kz.AG,student,,TRUE,0,242424,24242,7,CSE,A,2,2424

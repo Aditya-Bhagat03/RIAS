@@ -101,9 +101,9 @@ const StudentTimetable = () => {
             {filteredTimetable.map((entry, index) => (
               <tr key={index}>
                 <td>{entry.type || 'N/A'}</td>
-                <td>{entry.time || 'N/A'}</td>
+                <td>{entry.courseAbbreviation || 'N/A'}</td>
                 <td>{entry.subjectName || 'N/A'}</td>
-                <td>{entry.room || 'N/A'}</td>
+                <td>{entry.parentDepartment || 'N/A'}</td>
                 <td>{entry.facultyName || 'N/A'}</td>
                 <td>{entry.courseCode || 'N/A'}</td>
               </tr>

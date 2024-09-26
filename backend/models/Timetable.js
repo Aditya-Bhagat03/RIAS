@@ -10,8 +10,8 @@ const timetableSchema = new mongoose.Schema({
   subjectName: { type: String, required: true },
   courseCode: { type: String, required: true },
   type: { type: String, required: true },
-  time: { type: String, required: true },
-  room: { type: String, required: true },
+  courseAbbreviation: { type: String, required: true },
+  parentDepartment: { type: String, required: true },
   academicYear: { type: String, required: true }, // Add this line
   session: { type: String, required: true },     // Add this line
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: false },

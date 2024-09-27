@@ -190,7 +190,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                     <th>Subject Name</th>
                     <th>Branch</th>
                     <th>Type</th>
-                    <th>Average Rating</th>
+
                     <th>Average Percentage</th>
                     <th>Feedback Remark</th>
                   </tr>
@@ -202,11 +202,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                       <td>{data.subjectName}</td>
                       <td>{data.branch}</td>
                       <td>{data.type}</td>
-                      <td>
-                        {data.averageRating !== "0.00"
-                          ? data.averageRating
-                          : "0"}
-                      </td>
+
                       <td>
                         {data.averagePercentage !== "0.00"
                           ? `${data.averagePercentage}%`

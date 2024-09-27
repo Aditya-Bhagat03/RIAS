@@ -1,7 +1,7 @@
 // controllers/userController.js
 
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Timetable = require('../models/Timetable');
 
@@ -26,8 +26,8 @@ exports.register = async (req, res) => {
     });
 
     // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    user.password = await bcryptjs.hash(password, salt);
 
     // Save the user
     await user.save();
@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
     }
 
     // Check if the password matches
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcryptjs.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }

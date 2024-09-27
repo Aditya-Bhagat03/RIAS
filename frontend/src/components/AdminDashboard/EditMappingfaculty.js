@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styles from './css/faculty-timetable.module.css'; // Import CSS module for styling
+import { UserContext } from '../context/UserContext'; // Assuming you have a UserContext to get the logged-in user
 
 const TimetableList = () => {
+  const { user } = useContext(UserContext); // Fetch user details from context or wherever you're storing user info
   const [timetables, setTimetables] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [branches, setBranches] = useState([]);
   const [sections, setSections] = useState([]);
   const [batches, setBatches] = useState([]);
   const [selectedSemester, setSelectedSemester] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState(''); // Automatically set to user's branch
+  const [selectedBranch, setSelectedBranch] = useState(user?.branch || ''); // Pre-select user branch if available
   const [selectedSection, setSelectedSection] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editTimetable, setEditTimetable] = useState(null); // State to manage timetable being edited
-  const [userBranch, setUserBranch] = useState(''); // Store the user's branch
   const [formData, setFormData] = useState({
     branch: '',
     section: '',
@@ -31,49 +32,13 @@ const TimetableList = () => {
     session: '',
   });
 
-  // Fetch user details when component mounts
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const userId = localStorage.getItem("userId"); // Get userId from localStorage or other storage
-      const token = localStorage.getItem("token"); // Get token from localStorage or other storage
-
-      try {
-        const response = await fetch(
-          `http://localhost:4000/api/users/user/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserBranch(data.branch); // Set the user's branch
-          setSelectedBranch(data.branch); // Set selected branch automatically
-        } else if (response.status === 404) {
-          setError("Profile not found.");
-        } else {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
-        }
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-        setError("Error fetching profile data. Please try again later.");
-      }
-    };
-
-    fetchUserDetails();
-  }, []);
-
-  // Fetch timetables when branch or other filters change
   useEffect(() => {
     const fetchTimetables = async () => {
       try {
         const response = await axios.get('http://localhost:4000/api/timetables/criteria', {
           params: {
             semester: selectedSemester,
-            branch: selectedBranch, // Only fetch for the selected (or user's) branch
+            branch: selectedBranch, // If user is from a specific branch, this will already be set
             section: selectedSection,
             batch: selectedBatch,
           }
@@ -98,9 +63,7 @@ const TimetableList = () => {
       }
     };
 
-    if (selectedBranch) {
-      fetchTimetables(); // Fetch timetables only after the branch is set
-    }
+    fetchTimetables();
   }, [selectedSemester, selectedBranch, selectedSection, selectedBatch]);
 
   const handleDelete = async (id) => {
@@ -173,7 +136,7 @@ const TimetableList = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Timetable List</h1>
+      <h1 className={styles.title}>Mapping List</h1>
 
       <div className={styles.filters}>
         <select
@@ -187,14 +150,15 @@ const TimetableList = () => {
           ))}
         </select>
 
-        {/* Pre-select the user's branch and disable the branch dropdown */}
         <select
           value={selectedBranch}
           onChange={(e) => setSelectedBranch(e.target.value)}
           className={styles.dropdown}
-          disabled={true} // Disable the dropdown for branch selection
         >
-          <option value={userBranch}>{userBranch}</option>
+          <option value="">Select Branch</option>
+          {branches.map((branch, index) => (
+            <option key={index} value={branch}>{branch}</option>
+          ))}
         </select>
 
         <select
@@ -222,9 +186,8 @@ const TimetableList = () => {
 
       {editTimetable && (
         <div className={styles.editForm}>
-          <h2>Edit Timetable</h2>
+          <h2>Edit Mapping</h2>
           <form onSubmit={(e) => { e.preventDefault(); handleUpdate(editTimetable._id); }}>
-            {/* Edit form fields */}
             <input
               type="text"
               name="branch"
@@ -232,7 +195,83 @@ const TimetableList = () => {
               onChange={handleFormChange}
               placeholder="Branch"
             />
-            {/* Add other form inputs similarly */}
+            <input
+              type="text"
+              name="section"
+              value={formData.section}
+              onChange={handleFormChange}
+              placeholder="Section"
+            />
+            <input
+              type="text"
+              name="semester"
+              value={formData.semester}
+              onChange={handleFormChange}
+              placeholder="Semester"
+            />
+            <input
+              type="text"
+              name="batch"
+              value={formData.batch}
+              onChange={handleFormChange}
+              placeholder="Batch"
+            />
+            <input
+              type="text"
+              name="facultyName"
+              value={formData.facultyName}
+              onChange={handleFormChange}
+              placeholder="Faculty Name"
+            />
+            <input
+              type="text"
+              name="subjectName"
+              value={formData.subjectName}
+              onChange={handleFormChange}
+              placeholder="Subject Name"
+            />
+            <input
+              type="text"
+              name="courseCode"
+              value={formData.courseCode}
+              onChange={handleFormChange}
+              placeholder="Course Code"
+            />
+            <input
+              type="text"
+              name="type"
+              value={formData.type}
+              onChange={handleFormChange}
+              placeholder="Type"
+            />
+            <input
+              type="text"
+              name="courseAbbreviation"
+              value={formData.courseAbbreviation}
+              onChange={handleFormChange}
+              placeholder="Time"
+            />
+            <input
+              type="text"
+              name="parentDepartment"
+              value={formData.parentDepartment}
+              onChange={handleFormChange}
+              placeholder="Room"
+            />
+            <input
+              type="text"
+              name="academicYear"
+              value={formData.academicYear}
+              onChange={handleFormChange}
+              placeholder="Academic Year"
+            />
+            <input
+              type="text"
+              name="session"
+              value={formData.session}
+              onChange={handleFormChange}
+              placeholder="Session"
+            />
             <button type="submit" className={styles.update}>Update Timetable</button>
             <button type="button" onClick={() => setEditTimetable(null)} className={styles.cancel}>Cancel</button>
           </form>

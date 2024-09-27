@@ -95,7 +95,7 @@ const Sidebar = () => {
               {/* Updated path */}
               <img className="icon" src={TimetablesIcon} alt="timetables" />
               <span className={`${isOpen ? "" : "hideElement"}`}>
-                Timetables
+                Students Feedbacks
               </span>
             </Link>
           </li>

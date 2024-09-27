@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import './CSS/StudentTimetable.css'; // Import the CSS file
+import './CSS/StudentTimetable.css'; // Import the updated CSS file
 
 const StudentTimetable = () => {
   const [profileData, setProfileData] = useState(null);
   const [timetableData, setTimetableData] = useState([]);
   const [filteredTimetable, setFilteredTimetable] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Fetch student profile data
   const fetchProfileData = async () => {
@@ -68,50 +69,64 @@ const StudentTimetable = () => {
         entry.branch === profileData.branch &&
         entry.section === profileData.section &&
         entry.semester === profileData.semester &&
-        (entry.batch === "Not Required" || entry.batch === profileData.batch || entry.batch==="")
+        (entry.batch === "Not Required" || entry.batch === profileData.batch || entry.batch === "")
       );
       setFilteredTimetable(filtered);
     }
   }, [profileData, timetableData]);
-  
 
   // Fetch both profile and timetable data on component mount
   useEffect(() => {
-    fetchProfileData();
-    fetchTimetableData();
+    const fetchData = async () => {
+      try {
+        await fetchProfileData();
+        await fetchTimetableData();
+        setLoading(false); // Loading is complete
+      } catch (error) {
+        setLoading(false); // Ensure loading stops even if there's an error
+      }
+    };
+    fetchData();
   }, []);
 
   return (
     <div className="student-timetable-container">
-      {error && <div className="alert-error">{error}</div>}
-      <h2>Student Timetable</h2>
-      {filteredTimetable.length > 0 ? (
-        <table className="timetable-table">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Time</th>
-              <th>Subject</th>
-              <th>Room</th>
-              <th>Faculty</th>
-              <th>Course Code</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTimetable.map((entry, index) => (
-              <tr key={index}>
-                <td>{entry.type || 'N/A'}</td>
-                <td>{entry.courseAbbreviation || 'N/A'}</td>
-                <td>{entry.subjectName || 'N/A'}</td>
-                <td>{entry.parentDepartment || 'N/A'}</td>
-                <td>{entry.facultyName || 'N/A'}</td>
-                <td>{entry.courseCode || 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div className="alert-error">{error}</div>
       ) : (
-        <div className="no-timetable-message">No timetable available for the specified criteria.</div>
+        <>
+          <h2>Student Timetable</h2>
+          {filteredTimetable.length > 0 ? (
+            <table className="timetable-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Time</th>
+                  <th>Subject</th>
+                  <th>Room</th>
+                  <th>Faculty</th>
+                  <th>Course Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTimetable.map((entry, index) => (
+                  <tr key={index}>
+                    <td>{entry.type || 'N/A'}</td>
+                    <td>{entry.courseAbbreviation || 'N/A'}</td>
+                    <td>{entry.subjectName || 'N/A'}</td>
+                    <td>{entry.parentDepartment || 'N/A'}</td>
+                    <td>{entry.facultyName || 'N/A'}</td>
+                    <td>{entry.courseCode || 'N/A'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-timetable-message">No timetable available for the specified criteria.</div>
+          )}
+        </>
       )}
     </div>
   );

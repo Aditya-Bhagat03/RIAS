@@ -175,7 +175,7 @@ const BranchAnalysis = () => {
                   <th>Faculty Name</th>
                   <th>Course Count</th>
                   <th>Student Count</th>
-                  <th>Average Rating</th>
+
                   <th>Average Percentage</th>
                   <th>Feedback Remark</th>
                 </tr>
@@ -186,7 +186,7 @@ const BranchAnalysis = () => {
                     <td>{data.facultyName}</td>
                     <td>{data.courseCount}</td>
                     <td>{data.studentCount}</td>
-                    <td>{data.averageRating !== '0.00' ? data.averageRating : "0"}</td>
+
                     <td>{data.averagePercentage !== '0.00' ? data.averagePercentage : "0%"}</td>
                     <td>{data.averagePercentage >= 90 ? "Excellent" : data.averagePercentage >= 80 ? "Very Good" : data.averagePercentage >= 70 ? "Good" : data.averagePercentage >= 60 ? "Satisfactory" : "Need Improvement"}</td>
                   </tr>

@@ -55,7 +55,7 @@ const AdminCsv = () => {
   return (
     <div className="csv-container">
       <div className="csv-content">
-        <h2 className="csv-title">Upload CSV File</h2>
+        <h2 className="csv-title">Upload Students CSV File</h2>
         <form onSubmit={handleSubmit} className="csv-form">
           <input
             type="file"

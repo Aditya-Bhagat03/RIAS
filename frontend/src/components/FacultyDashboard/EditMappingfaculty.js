@@ -252,7 +252,7 @@ const TimetableList = () => {
               <th>Course Code</th>
               <th>Type</th>
               <th>Time</th>
-              <th>Room</th>
+              <th>Parent Department</th>
               <th>Academic Year</th>
               <th>Session</th>
               <th>Actions</th>

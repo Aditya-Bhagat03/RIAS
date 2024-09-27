@@ -13,9 +13,11 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: var(--light-green);
+  background: rgba(255, 255, 255, 0.1); /* Glass effect */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
   border-radius: 18px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 800px; /* Set a max width for the container */
   box-sizing: border-box;
@@ -36,6 +38,8 @@
   width: 100%;
   border-collapse: collapse;
   color: #FFF; /* Text color */
+  font-size: 16px; /* Updated for readability */
+  transition: all 0.3s ease-in-out;
 }
 
 .timetable-table th, .timetable-table td {
@@ -50,29 +54,74 @@
 }
 
 .timetable-table tr:nth-child(even) {
-  background-color: #333333; /* Zebra striping for rows */
+  background-color: rgba(255, 255, 255, 0.05); /* Light zebra striping for rows */
 }
 
 .timetable-table a {
   color: #007bff;
   text-decoration: none;
+  transition: color 0.3s ease-in-out; /* Smooth transition */
 }
 
 .timetable-table a:hover {
+  color: #0056b3;
   text-decoration: underline;
 }
 
-/* Optional: Styling for error message */
+/* Error message styling */
 .alert-error {
   margin-top: 20px;
   padding: 10px;
   border-radius: 4px;
   background-color: #f8d7da;
   color: #721c24;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Styling for the 'No timetable available' message */
+/* No timetable message */
 .no-timetable-message {
   font-size: 18px;
   color: #FFF;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .timetable-table {
+    font-size: 14px;
+  }
+
+  .student-timetable-container {
+    padding: 10px;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-sidebar: #1c1c1c;
+    --light-green: #444;
+    --bg-color: #222;
+    --light-grey: #666;
+    --text-color: #f4f4f4;
+  }
+
+  .student-timetable-container {
+    color: var(--text-color);
+    background-color: var(--bg-sidebar);
+  }
+
+  .timetable-table {
+    color: var(--text-color);
+  }
 }

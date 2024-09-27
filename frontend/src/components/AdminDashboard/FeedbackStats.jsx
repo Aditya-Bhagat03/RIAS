@@ -6,17 +6,17 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const FeedbackStats = () => {
   const [semesters, setSemesters] = useState([]);
-  const [parentDepartments, setBranches] = useState([]); // Fixed parentDepartmentes naming
-  const [academicYears, setAcademicYears] = useState([]); // Corrected to use academicYears
+  const [parentDepartments, setBranches] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
   const [faculties, setFaculties] = useState([]);
-  const [showPDFLink, setShowPDFLink] = useState(false); // For PDF download visibility
+  const [showPDFLink, setShowPDFLink] = useState(false);
 
   const [selectedFilters, setSelectedFilters] = useState({
     semester: sessionStorage.getItem('semester') || "",
     parentDepartment: "",
-    academicYear: "", // Added correct academicYear key
+    academicYear: "",
     subject: "",
     course: "",
     faculty: "",
@@ -31,7 +31,6 @@ const FeedbackStats = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
-  // Fetch all filter options: semesters, parentDepartments, academicYears, subjects, courses, faculties
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -53,7 +52,7 @@ const FeedbackStats = () => {
 
         setSemesters(semestersRes.data);
         setBranches(parentDepartmentsRes.data);
-        setAcademicYears(academicYearsRes.data); // Fixed the naming
+        setAcademicYears(academicYearsRes.data);
         setSubjects(subjectsRes.data);
         setCourses(coursesRes.data);
         setFaculties(facultiesRes.data);
@@ -67,17 +66,15 @@ const FeedbackStats = () => {
     fetchOptions();
   }, []);
 
-  // Fetch feedback data based on selected filters
   const fetchFeedbacks = async () => {
     try {
       const { semester, parentDepartment, academicYear, subject, course, faculty } = selectedFilters;
       const params = {
         semester,
         parentDepartment,
-        academicYear, // Use academicYear filter
+        academicYear,
         subjectName: subject,
         courseName: course,
-        academicYear:academicYear,
         facultyName: faculty,
       };
 
@@ -92,39 +89,35 @@ const FeedbackStats = () => {
     }
   };
 
-  // Helper function to clean up the question text
   const cleanQuestion = (question) => {
-    return question.replace(/^\d+_/, ''); // Remove the index prefix
+    return question.replace(/^\d+_/, '');
   };
 
-  // Function to calculate the percentage based on a score out of total
   const calculatePercentage = (score, total = 4) => {
-    if (total === 0) return "N/A"; // Handle division by zero
+    if (total === 0) return "N/A";
     return ((score / total) * 100).toFixed(0) + "%";
   };
 
-  // Function to calculate the average score
   const calculateAverage = (totalScore, count) => {
-    if (count === 0) return "N/A"; // Handle zero count
+    if (count === 0) return "N/A";
     return calculatePercentage(totalScore / count);
   };
 
-  // Function to aggregate feedback data into theory and practical categories
   const aggregateFeedbacks = (feedbacks) => {
     if (!Array.isArray(feedbacks)) {
       console.error('Expected feedbacks to be an array.');
-      return; // Consider returning an empty object or a default value
+      return;
     }
-
+  
     const aggregated = {
       theory: {},
       practical: {}
     };
-
+  
     feedbacks.forEach((feedback) => {
-      const { facultyName, subjectName, courseCode, type, time, responses } = feedback; // Use `type` instead of `academicyear`
+      const { facultyName, subjectName, courseCode, type, time, responses } = feedback;
       const category = type === 'theory' ? 'theory' : 'practical';
-
+  
       if (!aggregated[category][facultyName]) {
         aggregated[category][facultyName] = {
           subjects: new Set(),
@@ -132,14 +125,15 @@ const FeedbackStats = () => {
           times: new Set(),
           responses: {},
           totalScore: 0,
+          totalPossibleScore: 0,
           count: 0
         };
       }
-
+  
       aggregated[category][facultyName].subjects.add(subjectName);
       aggregated[category][facultyName].courseCodes.add(courseCode);
       aggregated[category][facultyName].times.add(time);
-
+  
       Object.entries(responses).forEach(([question, score]) => {
         const cleanQuestionText = cleanQuestion(question);
         if (!aggregated[category][facultyName].responses[cleanQuestionText]) {
@@ -149,127 +143,131 @@ const FeedbackStats = () => {
           aggregated[category][facultyName].responses[cleanQuestionText][subjectName] = [];
         }
         aggregated[category][facultyName].responses[cleanQuestionText][subjectName].push(score);
-
-        const subjectScores = aggregated[category][facultyName].responses[cleanQuestionText][subjectName];
-        aggregated[category][facultyName].totalScore += subjectScores.reduce((sum, s) => sum + s, 0);
-        aggregated[category][facultyName].count += subjectScores.length;
+  
+        // Calculate total score and total possible score (assuming max score is 4 per question)
+        aggregated[category][facultyName].totalScore += score;
+        aggregated[category][facultyName].totalPossibleScore += 4;
+        aggregated[category][facultyName].count += 1;
       });
     });
+  
+   
+  const result = {
+    theory: Object.keys(aggregated.theory).map((facultyName) => {
+      const facultyData = aggregated.theory[facultyName];
+      const subjectNames = Array.from(facultyData.subjects);
 
-    const result = {
-      theory: Object.keys(aggregated.theory).map((facultyName) => {
-        const facultyData = aggregated.theory[facultyName];
-        const subjectNames = Array.from(facultyData.subjects);
-
-        const averageResponses = {};
-        Object.entries(facultyData.responses).forEach(([question, subjectScores]) => {
-          averageResponses[question] = subjectNames.map((subject) => {
-            const scores = subjectScores[subject] || [];
-            const total = scores.reduce((sum, score) => sum + score, 0);
-            const average = scores.length ? calculatePercentage(total / scores.length) : "N/A";
-            return average;
-          });
+      const averageResponses = {};
+      Object.entries(facultyData.responses).forEach(([question, subjectScores]) => {
+        averageResponses[question] = subjectNames.map((subject) => {
+          const scores = subjectScores[subject] || [];
+          const total = scores.reduce((sum, score) => sum + score, 0);
+          const average = scores.length ? calculatePercentage(total / scores.length) : "N/A";
+          return average;
         });
+      });
 
-        const theoryAverage = calculateAverage(facultyData.totalScore, facultyData.count);
+      // Calculate the overall theory average based on total score and total possible score
+      const theoryAverage = calculatePercentage(facultyData.totalScore, facultyData.totalPossibleScore);
 
-        return {
-          facultyName,
-          subjectNames,
-          times: Array.from(facultyData.times),
-          courseCodes: Array.from(facultyData.courseCodes),
-          responses: averageResponses,
-          theoryAverage
-        };
-      }),
-      practical: Object.keys(aggregated.practical).map((facultyName) => {
-        const facultyData = aggregated.practical[facultyName];
-        const subjectNames = Array.from(facultyData.subjects);
+      return {
+        facultyName,
+        subjectNames,
+        times: Array.from(facultyData.times),
+        courseCodes: Array.from(facultyData.courseCodes),
+        responses: averageResponses,
+        theoryAverage,
+        totalScore: facultyData.totalScore, // Keep track of total score for final calculation
+        totalPossibleScore: facultyData.totalPossibleScore // Track possible score
+      };
+    }),
+    practical: Object.keys(aggregated.practical).map((facultyName) => {
+      const facultyData = aggregated.practical[facultyName];
+      const subjectNames = Array.from(facultyData.subjects);
 
-        const averageResponses = {};
-        Object.entries(facultyData.responses).forEach(([question, subjectScores]) => {
-          averageResponses[question] = subjectNames.map((subject) => {
-            const scores = subjectScores[subject] || [];
-            const total = scores.reduce((sum, score) => sum + score, 0);
-            const average = scores.length ? calculatePercentage(total / scores.length) : "N/A";
-            return average;
-          });
+      const averageResponses = {};
+      Object.entries(facultyData.responses).forEach(([question, subjectScores]) => {
+        averageResponses[question] = subjectNames.map((subject) => {
+          const scores = subjectScores[subject] || [];
+          const total = scores.reduce((sum, score) => sum + score, 0);
+          const average = scores.length ? calculatePercentage(total / scores.length) : "N/A";
+          return average;
         });
+      });
 
-        const practicalAverage = calculateAverage(facultyData.totalScore, facultyData.count);
+      // Calculate the overall practical average based on total score and total possible score
+      const practicalAverage = calculatePercentage(facultyData.totalScore, facultyData.totalPossibleScore);
 
-        return {
-          facultyName,
-          subjectNames,
-          courseCodes: Array.from(facultyData.courseCodes),
-          times: Array.from(facultyData.times),
-          responses: averageResponses,
-          practicalAverage
-        };
-      })
-    };
-
-    setAggregatedData({ ...result });
+      return {
+        facultyName,
+        subjectNames,
+        courseCodes: Array.from(facultyData.courseCodes),
+        times: Array.from(facultyData.times),
+        responses: averageResponses,
+        practicalAverage,
+        totalScore: facultyData.totalScore, // Keep track of total score for final calculation
+        totalPossibleScore: facultyData.totalPossibleScore // Track possible score
+      };
+    })
   };
 
-  // Function to parse a percentage from a string
+  setAggregatedData(result);
+};
+
   const parsePercentage = (percentageString) => {
     if (percentageString === "N/A") return NaN;
     return parseFloat(percentageString.replace('%', ''));
   };
 
-  // Handle filter changes for dropdowns
   const handleFilterChange = (event) => {
     const { id, value } = event.target;
     setSelectedFilters((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Apply selected filters and fetch feedback data
   const handleFilterApply = () => {
     fetchFeedbacks();
-    setShowPDFLink(true); // Show PDF download option once filters are applied
+    setShowPDFLink(true);
   };
 
-  // Group feedback data for displaying in tables
   const groupedFeedbackData = () => {
     const groupedData = {};
-
+  
     // Process theory feedback
     aggregatedData.theory.forEach(item => {
       if (!groupedData[item.facultyName]) {
-        groupedData[item.facultyName] = { theory: item, practical: [], overallAverage: "N/A" };
+        groupedData[item.facultyName] = { theory: item, practical: [], overallAverage: "N/A", totalScore: 0, totalPossibleScore: 0 };
       } else {
         groupedData[item.facultyName].theory = item;
       }
+  
+      // Accumulate theory scores
+      groupedData[item.facultyName].totalScore += item.totalScore;
+      groupedData[item.facultyName].totalPossibleScore += item.totalPossibleScore;
     });
-
+  
     // Process practical feedback
     aggregatedData.practical.forEach(item => {
       if (groupedData[item.facultyName]) {
         groupedData[item.facultyName].practical.push(item);
       } else {
-        groupedData[item.facultyName] = { theory: null, practical: [item], overallAverage: "N/A" };
+        groupedData[item.facultyName] = { theory: null, practical: [item], overallAverage: "N/A", totalScore: 0, totalPossibleScore: 0 };
       }
+  
+      // Accumulate practical scores
+      groupedData[item.facultyName].totalScore += item.totalScore;
+      groupedData[item.facultyName].totalPossibleScore += item.totalPossibleScore;
     });
-
-    // Calculate overall average
+  
+    // Calculate the overall average from combined theory and practical total scores
     Object.keys(groupedData).forEach(facultyName => {
       const data = groupedData[facultyName];
-      const theoryAverage = data.theory ? parsePercentage(data.theory.theoryAverage) : NaN;
-      const practicalAverages = data.practical.map(p => parsePercentage(p.practicalAverage));
-      const practicalAverage = practicalAverages.length ? practicalAverages.reduce((sum, avg) => sum + avg, 0) / practicalAverages.length : NaN;
-
-      if (isNaN(theoryAverage) && isNaN(practicalAverage)) {
-        groupedData[facultyName].overallAverage = "N/A";
-      } else if (isNaN(theoryAverage)) {
-        groupedData[facultyName].overallAverage = calculatePercentage(practicalAverage);
-      } else if (isNaN(practicalAverage)) {
-        groupedData[facultyName].overallAverage = data.theory.theoryAverage;
+      if (data.totalPossibleScore > 0) {
+        groupedData[facultyName].overallAverage = calculatePercentage(data.totalScore, data.totalPossibleScore);
       } else {
-        groupedData[facultyName].overallAverage = calculatePercentage((theoryAverage + practicalAverage) / 50);
+        groupedData[facultyName].overallAverage = "N/A";
       }
     });
-
+  
     return groupedData;
   };
 
@@ -285,13 +283,11 @@ const FeedbackStats = () => {
           </div>
         )}
 
-        {/* Dropdown filters */}
         <div className={styles.dropdownContainer}>
           {[
-            { id: "academicYear", label: "Academic Year", options: academicYears }, // Updated to academicYear
+            { id: "academicYear", label: "Academic Year", options: academicYears },
             { id: "parentDepartment", label: "Branch", options: parentDepartments },
             { id: "semester", label: "Semester", options: semesters },
-
             { id: "subject", label: "Subject", options: subjects },
             { id: "course", label: "Course", options: courses },
             { id: "faculty", label: "Faculty", options: faculties },
@@ -314,7 +310,6 @@ const FeedbackStats = () => {
           ))}
         </div>
 
-        {/* Apply filter button */}
         <div className={styles.buttonContainer}>
           <button onClick={handleFilterApply} className={styles.filterButton}>
             Apply Filters
@@ -340,7 +335,6 @@ const FeedbackStats = () => {
           )}
         </div>
 
-        {/* Results container */}
         <div className={styles.resultsContainer}>
           {feedbacks.length > 0 ? (
             Object.keys(groupedFeedbackData()).map((facultyName) => {
@@ -407,9 +401,10 @@ const FeedbackStats = () => {
                           <div style={{ marginTop: '30px' }}>
                             <h4 style={{ display: 'inline', marginRight: '80px' }}>Practical Subjects: {practicalFeedback.subjectNames.join(", ")}</h4>
 
-                            {/* Display Practical Average */}
                             {data.practical[0].practicalAverage && (
-                              <p style={{ display: 'inline', marginRight: '80px' }}><strong>Practical Average:</strong> {data.practical[0].practicalAverage}</p>
+                              <p style={{ display: 'inline', marginRight: '80px' }}>
+                                <strong>Practical Average:</strong> {data.practical[0].practicalAverage}
+                              </p>
                             )}
                           </div>
 

@@ -75,6 +75,62 @@ exports.getTimetablesByCriteria = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.getElectiveSubjects = async (req, res) => {
+  try {
+    // Query to find all timetables where isElective is true and return only the subjectName
+    const electives = await Timetable.find({ isElective: true }).select('subjectName');
+    
+    // Check if electives are found
+    if (electives.length === 0) {
+      return res.status(404).json({ message: 'No elective subjects found' });
+    }
+
+    // Send response with elective subjects (only subjectName)
+    res.status(200).json(electives.map(e => e.subjectName));
+  } catch (error) {
+    console.error('Error fetching elective subjects:', error);
+    res.status(500).json({ message: 'Failed to fetch elective subjects' });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Get a specific timetable by ID
 exports.getTimetableById = async (req, res) => {
   try {

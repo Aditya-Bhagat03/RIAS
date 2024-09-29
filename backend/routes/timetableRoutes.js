@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   getTimetablesByCriteria,
+  getElectiveSubjects
 } = require("../controllers/timetableController");
 const {
   getTimetableById,
@@ -31,6 +32,7 @@ router.get("/semesters", getSemesters);
 router.get("/facultyname", getFacultyName);
 router.get("/students/criteria", getStudentsByCriteria);
 router.get("/timetables/criteria", getTimetablesByCriteria);
+router.get("/electives", getElectiveSubjects);
 router.delete("/timetables/delete", deleteTimetable);
 router.put("/timetables/update/:id", updateTimetable);
 

@@ -292,3 +292,60 @@ exports.getDistinctcoursecode = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+// Controller to handle elective selection and update
+exports.selectElective = async (req, res) => {
+  const userId = req.params.id;
+  const { electives } = req.body; // Expect an array of elective subjects
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update the user's electives array
+    user.electives = electives;
+    await user.save();
+
+    return res.status(200).json({ message: 'Electives updated successfully', electives: user.electives });
+  } catch (error) {
+    console.error('Error updating electives:', error);
+    return res.status(500).json({ message: 'Server error, could not update electives' });
+  }
+};
+
+
+
+
+
+// Controller to handle elective deletion
+exports.deleteElective = async (req, res) => {
+  const userId = req.params.id;
+  const { electiveToRemove } = req.body; // The elective that needs to be removed
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Remove the elective from the user's elective array
+    user.electives = user.electives.filter(elective => elective !== electiveToRemove);
+
+    await user.save(); // Save the updated user
+
+    return res.status(200).json({ message: 'Elective removed successfully', electives: user.electives });
+  } catch (error) {
+    console.error('Error removing elective:', error);
+    return res.status(500).json({ message: 'Server error, could not remove elective' });
+  }
+};

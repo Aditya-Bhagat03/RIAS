@@ -54,5 +54,12 @@ router.get('/subject-names', userController.getDistinctSubjectNames);
 // Route to get distinct subject names
 router.get('/course-code', userController.getDistinctcoursecode);
 
+// Route to get distinct subject names
+// Route to select electives for a user
+router.post('/user/:id/select-elective', userController.selectElective);
+router.delete('/user/:id/remove-elective', userController.deleteElective);
+
+
+
 
 module.exports = router; // Corrected module. Exports

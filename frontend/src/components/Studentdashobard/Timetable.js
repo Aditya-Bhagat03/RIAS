@@ -5,12 +5,11 @@ const StudentTimetable = () => {
   const [profileData, setProfileData] = useState(null);
   const [timetableData, setTimetableData] = useState([]);
   const [filteredTimetable, setFilteredTimetable] = useState([]);
-  const [electives, setElectives] = useState([]); // State for electives fetched from API
+  const [electives, setElectives] = useState([]); // State for electives
   const [selectedElectives, setSelectedElectives] = useState([]); // State for selected electives
   const [tempSelectedElectives, setTempSelectedElectives] = useState([]); // State for temporarily selected electives
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [electivesSelected, setElectivesSelected] = useState(false); // Track whether electives are selected
 
   // Fetch student profile data
   const fetchProfileData = async () => {
@@ -92,21 +91,63 @@ const StudentTimetable = () => {
   };
 
   // Handle adding selected electives
-  const handleAddElectives = () => {
+  const handleAddElectives = async () => {
     const updatedElectives = [...selectedElectives, ...tempSelectedElectives];
-    setSelectedElectives(updatedElectives);
-    setTempSelectedElectives([]); // Clear temporary selections
+
+    try {
+      const token = localStorage.getItem('token');
+      const userId = profileData._id;
+
+      const response = await fetch(`http://localhost:4000/api/users/user/${userId}/select-elective`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ electives: updatedElectives }), // Send all selected electives as an array
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        alert('Electives added successfully!');
+        window.location.reload(); // Reload the page after successful addition
+      } else {
+        throw new Error(`Failed to add electives: ${responseData.message}`);
+      }
+    } catch (error) {
+      console.error('Error adding electives:', error);
+      setError('Error adding electives. Please try again later.');
+    }
   };
 
   // Handle elective deletion
-  const handleElectiveDeletion = (electiveToRemove) => {
-    const updatedElectives = selectedElectives.filter(elective => elective !== electiveToRemove);
-    setSelectedElectives(updatedElectives);
-  };
+  const handleElectiveDeletion = async (electiveToRemove) => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = profileData._id;
 
-  // Handle elective selection dropdown change
-  const handleElectivesChange = (e) => {
-    setTempSelectedElectives([...e.target.selectedOptions].map(option => option.value));
+      const response = await fetch(`http://localhost:4000/api/users/user/${userId}/remove-elective`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ electiveToRemove }), // Send the elective to remove
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        alert('Elective removed successfully!');
+        window.location.reload(); // Reload the page after successful deletion
+      } else {
+        throw new Error(`Failed to remove elective: ${responseData.message}`);
+      }
+    } catch (error) {
+      console.error('Error removing elective:', error);
+      setError('Error removing elective. Please try again later.');
+    }
   };
 
   // Filter timetable data based on profile data and elective
@@ -146,111 +187,87 @@ const StudentTimetable = () => {
         <div className="alert-error">{error}</div>
       ) : (
         <>
-          {!electivesSelected ? (
-            <div className="electives-selection-container">
-              <h2>Select Your Electives</h2>
-
-              {/* Dropdown for Elective Selection */}
-              <div className="dropdown-section">
-                <label htmlFor="electives" className="electives-label">Elective Subjects</label>
-                <select
-                  name="electives"
-                  value={tempSelectedElectives}
-                  onChange={handleElectivesChange}
-                  className="electives-dropdown"
-                  multiple
-                >
-                  {electives.length > 0 ? (
-                    electives.map((elective, index) => (
-                      <option key={index} value={elective}>
-                        {elective}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="">No electives available</option>
-                  )}
-                </select>
-              </div>
-
-              {/* Button to add selected electives */}
-              <button className="add-electives-button" onClick={handleAddElectives}>
-                Add Selected Electives
-              </button>
-
-              {/* Table to display selected electives */}
-              {selectedElectives.length > 0 && (
-                <div className="electives-table-section">
-                  <h3>Selected Electives</h3>
-                  <table className="electives-table">
-                    <thead>
-                      <tr>
-                        <th>Elective</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedElectives.map((elective, index) => (
-                        <tr key={index}>
-                          <td>{elective}</td>
-                          <td>
-                            <button
-                              className="delete-elective-button"
-                              onClick={() => handleElectiveDeletion(elective)}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {/* Button to skip elective selection and view timetable */}
-              <button className="view-timetable-button" onClick={() => setElectivesSelected(true)}>
-                View Timetable
-              </button>
+          <h2>Student Timetable</h2>
+          {filteredTimetable.length > 0 ? (
+            <div className="timetable-wrapper">
+              <table className="timetable-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Branch</th>
+                    <th>Faculty</th>
+                    <th>Course Code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTimetable.map((entry, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                      <td>{entry.type || 'N/A'}</td>
+                      <td>{entry.courseAbbreviation || 'N/A'}</td>
+                      <td>{entry.subjectName || 'N/A'}</td>
+                      <td>{entry.parentDepartment || 'N/A'}</td>
+                      <td>{entry.facultyName || 'N/A'}</td>
+                      <td>{entry.courseCode || 'N/A'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
-            <div className="timetable-view-container">
-              <h2>Student Timetable</h2>
-              {filteredTimetable.length > 0 ? (
-                <div className="timetable-wrapper">
-                  <table className="timetable-table">
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                        <th>Time</th>
-                        <th>Subject</th>
-                        <th>Branch</th>
-                        <th>Faculty</th>
-                        <th>Course Code</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredTimetable.map((entry, index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td>{entry.type || 'N/A'}</td>
-                          <td>{entry.courseAbbreviation || 'N/A'}</td>
-                          <td>{entry.subjectName || 'N/A'}</td>
-                          <td>{entry.parentDepartment || 'N/A'}</td>
-                          <td>{entry.facultyName || 'N/A'}</td>
-                          <td>{entry.courseCode || 'N/A'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="no-timetable-message">No timetable available for the specified criteria.</div>
-              )}
-              {/* Button to go back to elective selection */}
-              <button className="back-to-electives-button" onClick={() => setElectivesSelected(false)}>
-                Go Back to Elective Selection
-              </button>
-            </div>
+            <div className="no-timetable-message">No timetable available for the specified criteria.</div>
           )}
+
+          {/* Elective Section inside table */}
+          <div className="electives-section">
+            <table className="electives-table">
+              <thead>
+                <tr>
+                  <th>Available Electives</th>
+                  <th>Select Elective</th>
+                  <th>Dropdown</th>
+                  <th>Add Electives & Selected List</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {electives.length > 0 ? electives.join(', ') : 'No electives available'}
+                  </td>
+                  <td>
+                    <select
+                      multiple
+                      onChange={(e) =>
+                        setTempSelectedElectives([...e.target.selectedOptions].map((option) => option.value))
+                      }
+                    >
+                      {electives.map((elective, index) => (
+                        <option key={index} value={elective}>
+                          {elective}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <button className="add-electives-button" onClick={handleAddElectives}>
+                      Add Selected Electives
+                    </button>
+                  </td>
+                  <td>
+                    <ul>
+                      {selectedElectives.map((elective, index) => (
+                        <li key={index} className="selected-elective-item">
+                          {elective}
+                          <button onClick={() => handleElectiveDeletion(elective)}>Delete</button>
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>

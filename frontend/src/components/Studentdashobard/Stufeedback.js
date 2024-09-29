@@ -207,6 +207,7 @@ const FeedbackForm = () => {
             item.branch === profileData.branch &&
             item.section === profileData.section &&
             item.semester === profileData.semester &&
+            (!item.isElective || profileData.electives.includes(item.subjectName))&&
             (!profileData.batch ||
               item.batch === "" ||
               item.batch === "Not Required" ||

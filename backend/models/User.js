@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
   session: { type: String }, // Added session field
   academicyear: { type: String }, // Added academicYear field
   isApproved: { type: Boolean, default: false },
+  electives: [{ type: String }] // Added electives field to store student elective subjects
 });
 
 // Hash password before saving

@@ -1,0 +1,3 @@
+branch,section,semester,batch,facultyName,subjectName,courseCode,type,courseAbbreviation,parentDepartment,academicYear,session,isElective
+CSE,A,5,2021,Dr. Smith,Data Structures,CS101,Theory,DS,CSE,2023-2024,Morning,true
+CSE,B,5,2021,Dr. Johnson,Algorithms,CS102,Theory,ALGO,CSE,2023-2024,Afternoon,false

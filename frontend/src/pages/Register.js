@@ -20,6 +20,7 @@ const Register = () => {
     batch: "",
     session: "", // Added state for session dropdown
     academicYear: "", // Added state for academicYear dropdown
+    electives: [], // Added state for electives
   });
 
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Register = () => {
     batch,
     session,
     academicYear,
+    electives, // Destructure electives state
   } = formData;
 
   useEffect(() => {
@@ -63,6 +65,14 @@ const Register = () => {
 
   const handleAcademicYearChange = (e) => {
     setFormData({ ...formData, academicYear: e.target.value });
+  };
+
+  const handleElectivesChange = (e) => {
+    const selectedElectives = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setFormData({ ...formData, electives: selectedElectives });
   };
 
   const onSubmit = async (e) => {
@@ -114,7 +124,6 @@ const Register = () => {
             </div>
             <div className="register-form-wrapper">
               <form onSubmit={onSubmit}>
-                {/* Existing form fields */}
                 <label htmlFor="email" className="register-label">
                   Email
                 </label>
@@ -210,7 +219,23 @@ const Register = () => {
                   <option value="2028">2028</option>
                 </select>
 
-                {/* Remaining form fields */}
+                <label htmlFor="electives" className="register-label">
+                  Elective Subjects
+                </label>
+                <select
+                  name="electives"
+                  value={electives}
+                  onChange={handleElectivesChange}
+                  className="register-input"
+                  multiple
+                >
+                  <option value="AI">Artificial Intelligence</option>
+                  <option value="ML">Machine Learning</option>
+                  <option value="DS">Data Science</option>
+                  <option value="CyberSec">Cyber Security</option>
+                  <option value="IoT">Internet of Things</option>
+                </select>
+
                 <label htmlFor="branch" className="register-label">
                   Branch
                 </label>
@@ -247,7 +272,7 @@ const Register = () => {
                   <option value="C">C</option>
                 </select>
 
-                <label htmlFor="practical-batch" className="register-label">
+                <label htmlFor="batch" className="register-label">
                   Practical Batch
                 </label>
                 <select

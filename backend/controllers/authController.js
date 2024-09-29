@@ -3,9 +3,9 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 exports.register = async (req, res) => {
   const {
-    username, email, password, role,
-    mobileNumber, registrationNumber, semester, branch, section, rollNumber, batch, session, academicYear
-  } = req.body; // Added academicYear to destructuring
+    username, email, password, role, mobileNumber, registrationNumber, semester,
+    branch, section, rollNumber, batch, session, academicYear, electives // Added electives field
+  } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -14,8 +14,8 @@ exports.register = async (req, res) => {
     }
 
     user = new User({
-      username, email, password, role,
-      mobileNumber, registrationNumber, semester, branch, section, rollNumber, batch, session, academicYear // Added academicYear field
+      username, email, password, role, mobileNumber, registrationNumber, semester,
+      branch, section, rollNumber, batch, session, academicYear, electives // Added electives field
     });
 
     await user.save();

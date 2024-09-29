@@ -5,58 +5,77 @@ import FeedbackPDFsame from "./pdf/FeedbackPDFsame";
 import styles from "./css/SameFacultyDifferentSubjectsAnalysis.module.css"; // Adjust the path as needed
 
 const SameFacultyDifferentSubjectsAnalysis = () => {
-  const [facultyName, setFacultyName] = useState(
-    () => localStorage.getItem("facultyName") || ""
-  );
-  const [analysisData, setAnalysisData] = useState(
-    () => JSON.parse(localStorage.getItem("analysisData")) || []
-  );
+  const [parentDepartment, setParentDepartment] = useState(""); // Track department
+  const [facultyName, setFacultyName] = useState("");
+  const [academicYear, setAcademicYear] = useState(""); // Track academic year
+  const [analysisData, setAnalysisData] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [departments, setDepartments] = useState([]); // Store available departments
   const [faculties, setFaculties] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]); // Store academic years
 
+  // Fetch academic years on load
   useEffect(() => {
-    const fetchFaculties = async () => {
+    const fetchAcademicYears = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/faculty-names"
+          "http://localhost:4000/api/feedback/feedbacks/academicyear"
         );
-        setFaculties(response.data);
+        setAcademicYears(response.data);
       } catch (error) {
-        console.error("Error fetching faculties:", error);
-        setMessage("Failed to load faculties.");
+        console.error("Error fetching academic years:", error);
+        setMessage("Failed to load academic years.");
         setMessageType("error");
       }
     };
 
-    fetchFaculties();
+    fetchAcademicYears();
   }, []);
 
+  // Fetch departments on load
   useEffect(() => {
-    if (facultyName) {
-      localStorage.setItem("facultyName", facultyName);
-    }
-  }, [facultyName]);
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/api/feedback/feedbacks/parentdepartment"
+        );
+        setDepartments(response.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+        setMessage("Failed to load departments.");
+        setMessageType("error");
+      }
+    };
 
+    fetchDepartments();
+  }, []);
+
+  // Fetch faculties based on selected parent department
   useEffect(() => {
-    if (analysisData.length > 0) {
-      localStorage.setItem("analysisData", JSON.stringify(analysisData));
-    }
-  }, [analysisData]);
+    if (parentDepartment) {
+      const fetchFaculties = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:4000/api/feedback/feedbacks/faculty-names/by-parentdepartment",
+            { params: { department: parentDepartment } }
+          );
+          setFaculties(response.data);
+        } catch (error) {
+          console.error("Error fetching faculties:", error);
+          setMessage("Failed to load faculties.");
+          setMessageType("error");
+        }
+      };
 
-  const calculateFinalAveragePercentage = (data) => {
-    if (data.length === 0) return 0;
-    const totalPercentage = data.reduce(
-      (sum, item) => sum + parseFloat(item.averagePercentage),
-      0
-    );
-    return (totalPercentage / data.length).toFixed(2);
-  };
+      fetchFaculties();
+    }
+  }, [parentDepartment]);
 
   const fetchAnalysis = async () => {
     try {
-      if (!facultyName) {
-        setMessage("Please select a faculty member.");
+      if (!facultyName || !academicYear) {
+        setMessage("Please select both faculty and academic year.");
         setMessageType("error");
         return;
       }
@@ -64,7 +83,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
       const response = await axios.get(
         "http://localhost:4000/api/admin/by-faculty",
         {
-          params: { facultyName },
+          params: { facultyName, academicYear }, // Include academic year in the request
         }
       );
 
@@ -73,7 +92,9 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
         setMessage("");
       } else {
         setAnalysisData([]);
-        setMessage("No analysis data available for the selected faculty.");
+        setMessage(
+          "No analysis data available for the selected faculty and academic year."
+        );
         setMessageType("info");
       }
     } catch (error) {
@@ -83,12 +104,30 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
     }
   };
 
+  const handleDepartmentChange = (e) => {
+    setParentDepartment(e.target.value); // Set selected department
+    setFacultyName(""); // Clear faculty when department changes
+  };
+
   const handleFacultyChange = (e) => {
     setFacultyName(e.target.value);
   };
 
+  const handleAcademicYearChange = (e) => {
+    setAcademicYear(e.target.value);
+  };
+
   const handleSearch = () => {
     fetchAnalysis();
+  };
+
+  const calculateFinalAveragePercentage = (data) => {
+    if (data.length === 0) return 0;
+    const totalPercentage = data.reduce(
+      (sum, item) => sum + parseFloat(item.averagePercentage),
+      0
+    );
+    return (totalPercentage / data.length).toFixed(2);
   };
 
   const theoryData = analysisData.filter(
@@ -104,7 +143,8 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
   const finalOverallAverage = (() => {
     if (theoryData.length > 0 && practicalData.length > 0) {
       return (
-        (parseFloat(finalTheoryAverage) + parseFloat(finalPracticalAverage)) / 2
+        (parseFloat(finalTheoryAverage) + parseFloat(finalPracticalAverage)) /
+        2
       ).toFixed(2);
     } else if (theoryData.length > 0) {
       return finalTheoryAverage;
@@ -118,7 +158,10 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
     <div className={styles.SameFacultyDifferentSubjectsAnalysi_container}>
       <div className={styles.SameFacultyDifferentSubjectsAnalysi_card}>
         <h2>Same Faculty, Different Subjects Feedback Analysis</h2>
-        <p>Select a faculty member to analyze feedback across subjects.</p>
+        <p>
+          Select a department, faculty, and academic year to analyze feedback
+          across subjects.
+        </p>
         {message && (
           <div
             className={`${styles.SameFacultyDifferentSubjectsAnalysi_message} ${styles[messageType]}`}
@@ -127,15 +170,46 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
           </div>
         )}
 
+        {/* Department, Faculty, and Academic Year Filters */}
         <div
           className={styles.SameFacultyDifferentSubjectsAnalysi_inputcontainer}
         >
+          <select
+            value={academicYear}
+            onChange={handleAcademicYearChange}
+            className={
+              styles.SameFacultyDifferentSubjectsAnalysi_subjectDropdown
+            }
+          >
+            <option value="">Select Academic Year</option>
+            {academicYears.map((year, index) => (
+              <option key={index} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <select
+            value={parentDepartment}
+            onChange={handleDepartmentChange}
+            className={
+              styles.SameFacultyDifferentSubjectsAnalysi_subjectDropdown
+            }
+          >
+            <option value="">Select Parent Department</option>
+            {departments.map((dept, index) => (
+              <option key={index} value={dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
+
           <select
             value={facultyName}
             onChange={handleFacultyChange}
             className={
               styles.SameFacultyDifferentSubjectsAnalysi_subjectDropdown
             }
+            disabled={!parentDepartment} // Disable if no department selected
           >
             <option value="">Select Faculty</option>
             {faculties.map((faculty, index) => (
@@ -144,6 +218,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
               </option>
             ))}
           </select>
+
           <button
             onClick={handleSearch}
             className={styles.SameFacultyDifferentSubjectsAnalysi_searchButton}
@@ -151,6 +226,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
             Search
           </button>
         </div>
+        {/* Display analysis data */}
         <div
           style={{
             display: "flex",
@@ -173,7 +249,6 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
         {theoryData.length > 0 && (
           <>
             <h3>Theory Subjects</h3>
-
             <div
               className={
                 styles.SameFacultyDifferentSubjectsAnalysi_analysisTableWrapper
@@ -190,7 +265,6 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                     <th>Subject Name</th>
                     <th>Branch</th>
                     <th>Type</th>
-
                     <th>Average Percentage</th>
                     <th>Feedback Remark</th>
                   </tr>
@@ -202,12 +276,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                       <td>{data.subjectName}</td>
                       <td>{data.branch}</td>
                       <td>{data.type}</td>
-
-                      <td>
-                        {data.averagePercentage !== "0.00"
-                          ? `${data.averagePercentage}%`
-                          : "0"}
-                      </td>
+                      <td>{data.averagePercentage}%</td>
                       <td>{getFeedbackRemark(data.averagePercentage)}</td>
                     </tr>
                   ))}
@@ -220,7 +289,6 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
         {practicalData.length > 0 && (
           <>
             <h3>Practical Subjects</h3>
-
             <div
               className={
                 styles.SameFacultyDifferentSubjectsAnalysi_analysisTableWrapper
@@ -237,7 +305,6 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                     <th>Subject Name</th>
                     <th>Branch</th>
                     <th>Type</th>
-
                     <th>Average Percentage</th>
                     <th>Feedback Remark</th>
                   </tr>
@@ -249,12 +316,7 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                       <td>{data.subjectName}</td>
                       <td>{data.branch}</td>
                       <td>{data.type}</td>
-       
-                      <td>
-                        {data.averagePercentage !== "0.00"
-                          ? `${data.averagePercentage}%`
-                          : "0"}
-                      </td>
+                      <td>{data.averagePercentage}%</td>
                       <td>{getFeedbackRemark(data.averagePercentage)}</td>
                     </tr>
                   ))}
@@ -267,13 +329,20 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
         {analysisData.length > 0 && (
           <>
             <PDFDownloadLink
-              document={<FeedbackPDFsame analysisData={analysisData} />}
+              document={
+                <FeedbackPDFsame
+                  analysisData={analysisData}
+                  facultyName={facultyName}
+                  parentDepartment={parentDepartment}
+                  academicYear={academicYear}
+                />
+              }
               fileName="analysis-report.pdf"
             >
               {({ loading }) => (
                 <button
                   style={{
-                    backgroundColor: "#007bff", // Primary blue color
+                    backgroundColor: "#007bff",
                     border: "none",
                     color: "#fff",
                     padding: "10px 20px",
@@ -290,10 +359,10 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor = "#0056b3")
-                  } // Darker blue on hover
+                  }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = "#007bff")
-                  } // Original blue
+                  }
                 >
                   {loading ? "Generating PDF..." : "Download PDF"}
                 </button>

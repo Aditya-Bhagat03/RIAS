@@ -5,7 +5,7 @@ const User = require("../models/User"); // Import User model if needed
 exports.createTimetable = async (req, res) => {
   try {
     // Destructure academicYear and session from req.body
-    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type, courseAbbreviation, parentDepartment, academicYear, session } = req.body;
+    const { branch, section, semester, batch, facultyName, subjectName, courseCode, type,isElective, courseAbbreviation, parentDepartment, academicYear, session } = req.body;
 
     // Create a new Timetable instance including academicYear and session
     const newTimetable = new Timetable({
@@ -17,6 +17,7 @@ exports.createTimetable = async (req, res) => {
       subjectName,
       courseCode,
       type,
+      isElective,
       courseAbbreviation,
       parentDepartment,
       academicYear, // Include academicYear in the creation

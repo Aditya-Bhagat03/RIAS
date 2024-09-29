@@ -6,7 +6,7 @@ const StudentTimetable = () => {
   const [timetableData, setTimetableData] = useState([]);
   const [filteredTimetable, setFilteredTimetable] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   // Fetch student profile data
   const fetchProfileData = async () => {
@@ -14,7 +14,6 @@ const StudentTimetable = () => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
 
-      // Extract user ID from the token
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const userId = decodedToken.id;
 
@@ -81,9 +80,9 @@ const StudentTimetable = () => {
       try {
         await fetchProfileData();
         await fetchTimetableData();
-        setLoading(false); // Loading is complete
+        setLoading(false); 
       } catch (error) {
-        setLoading(false); // Ensure loading stops even if there's an error
+        setLoading(false);
       }
     };
     fetchData();
@@ -99,30 +98,32 @@ const StudentTimetable = () => {
         <>
           <h2>Student Timetable</h2>
           {filteredTimetable.length > 0 ? (
-            <table className="timetable-table">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Time</th>
-                  <th>Subject</th>
-                  <th>Room</th>
-                  <th>Faculty</th>
-                  <th>Course Code</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTimetable.map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.type || 'N/A'}</td>
-                    <td>{entry.courseAbbreviation || 'N/A'}</td>
-                    <td>{entry.subjectName || 'N/A'}</td>
-                    <td>{entry.parentDepartment || 'N/A'}</td>
-                    <td>{entry.facultyName || 'N/A'}</td>
-                    <td>{entry.courseCode || 'N/A'}</td>
+            <div className="timetable-wrapper">
+              <table className="timetable-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Branch</th>
+                    <th>Faculty</th>
+                    <th>Course Code</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredTimetable.map((entry, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                      <td>{entry.type || 'N/A'}</td>
+                      <td>{entry.courseAbbreviation || 'N/A'}</td>
+                      <td>{entry.subjectName || 'N/A'}</td>
+                      <td>{entry.parentDepartment || 'N/A'}</td>
+                      <td>{entry.facultyName || 'N/A'}</td>
+                      <td>{entry.courseCode || 'N/A'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <div className="no-timetable-message">No timetable available for the specified criteria.</div>
           )}

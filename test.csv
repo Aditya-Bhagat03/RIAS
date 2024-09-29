@@ -1,0 +1,5 @@
+username,email,password,role,mobileNumber,registrationNumber,semester,branch,batch,section,rollNumber,academicYear,session,electives
+john_doe,johdasddn@example.com,password123,student,1234567890,REG1234,6,CSE,1,A,101,2023,Summer,"AI, ML"
+janesdsdsd_doe,janadsdsdsdsadade@example.com,password456,student,9876543210,RsdsfEG5678,6,CSE,2,B,102,2023,Summer,
+electivetestaiml@gmail.com,electivetestaiml@gmail.com,password456,student,9876add543210,RsdsfadadadEG5678,7,CSE,2,A,102,2023,Summer,AIML
+electivetestDSA@gmail.com,electivetestDSA@gmail.com,password456,student,9876add5ssf43210,RsdsfadsfsfadadEG5678,7,CSE,2,A,102,2023,Summer,Data Structures

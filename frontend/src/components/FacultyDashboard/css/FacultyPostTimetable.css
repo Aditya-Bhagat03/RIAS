@@ -13,6 +13,7 @@
   overflow-x: auto; /* Enable horizontal scrolling if content overflows */
   overflow-y: auto; /* Enable vertical scrolling if content overflows */
   max-height: 600px; /* Optional: Set a max height to restrict container height */
+  resize: both; /* Allows resizing in both width and height */
 }
 
 /* Ensure that the content inside the container also handles overflow */
@@ -61,7 +62,7 @@
 /* Grid layout for the form */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 5 columns layout */
+  grid-template-columns: repeat(7, 1fr); /* 5 columns layout */
   gap: 50px;
   width: 110%;
   padding: 10px;
@@ -79,7 +80,7 @@
 
 /* Add specific styles for button container */
 .button-container {
-  grid-column: span 6; /* Span all 5 columns */
+  grid-column: span 7; /* Span all 5 columns */
   display: flex;
   justify-content: center; /* Center the button horizontally */
   margin-top: 20px; /* Add some space above the button */

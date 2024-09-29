@@ -1,12 +1,12 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'column',
+    flexDirection: "column",
     padding: 30,
     fontSize: 12,
-    fontFamily: 'Helvetica',
+    fontFamily: "Helvetica",
   },
   section: {
     marginBottom: 20,
@@ -14,45 +14,45 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     marginBottom: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   table: {
-    display: 'table',
-    width: '100%',
-    borderStyle: 'solid',
+    display: "table",
+    width: "100%",
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#000',
-    borderCollapse: 'collapse',
+    borderColor: "#000",
+    borderCollapse: "collapse",
     marginBottom: 20,
   },
   tableRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   tableCell: {
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: "#000",
     padding: 8,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 11,
-    width: '20%', // Adjust width to match the number of columns
+    width: "25%", // Adjusted width to fit the new layout
     minWidth: 60,
   },
   tableCellHeader: {
     fontSize: 12,
-    fontWeight: 'bold',
-    backgroundColor: '#e0e0e0',
+    fontWeight: "bold",
+    backgroundColor: "#e0e0e0",
   },
 });
 
 const getFeedbackRemark = (percentage) => {
-  if (percentage >= 90) return 'Excellent';
-  if (percentage >= 80) return 'Very Good';
-  if (percentage >= 70) return 'Good';
-  if (percentage >= 60) return 'Satisfactory';
-  if (percentage >= 40) return 'Bad';
-  return 'Very Bad';
+  if (percentage >= 90) return "Excellent";
+  if (percentage >= 80) return "Very Good";
+  if (percentage >= 70) return "Good";
+  if (percentage >= 60) return "Satisfactory";
+  if (percentage >= 40) return "Bad";
+  return "Very Bad";
 };
 
 const FeedbackPDFsamee = ({ analysisData }) => (
@@ -71,9 +71,6 @@ const FeedbackPDFsamee = ({ analysisData }) => (
               <Text>Branch</Text>
             </View>
             <View style={[styles.tableCell, styles.tableCellHeader]}>
-              <Text>Average Rating</Text>
-            </View>
-            <View style={[styles.tableCell, styles.tableCellHeader]}>
               <Text>Average Percentage</Text>
             </View>
             <View style={[styles.tableCell, styles.tableCellHeader]}>
@@ -87,9 +84,6 @@ const FeedbackPDFsamee = ({ analysisData }) => (
               </View>
               <View style={styles.tableCell}>
                 <Text>{data.branch}</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text>{data.averageRating}</Text>
               </View>
               <View style={styles.tableCell}>
                 <Text>{data.averagePercentage}%</Text>

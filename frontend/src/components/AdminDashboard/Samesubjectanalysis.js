@@ -7,6 +7,8 @@ import FeedbackPDFsame from "./pdf/pdfSamesubjectanalysis.js";
 import styles from "./css/Samesubjectanalysis.module.css"; // Adjust the path as needed
 
 const Samesubjectanalysis = () => {
+  const [academicYear, setAcademicYear] = useState(""); // State for academic year
+  const [branch, setBranch] = useState(""); // State for parent department (branch)
   const [subjectName, setSubjectName] = useState("");
   const [type, setType] = useState("");
   const [analysisData, setAnalysisData] = useState([]);
@@ -14,20 +16,24 @@ const Samesubjectanalysis = () => {
   const [messageType, setMessageType] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [types, setTypes] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]); // To hold academic years
+  const [branches, setBranches] = useState([]); // To hold branches
+
   const closePopup = () => {
     setMessage(null);
   };
 
+  // Fetch academic years on component load
   useEffect(() => {
-    const fetchSubjects = async () => {
+    const fetchAcademicYears = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/subject-names"
+          "http://localhost:4000/api/feedback/feedbacks/academicyear"
         );
-        setSubjects(response.data);
+        setAcademicYears(response.data);
       } catch (error) {
-        console.error("Error fetching subjects:", error);
-        setMessage("Failed to load subjects.");
+        console.error("Error fetching academic years:", error);
+        setMessage("Failed to load academic years.");
         setMessageType("error");
       }
     };
@@ -45,23 +51,63 @@ const Samesubjectanalysis = () => {
       }
     };
 
-    fetchSubjects();
+    fetchAcademicYears();
     fetchTypes();
   }, []);
 
+  // Fetch branches (parent departments) when academic year is selected
+  useEffect(() => {
+    if (academicYear) {
+      const fetchBranches = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:4000/api/feedback/feedbacks/parentdepartment/filter/samesubject",
+            { params: { academicYear } }
+          );
+          setBranches(response.data);
+        } catch (error) {
+          console.error("Error fetching branches:", error);
+          setMessage("Failed to load branches.");
+          setMessageType("error");
+        }
+      };
+      fetchBranches();
+    }
+  }, [academicYear]);
+
+  // Fetch subjects when both academic year and branch are selected
+  useEffect(() => {
+    if (academicYear && branch) {
+      const fetchSubjects = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:4000/api/feedback/feedbacks/subject-names/filter",
+            { params: { academicYear, parentDepartment: branch } }
+          );
+          setSubjects(response.data);
+        } catch (error) {
+          console.error("Error fetching subjects:", error);
+          setMessage("Failed to load subjects.");
+          setMessageType("error");
+        }
+      };
+      fetchSubjects();
+    }
+  }, [academicYear, branch]);
+
   const fetchAnalysis = async () => {
     try {
-      if (!subjectName || !type) {
-        setMessage("Please select both a subject and a type.");
+      if (!subjectName || !type || !academicYear || !branch) {
+        setMessage("Please select academic year, branch, subject, and type.");
         setMessageType("error");
         return;
       }
 
+      const params = { subjectName, type, academicYear, branch };
+
       const response = await axios.get(
         "http://localhost:4000/api/admin/by-same-subject",
-        {
-          params: { subjectName, type },
-        }
+        { params }
       );
 
       if (response.data && response.data.length > 0) {
@@ -69,9 +115,7 @@ const Samesubjectanalysis = () => {
         setMessage("");
       } else {
         setAnalysisData([]);
-        setMessage(
-          "No analysis data available for the selected subject and type."
-        );
+        setMessage("No analysis data available for the selected filters.");
         setMessageType("info");
       }
     } catch (error) {
@@ -89,6 +133,19 @@ const Samesubjectanalysis = () => {
     setType(e.target.value);
   };
 
+  const handleAcademicYearChange = (e) => {
+    setAcademicYear(e.target.value);
+    setBranch(""); // Reset branch and subject when academic year changes
+    setSubjects([]); // Reset subjects when academic year changes
+    setSubjectName("");
+  };
+
+  const handleBranchChange = (e) => {
+    setBranch(e.target.value);
+    setSubjects([]); // Reset subjects when branch changes
+    setSubjectName("");
+  };
+
   const handleSearch = () => {
     fetchAnalysis();
   };
@@ -98,7 +155,6 @@ const Samesubjectanalysis = () => {
     if (percentage >= 80) return "Very Good";
     if (percentage >= 70) return "Good";
     if (percentage >= 60) return "Satisfactory";
-    
     return "Need Improvement";
   };
 
@@ -134,7 +190,7 @@ const Samesubjectanalysis = () => {
           Same Subject Feedback Analysis
         </h2>
         <p className={styles.samesubjectanalysisDescription}>
-          Select a subject and type to analyze feedback.
+          Select academic year, branch, subject, and type to analyze feedback.
         </p>
         {message && (
           <div
@@ -146,7 +202,6 @@ const Samesubjectanalysis = () => {
         {message && (
           <div className={styles["admin-Samesubjectanalysis-overlay"]}>
             <div className={styles["admin-Samesubjectanalysis-popup"]}>
-              {/* Close icon */}
               <span
                 className={styles["admin-Samesubjectanalysis-closeIcon"]}
                 onClick={closePopup}
@@ -155,7 +210,6 @@ const Samesubjectanalysis = () => {
               </span>
               <div className={styles[messageType]}>{message}</div>
 
-              {/* Close button */}
               <button
                 className={styles["admin-Samesubjectanalysis-closeButton"]}
                 onClick={closePopup}
@@ -168,9 +222,37 @@ const Samesubjectanalysis = () => {
 
         <div className={styles.samesubjectanalysisInputContainer}>
           <select
+            value={academicYear}
+            onChange={handleAcademicYearChange}
+            className={styles.samesubjectanalysisDropdown}
+          >
+            <option value="">Select Academic Year</option>
+            {academicYears.map((year, index) => (
+              <option key={index} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={branch}
+            onChange={handleBranchChange}
+            className={styles.samesubjectanalysisDropdown}
+            disabled={!academicYear}
+          >
+            <option value="">Select Branch</option>
+            {branches.map((branch, index) => (
+              <option key={index} value={branch}>
+                {branch}
+              </option>
+            ))}
+          </select>
+
+          <select
             value={subjectName}
             onChange={handleSubjectChange}
             className={styles.samesubjectanalysisDropdown}
+            disabled={!branch}
           >
             <option value="">Select Subject</option>
             {subjects.map((subject, index) => (
@@ -179,6 +261,7 @@ const Samesubjectanalysis = () => {
               </option>
             ))}
           </select>
+
           <select
             value={type}
             onChange={handleTypeChange}
@@ -191,6 +274,7 @@ const Samesubjectanalysis = () => {
               </option>
             ))}
           </select>
+
           <button
             onClick={handleSearch}
             className={styles.samesubjectanalysisButton}
@@ -198,6 +282,7 @@ const Samesubjectanalysis = () => {
             Search
           </button>
         </div>
+
         {analysisData.length > 0 ? (
           <div className={styles.samesubjectanalysisTableWrapper}>
             <table
@@ -208,7 +293,6 @@ const Samesubjectanalysis = () => {
                 <tr>
                   <th>Faculty Name</th>
                   <th>Branch</th>
-
                   <th>Average Percentage</th>
                   <th>Feedback Remark</th>
                 </tr>
@@ -218,7 +302,6 @@ const Samesubjectanalysis = () => {
                   <tr key={index}>
                     <td>{data.facultyName}</td>
                     <td>{data.branch}</td>
-
                     <td>
                       {data.averagePercentage !== "0.00"
                         ? `${data.averagePercentage}%`
@@ -236,7 +319,7 @@ const Samesubjectanalysis = () => {
               {({ loading }) => (
                 <button
                   style={{
-                    backgroundColor: "#007bff", // Primary blue color
+                    backgroundColor: "#007bff",
                     border: "none",
                     color: "#fff",
                     padding: "10px 20px",
@@ -252,10 +335,10 @@ const Samesubjectanalysis = () => {
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor = "#0056b3")
-                  } // Darker blue on hover
+                  }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = "#007bff")
-                  } // Original blue
+                  }
                 >
                   {loading ? "Generating PDF..." : "Download PDF"}
                 </button>
@@ -264,7 +347,7 @@ const Samesubjectanalysis = () => {
           </div>
         ) : (
           messageType !== "error" && (
-            <p>No analysis data available for the selected subject and type.</p>
+            <p>No analysis data available for the selected filters.</p>
           )
         )}
       </div>

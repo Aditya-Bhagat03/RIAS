@@ -183,6 +183,31 @@ exports.getFacultyNamesFromFeedbacks = async (req, res) => {
   }
 };
 
+
+
+
+exports.getFacultyNamesByParentDepartment = async (req, res) => {
+  const { department } = req.query;
+  try {
+    if (!department) {
+      return res.status(400).json({ message: "Department is required" });
+    }
+
+    // Fetch distinct faculty names based on the selected department
+    const facultyNames = await Feedback.distinct("facultyName", { parentDepartment: department });
+    
+    if (facultyNames.length > 0) {
+      res.json(facultyNames);
+    } else {
+      res.status(404).json({ message: "No faculty names found for the selected department" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching faculty names", error });
+  }
+};
+
 exports.getCourseNamesFromFeedbacks = async (req, res) => {
   try {
     const courseNames = await Feedback.distinct("courseName");
@@ -334,6 +359,78 @@ exports.getSubjectNamesFromFeedbacks = async (req, res) => {
       .json({ message: "Error fetching subject names from feedbacks", error });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Get distinct parent departments based on academic year
+exports.getParentDepartmentssubjectanalysis = async (req, res) => {
+  try {
+    const { academicYear } = req.query;
+
+    if (!academicYear) {
+      return res.status(400).json({ message: "Academic Year is required" });
+    }
+
+    // Fetch distinct parentDepartment based on academicYear
+    const parentDepartments = await Feedback.distinct("parentDepartment", { academicYear });
+
+    if (parentDepartments.length > 0) {
+      res.json(parentDepartments);
+    } else {
+      res.status(404).json({ message: "No parent departments found for the selected academic year" });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching parent departments from feedbacks",
+      error,
+    });
+  }
+};
+
+// Get distinct subject names based on academic year and parent department
+exports.getSubjectNamesFromFeedbackssamesubjectanalysis = async (req, res) => {
+  try {
+    const { academicYear, parentDepartment } = req.query;
+
+    if (!academicYear || !parentDepartment) {
+      return res.status(400).json({
+        message: "Academic Year and Parent Department are required",
+      });
+    }
+
+    // Fetch distinct subjectNames based on academicYear and parentDepartment
+    const subjectNames = await Feedback.distinct("subjectName", {
+      academicYear,
+      parentDepartment,
+    });
+
+    if (subjectNames.length > 0) {
+      res.json(subjectNames);
+    } else {
+      res.status(404).json({
+        message: "No subject names found for the selected filters",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching subject names from feedbacks",
+      error,
+    });
+  }
+};
+
 
 
 

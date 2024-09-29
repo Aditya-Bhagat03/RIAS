@@ -11,6 +11,8 @@
   width: 100%; /* Ensures the container takes full width */
   min-width: 800px; /* Minimum width to prevent it from shrinking too much */
   box-sizing: border-box; /* Ensures padding is included in the width */
+  
+  
 }
 
 .BranchAnalysis_card {
@@ -19,6 +21,7 @@
   padding: 20px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   height: 100%;
+  
   
 }
 
@@ -29,9 +32,9 @@
 }
 
 .BranchAnalysis_branchDropdown {
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 10px;
   width: 20%;
   
 }

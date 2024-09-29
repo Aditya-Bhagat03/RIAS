@@ -194,17 +194,18 @@ const FacultyRegister = () => {
       <button onClick={handleNavigate} className={styles.submit}>View Registered Faculty</button>
 
       <h2 className={styles.header}>Upload Faculty CSV</h2>
-      <form onSubmit={handleCsvUpload} className={styles.form}>
+      <form style={{ marginLeft:'400px',}}  onSubmit={handleCsvUpload} className={styles.form}>
         <div className={styles.field}>
-          <input
+          <input 
             type="file"
             accept=".csv"
             onChange={handleCsvChange}
             required
             className={styles.input}
           />
+          
         </div>
-        <button type="submit" className={styles.submit}>Upload CSV</button>
+        <button type="submit" className={styles.submitt}>Upload CSV</button>
       </form>
 
       {showAlert && (

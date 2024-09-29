@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { PDFDownloadLink } from '@react-pdf/renderer'; // For PDF download
+import { PDFDownloadLink } from "@react-pdf/renderer"; // For PDF download
 import PdfBranchAnalysis from "./pdf/PdfBranchAnalysis"; // Import the PdfBranchAnalysis component
 import styles from "./css/BranchAnalysis.module.css"; // Adjust the path as needed
 
 const BranchAnalysis = () => {
-  const [parentDepartment, setBranch] = useState(sessionStorage.getItem("parentDepartment") || "");
-  const [academicYear, setAcademicYear] = useState(sessionStorage.getItem("academicYear") || "");
-  const [analysisData, setAnalysisData] = useState(JSON.parse(sessionStorage.getItem("analysisData")) || []);
+  const [parentDepartment, setBranch] = useState(
+    sessionStorage.getItem("parentDepartment") || ""
+  );
+  const [academicYear, setAcademicYear] = useState(
+    sessionStorage.getItem("academicYear") || ""
+  );
+  const [analysisData, setAnalysisData] = useState(
+    JSON.parse(sessionStorage.getItem("analysisData")) || []
+  );
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [parentDepartmentes, setBranches] = useState([]);
@@ -16,9 +22,14 @@ const BranchAnalysis = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/parentDepartment");
+        const response = await axios.get(
+          "http://localhost:4000/api/feedback/feedbacks/parentDepartment"
+        );
         setBranches(response.data);
-        sessionStorage.setItem("parentDepartmentes", JSON.stringify(response.data)); // Cache parentDepartmentes data
+        sessionStorage.setItem(
+          "parentDepartmentes",
+          JSON.stringify(response.data)
+        ); // Cache parentDepartmentes data
       } catch (error) {
         console.error("Error fetching parentDepartmentes:", error);
         setMessage("Failed to load parentDepartmentes.");
@@ -28,7 +39,9 @@ const BranchAnalysis = () => {
 
     const fetchAcademicYears = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/academicyear");
+        const response = await axios.get(
+          "http://localhost:4000/api/feedback/feedbacks/academicyear"
+        );
         setAcademicYears(response.data);
         sessionStorage.setItem("academicYears", JSON.stringify(response.data)); // Cache academic years data
       } catch (error) {
@@ -75,16 +88,21 @@ const BranchAnalysis = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:4000/api/admin/feedback-analysis-by-branch", {
-        params: { parentDepartment, academicYear },
-      });
+      const response = await axios.get(
+        "http://localhost:4000/api/admin/feedback-analysis-by-branch",
+        {
+          params: { parentDepartment, academicYear },
+        }
+      );
 
       if (response.data && response.data.facultyData.length > 0) {
         setAnalysisData(response.data.facultyData);
         setMessage("");
       } else {
         setAnalysisData([]);
-        setMessage("No analysis data available for the selected parentDepartment and academic year.");
+        setMessage(
+          "No analysis data available for the selected parentDepartment and academic year."
+        );
         setMessageType("info");
       }
     } catch (error) {
@@ -119,9 +137,14 @@ const BranchAnalysis = () => {
     <div className={styles.BranchAnalysis_container}>
       <div className={styles.BranchAnalysis_card}>
         <h2>Branch Feedback Analysis</h2>
-        <p>Select a parentDepartment and academic year to analyze feedback across faculty members.</p>
+        <p>
+          Select a parentDepartment and academic year to analyze feedback across
+          faculty members.
+        </p>
         {message && (
-          <div className={`${styles.BranchAnalysis_message} ${styles[messageType]}`}>
+          <div
+            className={`${styles.BranchAnalysis_message} ${styles[messageType]}`}
+          >
             {message}
           </div>
         )}
@@ -129,7 +152,7 @@ const BranchAnalysis = () => {
           <select
             value={parentDepartment}
             onChange={handleBranchChange}
-            className={styles.BranchAnalysis_parentDepartmentDropdown}
+            className={styles.BranchAnalysis_branchDropdown}
           >
             <option value="">Select Branch</option>
             {parentDepartmentes.map((br, index) => (
@@ -142,7 +165,7 @@ const BranchAnalysis = () => {
           <select
             value={academicYear}
             onChange={handleAcademicYearChange}
-            className={styles.BranchAnalysis_academicYearDropdown}
+            className={styles.BranchAnalysis_branchDropdown}
           >
             <option value="">Select Academic Year</option>
             {academicYears.map((year, index) => (
@@ -152,13 +175,21 @@ const BranchAnalysis = () => {
             ))}
           </select>
 
-          <button onClick={handleSearch} className={styles.BranchAnalysis_searchButton}>
+          <button
+            onClick={handleSearch}
+            className={styles.BranchAnalysis_searchButton}
+          >
             Search
           </button>
 
           {analysisData.length > 0 && (
             <PDFDownloadLink
-              document={<PdfBranchAnalysis analysisData={analysisData} />}
+              document={
+                <PdfBranchAnalysis
+                  analysisData={analysisData}
+                  parentDepartment={parentDepartment}
+                />
+              }
               fileName="Branch_Analysis_Report.pdf"
               className={styles.BranchAnalysis_pdfButton}
             >
@@ -169,7 +200,10 @@ const BranchAnalysis = () => {
 
         {analysisData.length > 0 ? (
           <div className={styles.BranchAnalysis_analysisTableWrapper}>
-            <table id="analysisTable" className={styles.BranchAnalysis_analysisTable}>
+            <table
+              id="analysisTable"
+              className={styles.BranchAnalysis_analysisTable}
+            >
               <thead>
                 <tr>
                   <th>Faculty Name</th>
@@ -187,15 +221,34 @@ const BranchAnalysis = () => {
                     <td>{data.courseCount}</td>
                     <td>{data.studentCount}</td>
 
-                    <td>{data.averagePercentage !== '0.00' ? data.averagePercentage : "0%"}</td>
-                    <td>{data.averagePercentage >= 90 ? "Excellent" : data.averagePercentage >= 80 ? "Very Good" : data.averagePercentage >= 70 ? "Good" : data.averagePercentage >= 60 ? "Satisfactory" : "Need Improvement"}</td>
+                    <td>
+                      {data.averagePercentage !== "0.00"
+                        ? data.averagePercentage
+                        : "0%"}
+                    </td>
+                    <td>
+                      {data.averagePercentage >= 90
+                        ? "Excellent"
+                        : data.averagePercentage >= 80
+                        ? "Very Good"
+                        : data.averagePercentage >= 70
+                        ? "Good"
+                        : data.averagePercentage >= 60
+                        ? "Satisfactory"
+                        : "Need Improvement"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          messageType !== "error" && <p>No analysis data available for the selected parentDepartment and academic year.</p>
+          messageType !== "error" && (
+            <p>
+              No analysis data available for the selected parentDepartment and
+              academic year.
+            </p>
+          )
         )}
       </div>
     </div>

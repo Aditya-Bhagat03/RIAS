@@ -3,7 +3,6 @@ import axios from "axios";
 import "./css/FacultyPostTimetable.css"; // Import the updated CSS file
 
 const FacultyPostTimetable = () => {
-  // State for the timetable posting form
   const [semesters, setSemesters] = useState([]);
   const [branches, setBranches] = useState([]);
   const [batch, setBatch] = useState("");
@@ -15,6 +14,7 @@ const FacultyPostTimetable = () => {
   const [section, setSection] = useState("");
   const [semester, setSemester] = useState("");
   const [type, setType] = useState("");
+  const [isElective, setIsElective] = useState(false);  // Initialize with false (No)
   const [courseAbbreviation, setTime] = useState("");
   const [parentDepartment, setRoom] = useState("");
   const [message, setMessage] = useState("");
@@ -29,13 +29,13 @@ const FacultyPostTimetable = () => {
   const [courseCodeSuggestions, setCourseCodeSuggestions] = useState([]);
   const [showFacultySuggestions, setShowFacultySuggestions] = useState(false);
   const [showSubjectSuggestions, setShowSubjectSuggestions] = useState(false);
-  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] = useState(false);
+  const [showCourseCodeSuggestions, setShowCourseCodeSuggestions] =
+    useState(false);
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState("");
   const [session, setSession] = useState([]);
   const [selectedSession, setSelectedSession] = useState("");
 
-  // State for the timetables
   const [timetables, setTimetables] = useState([]);
   const [filteredTimetables, setFilteredTimetables] = useState([]);
   const [error, setError] = useState("");
@@ -112,7 +112,6 @@ const FacultyPostTimetable = () => {
     setShowCourseCodeSuggestions(false);
   };
 
-  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".autocomplete-dropdown")) {
@@ -126,7 +125,6 @@ const FacultyPostTimetable = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Fetch options for the form
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -144,7 +142,9 @@ const FacultyPostTimetable = () => {
           axios.get("http://localhost:4000/api/branches"),
           axios.get("http://localhost:4000/api/sections"),
           axios.get("http://localhost:4000/api/facultyregister/facultyname"),
-          axios.get("http://localhost:4000/api/users/academic-years"),
+          axios.get(
+            "http://localhost:4000/api/feedback/feedbacks/academicyear"
+          ),
           axios.get("http://localhost:4000/api/users/session"),
           axios.get("http://localhost:4000/api/facultyregister/subjects"),
           axios.get("http://localhost:4000/api/facultyregister/coursecodes"),
@@ -177,7 +177,6 @@ const FacultyPostTimetable = () => {
   }, [facultyName, facultyNames]);
 
   useEffect(() => {
-    // Function to fetch timetables
     const fetchTimetables = async () => {
       try {
         const response = await axios.get(
@@ -191,10 +190,8 @@ const FacultyPostTimetable = () => {
       }
     };
 
-    // Fetch timetables every second
     const intervalId = setInterval(fetchTimetables, 1000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
 
@@ -209,8 +206,8 @@ const FacultyPostTimetable = () => {
     setFilteredTimetables(filtered);
   }, [semester, branch, section, timetables]);
 
-  // Handle timetable form submission
   const handleSubmit = async (e) => {
+    console.log("Submitting with isElective:", isElective);  // Added log to debug
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
@@ -226,6 +223,7 @@ const FacultyPostTimetable = () => {
         section,
         semester,
         type,
+        isElective,  // Will be true or false based on the user selection
         courseAbbreviation,
         parentDepartment,
         batch,
@@ -252,6 +250,7 @@ const FacultyPostTimetable = () => {
       setSection("");
       setSemester("");
       setType("");
+      setIsElective(false); // Reset isElective after submission
       setTime("");
       setRoom("");
       setBatch("");
@@ -269,7 +268,6 @@ const FacultyPostTimetable = () => {
       setMessageType("error");
     }
   };
-
   return (
     <div className="faculty-post-timetable-container">
       <form onSubmit={handleSubmit} className="faculty-post-timetable-form">
@@ -281,17 +279,11 @@ const FacultyPostTimetable = () => {
               onChange={(e) => setSelectedAcademicYear(e.target.value)}
               required
             >
-              
               <option value="">Select Academic</option>
-              <option value="2025">2025</option>
-              <option value="2025">2026</option>
-              <option value="2025">2027</option>
-              <option value="2025">2028</option>
               {academicYears.map((year) => (
                 <option key={year} value={year}>
                   {year}
                 </option>
-                
               ))}
             </select>
           </div>
@@ -370,8 +362,6 @@ const FacultyPostTimetable = () => {
               <option value="3">3</option>
             </select>
           </div>
-        </div>
-        <div className="form-grid">
           <div className="form-item row2">
             <label>Type:</label>
             <select
@@ -384,6 +374,21 @@ const FacultyPostTimetable = () => {
               </option>
               <option value="Practical">Practical</option>
               <option value="Theory">Theory</option>
+            </select>
+          </div>
+        </div>
+        <div className="form-grid">
+        <div className="form-item row2">
+            <label>Is Elective:</label>
+            <select
+              value={isElective ? "Yes" : "No"} // Display "Yes" or "No" based on state
+              onChange={(e) => {
+                setIsElective(e.target.value === "Yes"); // Set isElective to true if "Yes" is selected, otherwise false
+              }}
+              required
+            >
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
             </select>
           </div>
 
@@ -399,7 +404,10 @@ const FacultyPostTimetable = () => {
               <ul className="autocomplete-dropdown">
                 {subjectSuggestions.length ? (
                   subjectSuggestions.map((name, index) => (
-                    <li key={index} onClick={() => handleSubjectSuggestionClick(name)}>
+                    <li
+                      key={index}
+                      onClick={() => handleSubjectSuggestionClick(name)}
+                    >
                       {name}
                     </li>
                   ))
@@ -422,7 +430,10 @@ const FacultyPostTimetable = () => {
               <ul className="autocomplete-dropdown">
                 {courseCodeSuggestions.length ? (
                   courseCodeSuggestions.map((code, index) => (
-                    <li key={index} onClick={() => handleCourseCodeSuggestionClick(code)}>
+                    <li
+                      key={index}
+                      onClick={() => handleCourseCodeSuggestionClick(code)}
+                    >
                       {code}
                     </li>
                   ))
@@ -455,7 +466,10 @@ const FacultyPostTimetable = () => {
               <ul className="autocomplete-dropdown">
                 {facultySuggestions.length ? (
                   facultySuggestions.map((name, index) => (
-                    <li key={index} onClick={() => handleFacultySuggestionClick(name)}>
+                    <li
+                      key={index}
+                      onClick={() => handleFacultySuggestionClick(name)}
+                    >
                       {name}
                     </li>
                   ))
@@ -565,8 +579,8 @@ const FacultyPostTimetable = () => {
                 <th>Section</th>
                 <th>Semester</th>
                 <th>Type</th>
-                <th>Time</th>
-                <th>Room</th>
+                <th>Is Elective</th>
+                <th>Parent Department</th>
                 <th>Batch</th>
               </tr>
             </thead>
@@ -581,7 +595,7 @@ const FacultyPostTimetable = () => {
                     <td>{timetable.section}</td>
                     <td>{timetable.semester}</td>
                     <td>{timetable.type}</td>
-                    <td>{timetable.courseAbbreviation}</td>
+                    <td>{timetable.isElective ? "Yes" : "No"}</td>
                     <td>{timetable.parentDepartment}</td>
                     <td>{timetable.batch}</td>
                   </tr>

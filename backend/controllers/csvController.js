@@ -43,6 +43,7 @@ exports.uploadCSV = async (req, res) => {
       "rollNumber",
       "academicYear",
       "session",
+      "electives", // Added electives field to expected headers
     ];
 
     // Validate CSV headers
@@ -55,7 +56,7 @@ exports.uploadCSV = async (req, res) => {
 
     const userPromises = results.data.map(async (row) => {
       try {
-        const { email, password, ...userData } = row;
+        const { email, password, electives, ...userData } = row;
 
         if (!email || !password) {
           console.error("Missing email or password:", row);
@@ -67,6 +68,9 @@ exports.uploadCSV = async (req, res) => {
           console.log(`User with email ${email} already exists. Skipping.`);
           return null;
         }
+
+        // Process electives field - assuming it is a comma-separated string
+        const parsedElectives = electives ? electives.split(",").map(e => e.trim()) : [];
 
         // Check if the password is already hashed by inspecting the first part
         let storedPassword;
@@ -84,7 +88,12 @@ exports.uploadCSV = async (req, res) => {
         console.log(`Stored password: ${storedPassword}`);
 
         // Create and save the new user with the stored password (either plaintext or hashed)
-        user = new User({ ...userData, email, password: storedPassword });
+        user = new User({
+          ...userData,
+          email,
+          password: storedPassword,
+          electives: parsedElectives, // Save the parsed electives
+        });
 
         await user.save();
         return user;
@@ -110,9 +119,6 @@ exports.uploadCSV = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
-
-
 
 
 
@@ -234,6 +240,7 @@ exports.uploadTimetableCSV = async (req, res) => {
       "parentDepartment",
       "academicYear",
       "session",
+      "isElective",  // Added isElective field
     ];
 
     if (!expectedHeaders.every((header) => headers.includes(header))) {
@@ -253,6 +260,9 @@ exports.uploadTimetableCSV = async (req, res) => {
 
       // Only push valid entries
       if (timetableData.facultyName && timetableData.subjectName) {
+        // Convert "isElective" from string to Boolean
+        timetableData.isElective = timetableData.isElective.toLowerCase() === "true";
+
         // Check essential fields
         results.push(timetableData);
       } else {
@@ -281,6 +291,7 @@ exports.uploadTimetableCSV = async (req, res) => {
           parentDepartment: row.parentDepartment,
           academicYear: row.academicYear,
           session: row.session,
+          isElective: row.isElective, // Added isElective field
           createdBy: req.user ? req.user._id : null,
         });
         await newTimetable.save();
@@ -300,6 +311,46 @@ exports.uploadTimetableCSV = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.uploadFacultyCSV = async (req, res) => {
   try {

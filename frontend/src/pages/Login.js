@@ -28,32 +28,45 @@ const Login = () => {
     try {
       const res = await axios.post("http://localhost:4000/api/login", formData); // Ensure this URL is correct
 
-      console.log(res.data);
+      // Save token and role from server response
+      const { token, user } = res.data;
+      const { role: serverRole } = user; // Role from server
 
-      // Save token and role
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user.role);
+      // Admin can login without role validation
+      if (serverRole !== "admin") {
+        // Allow class teacher to log in with faculty role
+        if ((serverRole === "class-teacher" && role === "faculty") || serverRole === role) {
+          // Continue with login
+        } else {
+          setError(`Invalid credentials for the selected role: ${role}`);
+          return;
+        }
+      }
+
+      // Save token and role in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", serverRole);
 
       // Decode token to get user ID
-      const decodedToken = jwtDecode(res.data.token);
-      localStorage.setItem("userId", decodedToken.id); // Correct field name from decoded token
+      const decodedToken = jwtDecode(token);
+      localStorage.setItem("userId", decodedToken.id);
 
-      const userRole = res.data.user.role;
-
-      // Navigate based on the user role
-      if (userRole === "admin") {
+      // Navigate based on the user role from the server
+      if (serverRole === "admin") {
         navigate("/admin-dashboard");
-      } else if (userRole === "faculty") {
+      } else if (serverRole === "faculty") {
         navigate("/faculty-dashboard");
-      } else if (userRole === "student") {
+      } else if (serverRole === "student") {
         navigate("/student-dashboard");
-      } else {
+      } else if (serverRole === "class-teacher") {
         navigate("/class-teacher");
       }
     } catch (error) {
       setError(error.response?.data?.msg || "Login failed");
     }
   };
+
+
 
   const selectRole = (selectedRole) => {
     setFormData({ ...formData, role: selectedRole });

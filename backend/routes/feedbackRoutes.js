@@ -25,6 +25,9 @@ router.get('/feedbacks', feedbackController.getAllFeedback);
 
 // Route to get unique faculty names from feedbacks
 router.get('/feedbacks/faculty-names', feedbackController.getFacultyNamesFromFeedbacks);
+// Route to get unique faculty names from feedbacks
+router.get('/feedbacks/faculty-names/by-parentdepartment', feedbackController.getFacultyNamesByParentDepartment);
+
 
 // Route to get course names from feedbacks
 router.get('/feedbacks/course-names', feedbackController.getCourseNamesFromFeedbacks);
@@ -43,6 +46,7 @@ router.get('/feedbacks/branches', feedbackController.getBranchesFromFeedbacks );
 
 router.get('/feedbacks/parentdepartment', feedbackController.getParentDepartmentsFromFeedbacks );
 
+router.get('/feedbacks/parentdepartment/filter/samesubject', feedbackController.getParentDepartmentssubjectanalysis );
 
 // Route to get type names from feedbacks
 router.get('/feedbacks/types', feedbackController.getTypesFromFeedbacks);
@@ -60,6 +64,13 @@ router.get('/feedbacks/sections', feedbackController.getSectionsFromFeedbacks);
 
 // Route to get subject names from feedbacks
 router.get('/feedbacks/subject-names', feedbackController.getSubjectNamesFromFeedbacks);
+
+
+// Route to get subject names from feedbacks
+router.get('/feedbacks/subject-names/filter', feedbackController.getSubjectNamesFromFeedbackssamesubjectanalysis);
+
+
+
 // Route to get filtered feedback based on selected options
 router.get('/feedbacks/filtered', feedbackController.getFilteredFeedback);
 

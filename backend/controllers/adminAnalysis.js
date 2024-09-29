@@ -114,31 +114,106 @@ exports.getFeedbackAnalysis = async (req, res) => {
   }
 };
 
-// Maximum score used for percentage calculation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const maxScore = 4;
 
 exports.getFeedbackAnalysisBySubjectAndType = async (req, res) => {
   try {
-    const { subjectName, type } = req.query;
+    const { subjectName, type, academicYear, branch } = req.query;
 
     // Check for required parameters
     if (!subjectName || !type) {
-      return res
-        .status(400)
-        .json({ message: "Subject Name and Type are required" });
+      return res.status(400).json({ message: "Subject Name and Type are required" });
     }
 
-    // Fetch feedbacks based on the subject name and type
-    const feedbacks = await Feedback.find({
+    // Build query dynamically based on the available filters
+    const query = {
       subjectName,
-      type, // Add filter for type
-    });
+      type,
+    };
+
+    if (academicYear) {
+      query.academicYear = academicYear;
+    }
+
+    if (branch) {
+      query.branch = branch;
+    }
+
+    // Fetch feedbacks based on the query
+    const feedbacks = await Feedback.find(query);
 
     // Check if feedbacks are found
     if (feedbacks.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No feedback found for the given subject and type" });
+      return res.status(404).json({ message: "No feedback found for the given filters" });
     }
 
     // Initialize variables for analysis
@@ -153,9 +228,7 @@ exports.getFeedbackAnalysisBySubjectAndType = async (req, res) => {
       const responsesObj = Object.fromEntries(responses);
 
       // Get all scores
-      const scores = Object.values(responsesObj).map((score) =>
-        parseFloat(score)
-      );
+      const scores = Object.values(responsesObj).map((score) => parseFloat(score));
       const validScores = scores.filter((score) => !isNaN(score));
       const totalScore = validScores.reduce((acc, score) => acc + score, 0);
       const count = validScores.length;
@@ -179,8 +252,7 @@ exports.getFeedbackAnalysisBySubjectAndType = async (req, res) => {
         };
       }
 
-      facultyAnalysis[facultyName].branchAnalysis[branch].totalScore +=
-        averageScore;
+      facultyAnalysis[facultyName].branchAnalysis[branch].totalScore += averageScore;
       facultyAnalysis[facultyName].branchAnalysis[branch].count += 1;
       facultyAnalysis[facultyName].totalScore += averageScore;
       facultyAnalysis[facultyName].count += 1;
@@ -194,14 +266,10 @@ exports.getFeedbackAnalysisBySubjectAndType = async (req, res) => {
 
         return branches.map((branch) => {
           const branchData = branchAnalysis[branch];
-          const averageScore =
-            branchData.count > 0
-              ? (branchData.totalScore / branchData.count).toFixed(2)
-              : "0.00";
-          const averagePercentage = (
-            (branchData.totalScore / (branchData.count * maxScore)) *
-            100
-          ).toFixed(2);
+          const averageScore = branchData.count > 0
+            ? (branchData.totalScore / branchData.count).toFixed(2)
+            : "0.00";
+          const averagePercentage = ((branchData.totalScore / (branchData.count * maxScore)) * 100).toFixed(2);
           return {
             facultyName,
             branch,
@@ -220,23 +288,79 @@ exports.getFeedbackAnalysisBySubjectAndType = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 exports.getFeedbackAnalysisByFaculty = async (req, res) => {
   try {
-    const { facultyName } = req.query;
+    const { facultyName, academicYear } = req.query;
 
-    // Check for required parameter
-    if (!facultyName) {
-      return res.status(400).json({ message: "Faculty Name is required" });
+    // Check for required parameters
+    if (!facultyName || !academicYear) {
+      return res.status(400).json({ message: "Faculty Name and Academic Year are required" });
     }
 
-    // Fetch feedbacks based on the faculty name
-    const feedbacks = await Feedback.find({ facultyName });
+    // Fetch feedbacks based on the faculty name and academic year
+    const feedbacks = await Feedback.find({ facultyName, academicYear });
 
     // Check if feedbacks are found
     if (feedbacks.length === 0) {
       return res
         .status(404)
-        .json({ message: "No feedback found for the given faculty" });
+        .json({ message: "No feedback found for the given faculty and academic year" });
     }
 
     // Initialize variables for analysis
@@ -292,6 +416,7 @@ exports.getFeedbackAnalysisByFaculty = async (req, res) => {
         subjectName,
         branch,
         type,
+        academicYear,
         averageRating: averageScore,
         averagePercentage: averagePercentage,
       };
@@ -304,6 +429,7 @@ exports.getFeedbackAnalysisByFaculty = async (req, res) => {
     res.status(500).json({ message: "Error analyzing feedback", error });
   }
 };
+
 
 
 

@@ -11,6 +11,7 @@ import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import FacultyDashboard from "./components/FacultyDashboard/FacultyDashboard";
 import StudentMainContentPart1 from "./components/Studentdashobard/StudentMainContentPart1"; // Updated import path
 import Timetable from "./components/Studentdashobard/Timetable"; // Updated import path
+import Elective from "./components/Studentdashobard/Elective"; // Updated import path
 import DashboardLayout from "./components/Studentdashobard/DashboardLayout"; // Updated import path
 import DashboardLayoutf from "./components/FacultyDashboard/DashboardLayout"; // Updated import path
 import DashboardLayoutc from "./components/class-teacher/DashboardLayout"; // Updated import path
@@ -43,6 +44,7 @@ import Stutable from "./components/FacultyDashboard/StudentTable"; // Updated im
 import FacultyPostmapping from "./components/FacultyDashboard/EditMappingfaculty"; // Updated import path
 import Profileclass from "./components/class-teacher/StudentProfile"; // Updated import path
 import Facultyregiterview from "./components/FacultyDashboard/FacultyregisterTable"; // Updated import path
+
 
 const AuthRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -167,10 +169,12 @@ function App() {
                   <Routes>
                     <Route path="" element={<StudentProfile />} />
                     <Route path="timetable" element={<Timetable />} />{" "}
+                    <Route path="elective" element={<Elective />} />{" "}
                     <Route path="profile" element={<StudentProfile />} />
                     <Route path="Surveystu" element={<Surveystu />} />
                     <Route path="Feedback" element={<Feedback />} />
                     <Route path="Antiragging" element={<Antiragging />} />
+                    
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>

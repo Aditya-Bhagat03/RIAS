@@ -47,6 +47,14 @@ const Sidebar = () => {
               </span>
             </Link>
           </li>
+          <li className="timetables-link">
+            <Link to="/student-dashboard/elective">
+              <img className="icon" src={TimetablesIcon} alt="timetables" />
+              <span className={`${isOpen ? "" : "hideElement"}`}>
+                Select Elective
+              </span>
+            </Link>
+          </li>
           <li className="feedback-link">
             <Link to="/student-dashboard/Feedback">
               <img className="icon" src={FeedbackIcon} alt="feedback" />

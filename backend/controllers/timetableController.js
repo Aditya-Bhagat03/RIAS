@@ -88,31 +88,36 @@ exports.getTimetablesByCriteria = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
 exports.getElectiveSubjects = async (req, res) => {
   try {
-    // Query to find all timetables where isElective is true and return only the subjectName
-    const electives = await Timetable.find({ isElective: true }).select('subjectName');
-    
-    // Check if electives are found
-    if (electives.length === 0) {
-      return res.status(404).json({ message: 'No elective subjects found' });
+    // Get the token from the request headers
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "No token provided" });
+
+    // Decode the token to get the user ID
+    const decodedToken = JSON.parse(atob(token.split(".")[1]));
+    const userId = decodedToken.id;
+
+    // Fetch the user profile to get the branch
+    const user = await User.findById(userId).select("branch");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Send response with elective subjects (only subjectName)
-    res.status(200).json(electives.map(e => e.subjectName));
+    // Fetch elective subjects based on the user's branch
+    const electives = await Timetable.find({
+      isElective: true,
+      branch: user.branch // Filter electives by user's branch
+    }).select('subjectName');
+
+    // If no electives are found, return an empty array instead of an error
+    return res.status(200).json(electives.map(e => e.subjectName));
+    
   } catch (error) {
-    console.error('Error fetching elective subjects:', error);
-    res.status(500).json({ message: 'Failed to fetch elective subjects' });
+    console.error("Error fetching elective subjects:", error);
+    res.status(500).json({ message: "Failed to fetch elective subjects" });
   }
 };
-
 
 
 

@@ -10,6 +10,8 @@ const bcryptjs = require("bcryptjs");
 
 const Papa = require("papaparse");
 
+const bcrypt = require('bcrypt'); // Optional, in case you want to hash passwords later
+
 exports.uploadCSV = async (req, res) => {
   try {
     const { csvData } = req.body;
@@ -43,56 +45,52 @@ exports.uploadCSV = async (req, res) => {
       "rollNumber",
       "academicYear",
       "session",
-      "electives", // Added electives field to expected headers
+      "electives" // Optional: Add or remove other fields as needed
     ];
 
     // Validate CSV headers
     const headers = Object.keys(results.data[0]);
     if (!expectedHeaders.every((header) => headers.includes(header))) {
-      return res
-        .status(400)
-        .json({ message: "CSV headers do not match expected format." });
+      return res.status(400).json({ message: "CSV headers do not match expected format." });
     }
 
+    // Process the CSV rows
     const userPromises = results.data.map(async (row) => {
       try {
-        const { email, password, electives, ...userData } = row;
+        const { email, password, ...userData } = row;
 
+        // Check if email and password are present
         if (!email || !password) {
           console.error("Missing email or password:", row);
           return null;
         }
 
+        // Check if the user already exists
         let user = await User.findOne({ email });
         if (user) {
           console.log(`User with email ${email} already exists. Skipping.`);
           return null;
         }
 
-        // Process electives field - assuming it is a comma-separated string
-        const parsedElectives = electives ? electives.split(",").map(e => e.trim()) : [];
-
-        // Check if the password is already hashed by inspecting the first part
+        // Check if the password is already hashed by inspecting its format
         let storedPassword;
-        const passwordIsHashed =
-          password.startsWith("$2a$") || password.startsWith("$2b$");
+        const passwordIsHashed = password.startsWith("$2a$") || password.startsWith("$2b$");
 
         if (passwordIsHashed) {
           // If the password is already hashed, store it as-is
           storedPassword = password;
         } else {
-          // Otherwise, store the plaintext password directly (dangerous, but following your request)
+          // Otherwise, store the plaintext password directly (dangerous, but as per request)
           storedPassword = password;
         }
 
         console.log(`Stored password: ${storedPassword}`);
 
-        // Create and save the new user with the stored password (either plaintext or hashed)
+        // Create and save the new user
         user = new User({
           ...userData,
           email,
-          password: storedPassword,
-          electives: parsedElectives, // Save the parsed electives
+          password: storedPassword, // Save the hashed or raw password
         });
 
         await user.save();
@@ -103,6 +101,7 @@ exports.uploadCSV = async (req, res) => {
       }
     });
 
+    // Wait for all user saving promises to resolve
     const resultsPromises = await Promise.allSettled(userPromises);
     const failed = resultsPromises.filter(
       (result) => result.status === "rejected"
@@ -111,6 +110,7 @@ exports.uploadCSV = async (req, res) => {
       (result) => result.status === "fulfilled"
     );
 
+    // Return a summary of success and failures
     res.status(201).json({
       msg: `Users registered successfully: ${succeeded.length}, Failed: ${failed.length}`,
     });
@@ -119,6 +119,8 @@ exports.uploadCSV = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
 
 
 

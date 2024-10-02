@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Feedback Schema
 const feedbackSchema = new mongoose.Schema({
   studentId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -26,5 +27,10 @@ const feedbackSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-// Model export
-module.exports = mongoose.model("Feedback", feedbackSchema);
+// Add a unique compound index to allow submission once per student/semester/type/subjectName
+feedbackSchema.index(
+  { studentId: 1, semester: 1, type: 1, subjectName: 1 },
+  { unique: true }
+);
+
+module.exports = mongoose.model("Feedbacks", feedbackSchema);

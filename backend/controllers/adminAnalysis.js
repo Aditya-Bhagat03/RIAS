@@ -465,7 +465,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
     const facultyAnalysis = {};
 
     feedbacks.forEach((feedback) => {
-      const { facultyName, courseName, responses } = feedback;
+      const { studentId, facultyName, courseName, courseCode, responses } = feedback;
       if (!responses) return;
 
       const responsesObj = Object.fromEntries(responses);
@@ -486,6 +486,8 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
           count: 0,
           totalQuestions: 0,
           courses: new Set(),
+          course: new Set(),
+          uniqueStudents: new Set(), // Track unique students per faculty
         };
       }
 
@@ -493,6 +495,8 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
       facultyAnalysis[facultyName].count += 1;
       facultyAnalysis[facultyName].totalQuestions += Object.keys(responsesObj).length;
       facultyAnalysis[facultyName].courses.add(courseName); // Add courseName to the set
+      facultyAnalysis[facultyName].course.add(courseCode); // Add courseCode to the set
+      facultyAnalysis[facultyName].uniqueStudents.add(studentId); // Track unique studentId per faculty
     });
 
     // Calculate average score, percentage per faculty, and course count
@@ -509,7 +513,7 @@ exports.getFeedbackAnalysisByBranch = async (req, res) => {
 
       return {
         facultyName,
-        studentCount: facultyData.count,
+        studentCount: facultyData.uniqueStudents.size/facultyData.course.size,
         courseCount: facultyData.courses.size, // Count the number of unique courses
         averageRating: averageScore,
         averagePercentage,

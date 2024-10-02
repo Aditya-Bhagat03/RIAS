@@ -3,104 +3,111 @@ const Timetable = require("../models/Timetable");
 const User = require("../models/User");
 
 // Submit theory feedback
+// Submit theory feedback
+// Submit theory feedback
+// Submit theory feedback
 exports.submitTheoryFeedback = async (req, res) => {
   try {
-    const { studentId, feedbackEntries } = req.body;
+    const { studentId, semester, feedbackEntries } = req.body;
 
     if (!feedbackEntries || !Array.isArray(feedbackEntries)) {
       return res.status(400).json({ message: "Invalid feedback data" });
     }
 
-    // Check if the student has already submitted feedback
-    const existingFeedback = await Feedback.findOne({
-      studentId: studentId,
-      type: 'theory',
-    });
+    // Loop through each feedback entry and check if it has been submitted for the subject and type
+    for (const entry of feedbackEntries) {
+      const { subjectName } = entry;
 
-    if (existingFeedback) {
-      console.log("Feedback has already been submitted by this student.");
-      return res.status(400).json({ message: "Feedback cannot be submitted twice." });
+      // Check if the student has already submitted theory feedback for this subject in this semester
+      const existingFeedback = await Feedback.findOne({
+        studentId: studentId,
+        semester: semester,
+        type: 'theory',
+        subjectName: subjectName, // Check for the subject-specific feedback
+      });
+
+      if (existingFeedback) {
+        return res.status(400).json({ message: `You have already submitted theory feedback for ${subjectName} in this semester.` });
+      }
     }
 
     // Save all theory feedback entries
     await Feedback.insertMany(
       feedbackEntries.map((entry) => ({
         studentId,
-        type: 'theory', // Set the type field
+        semester,
+        type: 'theory', // Set the type field to theory
         ...entry,
       }))
     );
 
-    res
-      .status(201)
-      .json({ message: "Theory feedback submitted successfully!" });
+    res.status(201).json({ message: "Theory feedback submitted successfully!" });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate submission detected. Feedback already exists for this subject." });
+    }
     console.error("Error submitting theory feedback:", error);
-    res
-      .status(500)
-      .json({ message: "Error submitting theory feedback", error });
+    res.status(500).json({ message: "Error submitting theory feedback", error });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Similar changes for submitPracticalFeedbac
+// Submit practical feedback
 exports.submitPracticalFeedback = async (req, res) => {
   try {
-    const { studentId, feedbackEntries } = req.body;
+    const { studentId, semester, feedbackEntries } = req.body;
 
     if (!feedbackEntries || !Array.isArray(feedbackEntries) || feedbackEntries.length === 0) {
       return res.status(400).json({ message: "Invalid feedback data" });
     }
 
-    // Define the required fields for feedback entries
-    const requiredFields = ['facultyName', 'courseName', 'branch','parentDepartment', 'section', 'semester', 'batch', 'subjectName', 'courseCode','academicYear','courseAbbreviation', 'responses'];
+    const requiredFields = ['facultyName', 'courseName', 'branch', 'parentDepartment', 'section', 'semester', 'batch', 'subjectName', 'courseCode', 'academicYear', 'courseAbbreviation', 'responses'];
 
-    // Check if all feedback entries have the required fields and are not empty
     const areEntriesValid = feedbackEntries.every(entry =>
       requiredFields.every(field => entry[field] !== undefined && entry[field] !== '')
     );
 
     if (!areEntriesValid) {
-      return res.status(400).json({ message: "All feedback questions must be answered" });
+      return res.status(400).json({ message: "All feedback questions must be answered." });
     }
 
-    // Check if the student has already submitted feedback
-    const existingFeedback = await Feedback.findOne({
-      studentId: studentId,
-      type: 'practical',
-    });
+    // Loop through each feedback entry and check if it has been submitted for the subject and type
+    for (const entry of feedbackEntries) {
+      const { subjectName } = entry;
 
-    if (existingFeedback) {
-      console.log("Feedback has already been submitted by this student.");
-      return res.status(400).json({ message: "Feedback cannot be submitted twice." });
+      // Check if the student has already submitted practical feedback for this subject in this semester
+      const existingFeedback = await Feedback.findOne({
+        studentId: studentId,
+        semester: semester,
+        type: 'practical',
+        subjectName: subjectName, // Check for the subject-specific feedback
+      });
+
+      if (existingFeedback) {
+        return res.status(400).json({ message: `You have already submitted practical feedback for ${subjectName} in this semester.` });
+      }
     }
 
     // Save all practical feedback entries
     await Feedback.insertMany(
       feedbackEntries.map((entry) => ({
         studentId,
-        type: 'practical', // Set the type field
+        semester,
+        type: 'practical', // Set the type field to practical
         ...entry,
       }))
     );
 
     res.status(201).json({ message: "Practical feedback submitted successfully!" });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate submission detected. Feedback already exists for this subject." });
+    }
     console.error("Error submitting practical feedback:", error);
     res.status(500).json({ message: "Error submitting practical feedback", error });
   }
 };
+
+
+
 
 
 

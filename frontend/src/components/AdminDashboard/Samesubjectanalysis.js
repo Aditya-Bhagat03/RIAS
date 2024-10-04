@@ -27,9 +27,7 @@ const Samesubjectanalysis = () => {
   useEffect(() => {
     const fetchAcademicYears = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/academicyear"
-        );
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/academicyear`);
         setAcademicYears(response.data);
       } catch (error) {
         console.error("Error fetching academic years:", error);
@@ -40,9 +38,7 @@ const Samesubjectanalysis = () => {
 
     const fetchTypes = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/types"
-        );
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/types`);
         setTypes(response.data);
       } catch (error) {
         console.error("Error fetching types:", error);
@@ -61,9 +57,10 @@ const Samesubjectanalysis = () => {
       const fetchBranches = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/parentdepartment/filter/samesubject",
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/parentdepartment/filter/samesubject`,
             { params: { academicYear } }
           );
+          
           setBranches(response.data);
         } catch (error) {
           console.error("Error fetching branches:", error);
@@ -81,9 +78,10 @@ const Samesubjectanalysis = () => {
       const fetchSubjects = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/subject-names/filter",
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/subject-names/filter`,
             { params: { academicYear, parentDepartment: branch } }
           );
+          
           setSubjects(response.data);
         } catch (error) {
           console.error("Error fetching subjects:", error);
@@ -106,9 +104,10 @@ const Samesubjectanalysis = () => {
       const params = { subjectName, type, academicYear, branch };
 
       const response = await axios.get(
-        "http://localhost:4000/api/admin/by-same-subject",
+        `${process.env.REACT_APP_API_URL}/api/admin/by-same-subject`,
         { params }
       );
+      
 
       if (response.data && response.data.length > 0) {
         setAnalysisData(response.data);

@@ -19,7 +19,7 @@ const AntiRaggingForm = () => {
       const userId = decodedToken.id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
         {
           method: "GET",
           headers: {
@@ -27,6 +27,7 @@ const AntiRaggingForm = () => {
           },
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -66,7 +67,7 @@ const AntiRaggingForm = () => {
   const handleConfirmSubmit = async () => {
     setShowConfirmModal(false); // Close confirmation modal
     try {
-      const response = await fetch('http://localhost:4000/api/antiragging/submit', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/antiragging/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

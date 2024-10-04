@@ -25,12 +25,12 @@ const FacultyFeedback = () => {
     const fetchOptions = async () => {
       try {
         const [semestersRes, branchesRes, sectionsRes, subjectsRes, coursesRes, facultiesRes] = await Promise.all([
-          axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/sections"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/subject-names"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/course-names"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/faculty-names"),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/semesters`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/branches`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/sections`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/subject-names`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/course-names`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/faculty-names`),
         ]);
 
         setSemesters(semestersRes.data);
@@ -60,7 +60,8 @@ const FacultyFeedback = () => {
         facultyName: selectedFaculty,
       };
 
-      const response = await axios.get("http://localhost:4000/api/feedback/feedbacks/filtered", { params });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/filtered`, { params });
+
       setFeedbacks(response.data);
     } catch (error) {
       console.error("Error fetching feedbacks:", error);
@@ -79,7 +80,8 @@ const FacultyFeedback = () => {
         throw new Error("Invalid feedback ID");
       }
 
-      await axios.delete(`http://localhost:4000/api/feedback/feedbacks/${feedbackId}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/${feedbackId}`);
+
       setFeedbacks(feedbacks.filter(feedback => feedback._id !== feedbackId));
       setMessage("Feedback deleted successfully.");
       setMessageType("success");

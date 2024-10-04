@@ -35,7 +35,7 @@ const FacultyCsv = () => {
       setIsLoading(true); // Start loading
 
       try {
-        const response = await axios.post(`http://localhost:4000/api/csv/upload-${uploadType}-csv`, { csvData }, {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/csv/upload-${uploadType}-csv`, { csvData }, {
           headers: {
             'Content-Type': 'application/json', // Sending JSON data
           },

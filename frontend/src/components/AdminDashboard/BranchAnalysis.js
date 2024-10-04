@@ -23,8 +23,9 @@ const BranchAnalysis = () => {
     const fetchBranches = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/parentDepartment"
+          `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/parentDepartment`
         );
+        
         setBranches(response.data);
         sessionStorage.setItem(
           "parentDepartmentes",
@@ -40,8 +41,9 @@ const BranchAnalysis = () => {
     const fetchAcademicYears = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/academicyear"
+          `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/academicyear`
         );
+        
         setAcademicYears(response.data);
         sessionStorage.setItem("academicYears", JSON.stringify(response.data)); // Cache academic years data
       } catch (error) {
@@ -89,11 +91,12 @@ const BranchAnalysis = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:4000/api/admin/feedback-analysis-by-branch",
+        `${process.env.REACT_APP_API_URL}/api/admin/feedback-analysis-by-branch`,
         {
           params: { parentDepartment, academicYear },
         }
       );
+      
 
       if (response.data && response.data.facultyData.length > 0) {
         setAnalysisData(response.data.facultyData);

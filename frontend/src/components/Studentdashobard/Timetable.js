@@ -18,12 +18,16 @@ const StudentTimetable = () => {
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const userId = decodedToken.id;
 
-      const response = await fetch(`http://localhost:4000/api/users/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -42,14 +46,13 @@ const StudentTimetable = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
-
-      const response = await fetch('http://localhost:4000/api/timetables', {
+  
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/timetables`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (response.ok) {
         const data = await response.json();
         setTimetableData(data);

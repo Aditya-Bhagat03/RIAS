@@ -23,7 +23,7 @@ const StudentTimetable = () => {
 
       // Fetch the user profile data
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
         {
           method: "GET",
           headers: {
@@ -31,6 +31,7 @@ const StudentTimetable = () => {
           },
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -51,12 +52,16 @@ const StudentTimetable = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No token found");
 
-      const response = await fetch("http://localhost:4000/api/timetables", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/timetables`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -81,7 +86,7 @@ const StudentTimetable = () => {
       if (!userBranch) return; // Skip if profileData is not loaded yet
 
       const response = await fetch(
-        `http://localhost:4000/api/electives?branch=${userBranch}`,
+        `${process.env.REACT_APP_API_URL}/api/electives?branch=${userBranch}`,
         {
           method: "GET",
           headers: {
@@ -89,6 +94,7 @@ const StudentTimetable = () => {
           },
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -119,7 +125,7 @@ const StudentTimetable = () => {
       const userId = profileData._id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}/select-elective`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}/select-elective`,
         {
           method: "POST",
           headers: {
@@ -129,6 +135,7 @@ const StudentTimetable = () => {
           body: JSON.stringify({ electives: updatedElectives }), // Send all selected electives as an array
         }
       );
+      
 
       const responseData = await response.json();
 
@@ -151,7 +158,7 @@ const StudentTimetable = () => {
       const userId = profileData._id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}/remove-elective`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}/remove-elective`,
         {
           method: "DELETE",
           headers: {
@@ -161,6 +168,7 @@ const StudentTimetable = () => {
           body: JSON.stringify({ electiveToRemove }), // Send the elective to remove
         }
       );
+      
 
       const responseData = await response.json();
 

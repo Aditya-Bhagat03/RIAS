@@ -5,8 +5,6 @@ import ReactToPrint from "react-to-print";
 import Chart from "chart.js/auto";
 import "./css/chart.css";
 
-
-
 const FeedbackStats = () => {
   const [semesters, setSemesters] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -47,17 +45,23 @@ const FeedbackStats = () => {
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/types"),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/subject-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/semesters`
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/course-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/branches`
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/faculty-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/types`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/subject-names`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/course-names`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/faculty-names`
           ),
         ]);
 
@@ -92,12 +96,12 @@ const FeedbackStats = () => {
       };
 
       const feedbackResponse = await axios.get(
-        "http://localhost:4000/api/feedback/feedbacks/filtered",
+        `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/filtered`,
         { params }
       );
 
       const analysisResponse = await axios.get(
-        "http://localhost:4000/api/feedback/feedbacks/analysis",
+        `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/analysis`,
         { params }
       );
 
@@ -132,7 +136,6 @@ const FeedbackStats = () => {
   const removePrefix = (text) => {
     return text.startsWith("0_") ? text.substring(2) : text;
   };
-  
 
   const convertAnalysisData = (data) => {
     if (!data)
@@ -260,9 +263,9 @@ const FeedbackStats = () => {
       },
       legend: {
         display: true, // Show the legend
-        position: 'left', // Position the legend on the left
+        position: "left", // Position the legend on the left
         labels: {
-          generateLabels: function(chart) {
+          generateLabels: function (chart) {
             // Generate labels with prefix starting from 1
             const originalLabels = chart.data.labels || [];
             return originalLabels.map((label, index) => ({
@@ -280,12 +283,12 @@ const FeedbackStats = () => {
           padding: 20, // Adjust padding around the legend items
         },
       },
-      align: 'start', // Align legend items to start
+      align: "start", // Align legend items to start
       datalabels: {
         display: true, // Show data labels
-        color: '#fff', // Color of the data labels
+        color: "#fff", // Color of the data labels
         font: {
-          weight: 'bold', // Font weight of the data labels
+          weight: "bold", // Font weight of the data labels
         },
         formatter: (value) => {
           // Format data label (e.g., add a '%' sign)
@@ -297,21 +300,24 @@ const FeedbackStats = () => {
     maintainAspectRatio: false, // Allow chart to adapt to container size,
     // Add the gridLines configuration to set the grid color to black
     scales: {
-      xAxes: [{
-        gridLines: {
-          color: 'black', // Set grid color to black
-          display: true, // Ensure grid lines are displayed (optional)
+      xAxes: [
+        {
+          gridLines: {
+            color: "black", // Set grid color to black
+            display: true, // Ensure grid lines are displayed (optional)
+          },
         },
-      }],
-      yAxes: [{
-        gridLines: {
-          color: 'black', // Set grid color to black
-          display: true, // Ensure grid lines are displayed (optional)
+      ],
+      yAxes: [
+        {
+          gridLines: {
+            color: "black", // Set grid color to black
+            display: true, // Ensure grid lines are displayed (optional)
+          },
         },
-      }]
-    }
+      ],
+    },
   };
-  
 
   const getXAxisNote = () => {
     if (selectedFilters.type === "theory") {
@@ -322,106 +328,106 @@ const FeedbackStats = () => {
     return "";
   };
 
-
-    return (
-      <div style={{ marginTop: "70px", marginLeft: "70px" }} className="chartContainer">
-        <div className="chartFeedbackCard" ref={componentRef}>
-          <h2>Feedback Statistics</h2>
-          <p>Filter and review feedback statistics based on various criteria.</p>
-          {message && (
-            <div className={`chartMessage ${messageType}`}>
-              {message}
+  return (
+    <div
+      style={{ marginTop: "70px", marginLeft: "70px" }}
+      className="chartContainer"
+    >
+      <div className="chartFeedbackCard" ref={componentRef}>
+        <h2>Feedback Statistics</h2>
+        <p>Filter and review feedback statistics based on various criteria.</p>
+        {message && (
+          <div className={`chartMessage ${messageType}`}>{message}</div>
+        )}
+        <div className="chartDropdownContainer">
+          {[
+            { id: "semester", label: "Semester", options: semesters },
+            { id: "branch", label: "Branch", options: branches },
+            { id: "type", label: "Type", options: types },
+            { id: "subject", label: "Subject", options: subjects },
+            { id: "course", label: "Course", options: courses },
+            { id: "faculty", label: "Faculty", options: faculties },
+          ].map(({ id, label, options }) => (
+            <div key={id} className="chartDropdownItem">
+              <label htmlFor={id}>{label}:</label>
+              <select
+                id={id}
+                value={selectedFilters[id] || ""}
+                onChange={handleFilterChange}
+              >
+                <option value="">Select {label}</option>
+                {options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
-          <div className="chartDropdownContainer">
-            {[
-              { id: "semester", label: "Semester", options: semesters },
-              { id: "branch", label: "Branch", options: branches },
-              { id: "type", label: "Type", options: types },
-              { id: "subject", label: "Subject", options: subjects },
-              { id: "course", label: "Course", options: courses },
-              { id: "faculty", label: "Faculty", options: faculties },
-            ].map(({ id, label, options }) => (
-              <div key={id} className="chartDropdownItem">
-                <label htmlFor={id}>{label}:</label>
-                <select
-                  id={id}
-                  value={selectedFilters[id] || ""}
-                  onChange={handleFilterChange}
-                >
-                  <option value="">Select {label}</option>
-                  {options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-            <button
-              onClick={handleFilterApply}
-              disabled={!allDropdownsSelected()}
-              className="filterButton"
-            >
-              Apply Filters
-            </button>
-          </div>
-          {loading && <div>Loading...</div>}
-          {!loading && (
-            <div className="chartChartContainer">
-              <div className="chartChartWrapper">
-                <div className="chartChartTitle">Bar Chart</div>
-                <Bar data={chartData} options={chartOptions} />
-              </div>
-              <div className="chartChartWrapper">
-                <div className="chartChartTitle">Line Chart</div>
-                <Line data={chartData} options={chartOptions} />
-              </div>
-              <div className="chartChartWrapper">
-                <div className="chartChartTitle">Pie Chart</div>
-                <Pie data={chartData} options={pieChartOptions} />
-              </div>
-  
-              {feedbacks.length > 0 && (
-                <div
-                  style={{
-                    fontSize: "14px",
-                    marginTop: "0px",
-                    marginBottom: "20px",
-                    border: "1px solid #ccc",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-                    width: "660px",
-                    height: "200px",
-                    overflow: "auto",
-                  }}
-                  className="chartAnalysisContainer"
-                >
-                  <div className="chartChartNote">{getXAxisNote()}</div>
-                  {Object.keys(formattedAnalysisData.questionAverages).length > 0 && (
-                    <ul style={{ padding: 0, margin: 0 }}>
-                      {Object.entries(formattedAnalysisData.questionAverages).map(([question, avg]) => (
+          ))}
+          <button
+            onClick={handleFilterApply}
+            disabled={!allDropdownsSelected()}
+            className="filterButton"
+          >
+            Apply Filters
+          </button>
+        </div>
+        {loading && <div>Loading...</div>}
+        {!loading && (
+          <div className="chartChartContainer">
+            <div className="chartChartWrapper">
+              <div className="chartChartTitle">Bar Chart</div>
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+            <div className="chartChartWrapper">
+              <div className="chartChartTitle">Line Chart</div>
+              <Line data={chartData} options={chartOptions} />
+            </div>
+            <div className="chartChartWrapper">
+              <div className="chartChartTitle">Pie Chart</div>
+              <Pie data={chartData} options={pieChartOptions} />
+            </div>
+
+            {feedbacks.length > 0 && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  marginTop: "0px",
+                  marginBottom: "20px",
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                  width: "660px",
+                  height: "200px",
+                  overflow: "auto",
+                }}
+                className="chartAnalysisContainer"
+              >
+                <div className="chartChartNote">{getXAxisNote()}</div>
+                {Object.keys(formattedAnalysisData.questionAverages).length >
+                  0 && (
+                  <ul style={{ padding: 0, margin: 0 }}>
+                    {Object.entries(formattedAnalysisData.questionAverages).map(
+                      ([question, avg]) => (
                         <li key={question}>
                           {removePrefix(question)}: {avg}
                         </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                
-              )}
-              
-            </div>
-            
-          )}
-        </div>
-        <ReactToPrint
-                trigger={() => <button>Print</button>}
-                content={() => componentRef.current}
-              />
+                      )
+                    )}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    );
-  };
-  
-  export default FeedbackStats;
+      <ReactToPrint
+        trigger={() => <button>Print</button>}
+        content={() => componentRef.current}
+      />
+    </div>
+  );
+};
+
+export default FeedbackStats;

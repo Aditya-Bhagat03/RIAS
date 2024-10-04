@@ -18,9 +18,9 @@ const StudentTable = () => {
     const fetchOptions = async () => {
       try {
         const [semestersRes, branchesRes, sectionsRes] = await Promise.all([
-          axios.get('http://localhost:4000/api/semesters'),
-          axios.get('http://localhost:4000/api/branches'),
-          axios.get('http://localhost:4000/api/sections')
+          axios.get(`${process.env.REACT_APP_API_URL}/api/semesters`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/branches`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/sections`),
         ]);
 
         setSemesters(semestersRes.data || []);
@@ -39,7 +39,7 @@ const StudentTable = () => {
     const fetchStudents = async () => {
       try {
         const { semester, branch, section } = filters;
-        const response = await axios.get('http://localhost:4000/api/students/criteria', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/students/criteria`, {
           params: { semester, branch, section }
         });
         setStudents(response.data || []);

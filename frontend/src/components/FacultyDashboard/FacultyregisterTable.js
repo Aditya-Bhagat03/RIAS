@@ -12,7 +12,8 @@ const FacultyTable = () => {
   // Fetch faculty data
   const fetchFaculty = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/facultyregister/faculty');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/facultyregister/faculty`);
+
       setFacultyList(response.data);
     } catch (error) {
       displayAlert('Error fetching faculty data');
@@ -23,7 +24,8 @@ const FacultyTable = () => {
   // Delete faculty
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/facultyregister/faculty/delete/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/facultyregister/faculty/delete/${id}`);
+
       displayAlert('Faculty deleted successfully');
       fetchFaculty(); // Refresh the faculty list
     } catch (error) {

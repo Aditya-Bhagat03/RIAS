@@ -35,7 +35,7 @@ const TimetableList = () => {
   useEffect(() => {
     const fetchTimetables = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/timetables/criteria', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/timetables/criteria`, {
           params: {
             semester: selectedSemester,
             branch: selectedBranch, // If user is from a specific branch, this will already be set
@@ -68,9 +68,10 @@ const TimetableList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete('http://localhost:4000/api/timetables/delete', {
-        params: { id }
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/timetables/delete`, {
+        params: { id },
       });
+      
       setTimetables(timetables.filter(timetable => timetable._id !== id));
     } catch (error) {
       console.error('Error deleting timetable:', error.response ? error.response.data : error.message);
@@ -80,7 +81,8 @@ const TimetableList = () => {
 
   const handleUpdate = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:4000/api/timetables/update/${id}`, formData);
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/timetables/update/${id}`, formData);
+
       setTimetables(timetables.map(timetable =>
         timetable._id === id ? response.data : timetable
       ));

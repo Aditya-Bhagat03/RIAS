@@ -138,16 +138,14 @@ const FacultyPostTimetable = () => {
           subjectName,
           coursecode,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/semesters"),
-          axios.get("http://localhost:4000/api/branches"),
-          axios.get("http://localhost:4000/api/sections"),
-          axios.get("http://localhost:4000/api/facultyregister/facultyname"),
-          axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/academicyear"
-          ),
-          axios.get("http://localhost:4000/api/users/session"),
-          axios.get("http://localhost:4000/api/facultyregister/subjects"),
-          axios.get("http://localhost:4000/api/facultyregister/coursecodes"),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/semesters`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/branches`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/sections`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/facultyregister/facultyname`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/academicyear`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/users/session`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/facultyregister/subjects`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/facultyregister/coursecodes`),
         ]);
 
         setSemesters(semestersRes.data);
@@ -179,9 +177,8 @@ const FacultyPostTimetable = () => {
   useEffect(() => {
     const fetchTimetables = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/timetables"
-        );
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/timetables`);
+
         setTimetables(response.data);
         setFilteredTimetables(response.data);
       } catch (error) {
@@ -232,12 +229,13 @@ const FacultyPostTimetable = () => {
         createdBy: localStorage.getItem("userId"),
       };
 
-      await axios.post("http://localhost:4000/api/timetables", timetableData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/timetables`, timetableData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+      
 
       setMessage("Timetable posted successfully");
       setMessageType("success");

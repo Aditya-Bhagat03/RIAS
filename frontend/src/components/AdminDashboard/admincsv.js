@@ -30,9 +30,10 @@ const AdminCsv = () => {
     console.log("Uploading CSV Data:", csvData); // Log the CSV data being uploaded
 
     try {
-      const response = await axios.post('http://localhost:4000/api/csv/upload-csv', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/csv/upload-csv`, {
         csvData: csvData, // Send CSV data in the request body
       });
+      
 
       if (response.status === 201) {
         setMessage(response.data.msg || 'CSV uploaded successfully');

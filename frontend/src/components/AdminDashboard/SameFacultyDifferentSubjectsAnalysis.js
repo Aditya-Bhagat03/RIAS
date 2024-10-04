@@ -20,8 +20,9 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
     const fetchAcademicYears = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/academicyear"
+          `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/academicyear`
         );
+        
         setAcademicYears(response.data);
       } catch (error) {
         console.error("Error fetching academic years:", error);
@@ -38,8 +39,9 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/feedback/feedbacks/parentdepartment"
+          `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/parentdepartment`
         );
+        
         setDepartments(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -57,9 +59,10 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
       const fetchFaculties = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/faculty-names/by-parentdepartment",
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/faculty-names/by-parentdepartment`,
             { params: { department: parentDepartment } }
           );
+          
           setFaculties(response.data);
         } catch (error) {
           console.error("Error fetching faculties:", error);
@@ -81,11 +84,12 @@ const SameFacultyDifferentSubjectsAnalysis = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:4000/api/admin/by-faculty",
+        `${process.env.REACT_APP_API_URL}/api/admin/by-faculty`,
         {
           params: { facultyName, academicYear }, // Include academic year in the request
         }
       );
+      
 
       if (response.data && response.data.length > 0) {
         setAnalysisData(response.data);

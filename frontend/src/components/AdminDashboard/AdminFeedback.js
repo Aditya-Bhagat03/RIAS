@@ -36,17 +36,23 @@ const AdminFeedback = () => {
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/branches"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/sections"),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/subject-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/semesters`
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/course-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/branches`
           ),
           axios.get(
-            "http://localhost:4000/api/feedback/feedbacks/faculty-names"
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/sections`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/subject-names`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/course-names`
+          ),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/faculty-names`
           ),
         ]);
 
@@ -94,9 +100,10 @@ const AdminFeedback = () => {
       };
 
       const response = await axios.get(
-        "http://localhost:4000/api/feedback/feedbacks/filtered",
+        `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/filtered`,
         { params }
       );
+
       setFeedbacks(response.data);
     } catch (error) {
       console.error("Error fetching feedbacks:", error);
@@ -116,8 +123,9 @@ const AdminFeedback = () => {
       }
 
       await axios.delete(
-        `http://localhost:4000/api/feedback/feedbacks/${feedbackId}`
+        `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/${feedbackId}`
       );
+
       setFeedbacks(feedbacks.filter((feedback) => feedback._id !== feedbackId));
       setMessage("Feedback deleted successfully.");
       setMessageType("success");

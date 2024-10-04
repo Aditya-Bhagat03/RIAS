@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import styles from './css/FacultyRegister.module.css'; // Import the CSS Module
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import styles from "./css/FacultyRegister.module.css"; // Import the CSS Module
 
 const FacultyRegister = () => {
   const [formData, setFormData] = useState({
-    facultyName: '',
-    subjectName: '',
-    courseCode: '',
-    branch: '',
-    semester: '',
-    academicYear: '',
-    session: '',
-    parentDepartment: ''
+    facultyName: "",
+    subjectName: "",
+    courseCode: "",
+    branch: "",
+    semester: "",
+    academicYear: "",
+    session: "",
+    parentDepartment: "",
   });
 
-  const [csvFile, setCsvFile] = useState(null); 
-  const [alertMessage, setAlertMessage] = useState(''); 
-  const [showAlert, setShowAlert] = useState(false); 
+  const [csvFile, setCsvFile] = useState(null);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,29 +27,32 @@ const FacultyRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:4000/api/facultyregister/create/faculty', formData);
-      displayAlert('Faculty registered successfully');
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/facultyregister/create/faculty`,
+        formData
+      );
+      displayAlert("Faculty registered successfully");
     } catch (error) {
       console.error(error);
-      displayAlert('Error registering faculty');
+      displayAlert("Error registering faculty");
     }
   };
 
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate('F--rege-view'); 
+    navigate("F--rege-view");
   };
 
   const handleCsvChange = (e) => {
-    setCsvFile(e.target.files[0]); 
+    setCsvFile(e.target.files[0]);
   };
 
   const handleCsvUpload = async (e) => {
     e.preventDefault();
 
     if (!csvFile) {
-      displayAlert('Please select a CSV file to upload.');
+      displayAlert("Please select a CSV file to upload.");
       return;
     }
 
@@ -59,24 +62,28 @@ const FacultyRegister = () => {
       const csvData = event.target.result;
 
       try {
-        const response = await axios.post('http://localhost:4000/api/csv/upload-faculty-csv', { csvData }, {
-          headers: {
-            'Content-Type': 'application/json' 
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/csv/upload-faculty-csv`,
+          { csvData },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        });
+        );
         if (response.status === 201) {
-          displayAlert('Faculty data uploaded successfully from CSV');
+          displayAlert("Faculty data uploaded successfully from CSV");
         } else {
-          displayAlert('Unexpected response from the server.');
+          displayAlert("Unexpected response from the server.");
         }
       } catch (error) {
         console.error("Error message:", error.message);
-        displayAlert('Error uploading faculty data from CSV.');
+        displayAlert("Error uploading faculty data from CSV.");
       }
     };
 
     reader.onerror = () => {
-      displayAlert('Error reading the CSV file.');
+      displayAlert("Error reading the CSV file.");
     };
 
     reader.readAsText(csvFile);
@@ -89,7 +96,7 @@ const FacultyRegister = () => {
 
   const closeAlert = () => {
     setShowAlert(false);
-    setAlertMessage('');
+    setAlertMessage("");
   };
 
   return (
@@ -190,29 +197,40 @@ const FacultyRegister = () => {
           </div>
         </div>
       </form>
-      <button onClick={handleSubmit} className={styles.submit}>Register</button>
-      <button onClick={handleNavigate} className={styles.submit}>View Registered Faculty</button>
+      <button onClick={handleSubmit} className={styles.submit}>
+        Register
+      </button>
+      <button onClick={handleNavigate} className={styles.submit}>
+        View Registered Faculty
+      </button>
 
       <h2 className={styles.header}>Upload Faculty CSV</h2>
-      <form style={{ marginLeft:'400px',}}  onSubmit={handleCsvUpload} className={styles.form}>
+      <form
+        style={{ marginLeft: "400px" }}
+        onSubmit={handleCsvUpload}
+        className={styles.form}
+      >
         <div className={styles.field}>
-          <input 
+          <input
             type="file"
             accept=".csv"
             onChange={handleCsvChange}
             required
             className={styles.input}
           />
-          
         </div>
-        <button type="submit" className={styles.submitt}>Upload CSV</button>
+        <button type="submit" className={styles.submitt}>
+          Upload CSV
+        </button>
       </form>
 
       {showAlert && (
         <div className={styles.alert}>
           <div className={styles.alertContent}>
             <span>{alertMessage}</span>
-            <button onClick={closeAlert} className={styles.alertClose}>Close</button>
+            <button onClick={closeAlert} className={styles.alertClose}>
+              Close
+            </button>
           </div>
         </div>
       )}

@@ -15,11 +15,12 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/users/notadmin', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/notadmin`, {
           headers: {
             'Authorization': `Bearer ${token}` // Include token in headers
           }
         });
+        
         console.log(response.data); // Log data for debugging
         setUsers(response.data);
       } catch (error) {
@@ -35,11 +36,12 @@ const Users = () => {
 
   const handleApproveUser = async (userId) => {
     try {
-      await axios.post(`http://localhost:4000/api/faculty/approve-user/${userId}`, {}, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/faculty/approve-user/${userId}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}` // Include token in headers
         }
       });
+      
 
       setUsers(users.map(user => user._id === userId ? { ...user, isApproved: true } : user));
     } catch (error) {
@@ -50,11 +52,12 @@ const Users = () => {
 
   const handleRejectUser = async (userId) => {
     try {
-      await axios.post(`http://localhost:4000/api/faculty/reject-user/${userId}`, {}, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/faculty/reject-user/${userId}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}` // Include token in headers
         }
       });
+      
 
       setUsers(users.map(user => user._id === userId ? { ...user, isApproved: false } : user));
     } catch (error) {
@@ -66,12 +69,13 @@ const Users = () => {
   const handleBulkApprove = async () => {
     try {
       await Promise.all(selectedUsers.map(userId => 
-        axios.post(`http://localhost:4000/api/faculty/approve-user/${userId}`, {}, {
+        axios.post(`${process.env.REACT_APP_API_URL}/api/faculty/approve-user/${userId}`, {}, {
           headers: {
             'Authorization': `Bearer ${token}` // Include token in headers
           }
         })
       ));
+      
 
       setUsers(users.map(user => selectedUsers.includes(user._id) ? { ...user, isApproved: true } : user));
       setSelectedUsers([]);

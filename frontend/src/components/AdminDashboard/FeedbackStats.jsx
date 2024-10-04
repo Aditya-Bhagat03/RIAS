@@ -42,12 +42,12 @@ const FeedbackStats = () => {
           coursesRes,
           facultiesRes,
         ] = await Promise.all([
-          axios.get("http://localhost:4000/api/feedback/feedbacks/semesters"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/parentdepartment"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/academicyear"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/subject-names"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/course-names"),
-          axios.get("http://localhost:4000/api/feedback/feedbacks/faculty-names"),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/semesters`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/parentdepartment`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/academicyear`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/subject-names`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/course-names`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/faculty-names`),
         ]);
 
         setSemesters(semestersRes.data);
@@ -78,7 +78,11 @@ const FeedbackStats = () => {
         facultyName: faculty,
       };
 
-      const feedbackResponse = await axios.get("http://localhost:4000/api/feedback/feedbacks/filtered", { params });
+      const feedbackResponse = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/feedback/feedbacks/filtered`,
+        { params }
+      );
+      
 
       setFeedbacks(feedbackResponse.data);
       aggregateFeedbacks(feedbackResponse.data);

@@ -27,7 +27,7 @@ const StudentProfile = () => {
       const userId = decodedToken.id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
         {
           method: "GET",
           headers: {
@@ -35,6 +35,7 @@ const StudentProfile = () => {
           },
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -80,7 +81,7 @@ const StudentProfile = () => {
       const userId = decodedToken.id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -90,6 +91,7 @@ const StudentProfile = () => {
           body: JSON.stringify(formData),
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();

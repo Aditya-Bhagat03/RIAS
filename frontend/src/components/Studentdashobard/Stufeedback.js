@@ -145,7 +145,7 @@ const FeedbackForm = () => {
       const userId = decodedToken.id;
 
       const response = await fetch(
-        `http://localhost:4000/api/users/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/user/${userId}`,
         {
           method: "GET",
           headers: {
@@ -153,6 +153,7 @@ const FeedbackForm = () => {
           },
         }
       );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -172,12 +173,16 @@ const FeedbackForm = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No token found");
 
-      const response = await fetch("http://localhost:4000/api/timetables", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/timetables`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
 
       if (response.ok) {
         const data = await response.json();
@@ -292,7 +297,7 @@ const FeedbackForm = () => {
 
       // Submit both feedbacks in parallel
       const [theoryResponse, practicalResponse] = await Promise.all([
-        fetch("http://localhost:4000/api/feedback/theory/submit", {
+        fetch(`${process.env.REACT_APP_API_URL}/api/feedback/theory/submit`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -303,7 +308,7 @@ const FeedbackForm = () => {
             feedbackEntries: theoryFeedbackEntries,
           }),
         }),
-        fetch("http://localhost:4000/api/feedback/practical/submit", {
+        fetch(`${process.env.REACT_APP_API_URL}/api/feedback/practical/submit`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -313,8 +318,9 @@ const FeedbackForm = () => {
             studentId,
             feedbackEntries: practicalFeedbackEntries,
           }),
-        }),
+        })
       ]);
+      
 
       // Check if any response indicates an error
       if (!theoryResponse.ok) {
